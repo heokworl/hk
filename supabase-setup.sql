@@ -1,4 +1,6 @@
 -- Run once in Supabase Dashboard > SQL Editor.
+-- Also turn off Authentication > Providers > Email > Confirm email, because accounts use names and passwords without email addresses.
+-- This design hides participant rows and names from browser clients. The site only receives counts and the current user's own joined status.
 create table if not exists public.quest_limits (
   quest_id text primary key,
   max_members integer not null check (max_members > 0)
@@ -11,7 +13,6 @@ on conflict (quest_id) do update set max_members = excluded.max_members;
 create table if not exists public.quest_participants (
   quest_id text not null references public.quest_limits(quest_id) on delete cascade,
   user_id uuid not null references auth.users(id) on delete cascade,
-  display_name text not null,
   joined_at timestamptz not null default now(),
   primary key (quest_id, user_id)
 );
@@ -19,18 +20,27 @@ create table if not exists public.quest_participants (
 alter table public.quest_limits enable row level security;
 alter table public.quest_participants enable row level security;
 
-drop policy if exists "Authenticated users can read quest limits" on public.quest_limits;
-create policy "Authenticated users can read quest limits"
-  on public.quest_limits for select to authenticated using (true);
+-- Browser clients cannot read, insert, update, or delete raw records.
+revoke all on public.quest_limits from anon, authenticated;
+revoke all on public.quest_participants from anon, authenticated;
 
-drop policy if exists "Authenticated users can read quest participants" on public.quest_participants;
-create policy "Authenticated users can read quest participants"
-  on public.quest_participants for select to authenticated using (true);
+create or replace function public.get_quest_status()
+returns table (quest_id text, participant_count bigint, has_joined boolean)
+language sql
+security definer
+set search_path = ''
+as $$
+  select q.quest_id,
+         (select count(*) from public.quest_participants p where p.quest_id = q.quest_id),
+         exists (
+           select 1 from public.quest_participants p
+           where p.quest_id = q.quest_id and p.user_id = auth.uid()
+         )
+  from public.quest_limits q
+  order by q.quest_id;
+$$;
 
-grant select on public.quest_limits, public.quest_participants to authenticated;
-revoke insert, update, delete on public.quest_participants from anon, authenticated;
-
-create or replace function public.join_quest(p_quest_id text, p_display_name text)
+create or replace function public.join_quest(p_quest_id text)
 returns text
 language plpgsql
 security definer
@@ -70,12 +80,14 @@ begin
     return 'full';
   end if;
 
-  insert into public.quest_participants (quest_id, user_id, display_name)
-  values (p_quest_id, v_user_id, pg_catalog.left(pg_catalog.btrim(p_display_name), 80));
+  insert into public.quest_participants (quest_id, user_id)
+  values (p_quest_id, v_user_id);
 
   return 'joined';
 end;
 $$;
 
-revoke all on function public.join_quest(text, text) from public;
-grant execute on function public.join_quest(text, text) to authenticated;
+revoke all on function public.get_quest_status() from public;
+revoke all on function public.join_quest(text) from public;
+grant execute on function public.get_quest_status() to anon, authenticated;
+grant execute on function public.join_quest(text) to authenticated;
