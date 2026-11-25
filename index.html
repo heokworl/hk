@@ -549,6 +549,14 @@ html,body{max-width:100%;overflow-x:hidden}
     return '가입 실패: '+message;
   }
   function displayName(user){return user.user_metadata?.display_name||user.user_metadata?.user_name||'모험가'}
+  async function ensureDisplayNameMetadata(user){
+    const metadata=user?.user_metadata||{};
+    if(metadata.display_name)return user;
+    const name=metadata.user_name||metadata.full_name||metadata.name;
+    if(!name)return user;
+    const {data,error}=await supabase.auth.updateUser({data:{display_name:name}});
+    return error?user:(data.user||user);
+  }
   function setAuthMode(mode){
     authMode=mode;const signup=mode==='signup';
     document.querySelector('#authTitle').textContent=signup?'계정 만들기':'길드 로그인';
@@ -707,8 +715,9 @@ html,body{max-width:100%;overflow-x:hidden}
     const accountId=document.querySelector('#loginId').value.trim();
     const password=document.querySelector('#loginPassword').value;
     const email=await accountEmail(accountId);
-    const {error}=await supabase.auth.signInWithPassword({email,password});
+    const {data,error}=await supabase.auth.signInWithPassword({email,password});
     if(error){authMessage.textContent='아이디 또는 비밀번호를 확인해 주세요.';return}
+    await ensureDisplayNameMetadata(data.user);
     document.querySelector('#loginPassword').value='';
   });
   document.querySelector('#signupForm').addEventListener('submit',async event=>{
@@ -733,7 +742,7 @@ html,body{max-width:100%;overflow-x:hidden}
   });
   supabase.auth.getSession().then(({data,error})=>{
     if(error)showSignedOut('로그인 상태를 확인하지 못했습니다.');
-    else if(data.session?.user)showSignedIn(data.session.user);
+    else if(data.session?.user)ensureDisplayNameMetadata(data.session.user).then(showSignedIn);
     else{showSignedOut();loadBoard();loadShopCatalog();}
   });
 })();
