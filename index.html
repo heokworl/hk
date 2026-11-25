@@ -333,6 +333,50 @@ body{padding:14px 16px;background:radial-gradient(ellipse at 50% -10%,#503039 0,
 }
 @media(max-width:390px){.page-layout{grid-template-columns:44px minmax(0,1fr);gap:6px}.bookmark-nav{width:44px;padding:3px;gap:5px}.bookmark{min-height:44px}.bookmark b{font-size:8px}.content{padding-right:9px;padding-left:9px}.world-table{min-width:340px}}
 
+/* CHEONHO portal refresh: silver structure, vivid red wayfinding, 740px canvas */
+:root{--ink:#eef0f3;--muted:#a7aab2;--bg:#0e1014;--line:#383b43;--gold:#d6d9df;--green:#d6d9df;--red:#f0445c;--accent-red:#f0445c;--deep-red:#711d2d;--silver:#d6d9df}
+*{font-family:Inter,Pretendard,"Noto Sans KR",sans-serif}
+body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50% -18%,#282b33 0,transparent 42%),radial-gradient(ellipse at 50% 45%,#24151b 0,transparent 72%),#0e1014;background-attachment:fixed}
+.shell{width:min(740px,100%);max-width:740px;margin:0 auto}
+.topline{margin:0 auto 12px;color:#aeb1b8;font-size:10px;letter-spacing:.12em}
+.topline>span:first-child{color:#e6e8ec}.sigil{color:var(--accent-red);text-shadow:0 0 12px #f0445c66}
+.page-layout{display:block;width:100%;min-width:0}
+.panel{overflow:hidden;border:1px solid #484a51;border-radius:14px;background:linear-gradient(150deg,#191b20,#111216 62%,#151216);box-shadow:0 22px 60px #0008,inset 0 1px #ffffff08}
+.hero{display:grid;grid-template-columns:minmax(0,1fr);justify-items:center;gap:18px;min-height:0;padding:24px 22px 20px;border-bottom:1px solid #34363e;background:radial-gradient(ellipse at 50% 10%,#343039 0,transparent 58%),linear-gradient(180deg,#1a1b20,#151418)}
+.hero-copy{display:flex;flex:none;flex-direction:column;align-items:center;justify-content:center;width:100%;min-width:0;min-height:0;padding:0;background:transparent;border:0;border-radius:0;box-shadow:none;transform:none;text-align:center}
+.hero-copy:before,.hero-copy:after{display:none;content:none}
+.guild-logo{display:block;width:min(220px,60vw);height:auto;max-height:148px;object-fit:contain;margin:0 auto 12px}
+.portal-tagline{margin:10px 0 0;padding-top:13px;border-top:1px solid #4a4b52;color:#e2e3e7;font-size:14px;font-weight:650;letter-spacing:.13em;line-height:1.5}
+.auth-panel,.user-panel{width:min(100%,390px);max-width:390px;min-width:0;flex:none;margin:0;border:1px solid #45474f;border-radius:9px;background:#121318;color:var(--ink);box-shadow:none}
+.auth-panel h2{margin:0 0 6px;color:#f0f1f4;font:650 16px/1.4 Inter,Pretendard,"Noto Sans KR",sans-serif}
+.auth-panel p#authDescription{margin:0 0 12px;color:#aaadb5;font-size:12px}
+.auth-form{gap:9px}.auth-form label{color:#c5c7cd}.auth-form input{border-color:#4b4d56;border-radius:6px;background:#0d0e12;color:#f2f3f6}.auth-form input:focus{outline-color:var(--accent-red)}
+.auth-switch{color:#ff6578}.auth-panel .note{color:#898c95}.error{color:#ff6c7e}
+.user-panel{justify-content:space-between;padding:11px 13px}.user-panel .welcome strong{color:#fff}.user-panel .wallet{color:#e4e5e9}.admin-badge{border-color:#b23a4c;color:#ff8592}
+.bookmark-nav{position:static;inset:auto;transform:none;z-index:auto;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;width:100%;max-height:none;overflow:visible;margin:0;padding:12px 14px;border:0;border-bottom:1px solid #34363e;border-radius:0;background:#15161a;box-shadow:none;backdrop-filter:none}
+.bookmark{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7px;min-width:0;min-height:68px;padding:7px 4px;border:1px solid transparent;border-radius:7px;background:transparent;color:#d1d3d9;box-shadow:none;transform:none}
+.bookmark span{display:grid;place-items:center;color:var(--accent-red);font-size:0;line-height:1;text-shadow:0 0 10px #f0445c36}
+.bookmark span svg{display:block;width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bookmark b{font-size:10px;line-height:1.25;letter-spacing:0;writing-mode:horizontal-tb;white-space:nowrap;color:#d5d6dc}
+.bookmark:hover{background:#21181d;border-color:#5a252f}.bookmark.active{transform:none;border-color:#7c2938;background:#2a171d;color:#fff;box-shadow:inset 0 -2px var(--accent-red)}.bookmark.active span,.bookmark.active b{color:#ff5369}
+.content{padding:26px 24px 30px}.section-head{align-items:center;margin:0 0 17px;padding:0 0 12px;border-bottom:1px solid #3d3f47}
+.section-title,.profile-columns .section-title{margin:0;color:#f0f1f4;font:650 19px/1.4 Inter,Pretendard,"Noto Sans KR",sans-serif;letter-spacing:-.025em}
+.section-title:before{content:none}.section-head .filter-button{border-color:#666872;border-radius:6px;background:transparent;color:#e5e6ea}.filter-button:hover{border-color:var(--accent-red);color:#fff}
+.cards{gap:14px}.quest-card{display:grid;grid-template-columns:42px minmax(0,1fr);gap:0 17px;min-width:0;padding:20px 21px;border:1px solid #3d3f47;border-left:2px solid var(--accent-red);border-radius:9px;background:linear-gradient(115deg,#1a1b20,#151519 70%);box-shadow:none;transform:none}
+.quest-card:after{content:none}.quest-gate{display:grid;place-items:start center;padding-top:5px;color:#ff4b62}.quest-gate svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px #f0445c5c)}
+.quest-body{min-width:0}.card-top{align-items:center}.quest-card .tag{padding:4px 8px;border:1px solid #a43549;border-radius:4px;background:#391922;color:#ff7586;font-size:10px;letter-spacing:.04em}
+.quest-card h3,.shop-card h3{margin:8px 0 6px;color:#f0f1f4;font:650 17px/1.45 Inter,Pretendard,"Noto Sans KR",sans-serif;letter-spacing:-.02em}
+.quest-card p,.shop-card p{color:#c3c5cc;font-size:13px;line-height:1.65}.count{color:#ff687b;font-size:11px}.meta,.members{color:#aeb0b8;font-size:11px;line-height:1.65}.meta{margin-top:8px}.card-bottom{align-items:center;margin-top:13px;padding-top:11px;border-top:1px solid #35373f}.card-actions{flex-wrap:wrap}
+.button{border:1px solid #a93346;border-radius:6px;background:#782032;color:#fff;font:650 12px/1.2 Inter,Pretendard,"Noto Sans KR",sans-serif;box-shadow:none;transition:background .15s,border-color .15s,filter .15s}.button:hover:not(:disabled){transform:none;background:#a52a40;border-color:#e5495e;filter:none;box-shadow:none}.join{padding:10px 15px}.join:disabled{border-color:#46474d;background:#292a30;color:#858791;opacity:1}.award{border-color:#8f3242;background:transparent;color:#ff8592}.award:hover:not(:disabled){background:#381820}.status{color:#c4c6cc}.note{color:#9699a2}.empty-state{border-color:#4d4f58;background:#17181d;color:#b9bbc2}
+.tag{border-color:#575962;background:#222329;color:#d6d8df}.wallet,.gold-amount,.shop-price{color:#e0e1e5}.admin-badge{border-color:#9b3342;color:#ff7788}
+.logout,.filter-button{border-color:#565861;border-radius:6px;background:#191a1f;color:#e5e6ea}.logout:hover,.filter-button:hover{border-color:var(--accent-red);background:#27171d}
+.shop-card,.list-row,.profile-summary,.profile-empty,.profile-columns>section,.admin-card,.admin-user-row,.profile-columns>section .list-row{border-color:#3e4048;border-radius:8px;background:#17181d;color:#e5e6ea;box-shadow:none}.shop-card:after{content:none}.shop-card button:disabled{border-color:#46474d;background:#292a30;color:#858791}
+.profile-summary{background:#17181d}.profile-label,.list-row span,.list-row p,.admin-hint{color:#aeb0b8}.profile-columns>section{padding:17px}.profile-columns .section-title{padding:0 0 10px;border-bottom:1px solid #3e4048}.admin-used-row{border-color:#3e4048;border-radius:8px;background:#17181d;color:#e5e6ea}.admin-used-user{color:#f0f1f4}.admin-used-item small{color:#aeb0b8}
+.world-cover{margin:0 0 20px;border-color:#565862;border-radius:9px;background:radial-gradient(ellipse at 50% 0%,#9f263522,transparent 65%),linear-gradient(135deg,#1d1c22,#15151a);box-shadow:none;color:#eceef2}.world-cover:before,.world-cover:after{color:#ef596b66}.world-ornament,.world-kicker{color:#e45a6c;text-shadow:none}.world-cover h2{color:#f2f3f5;font:650 clamp(24px,5vw,32px)/1.3 Inter,Pretendard,"Noto Sans KR",sans-serif;text-shadow:none}.world-cover h2 span{color:#c8cbd2}.world-cover p{color:#b9bbc2}.world-frame{border-color:#41434b;border-radius:9px;background:#131419;box-shadow:none}.world-frame-corner{color:#ec5368;text-shadow:none}.lore-section{border-color:#3e4048;border-radius:7px;background:#17181d;box-shadow:none}.lore-section[open]{border-color:#7c3340;box-shadow:none}.lore-section>summary{color:#eceef2;font:600 15px/1.45 Inter,Pretendard,"Noto Sans KR",sans-serif}.lore-section>summary:after{color:#ff596d}.lore-section>summary:before{color:#e64e62}.lore-major>summary{background:#29181e}.lore-body{color:#c8cad0}.lore-body strong,.lore-subhead{color:#f07a89}.world-table-wrap{border-color:#41434b}.world-table th{background:#28292f;color:#f07a89}.world-table th,.world-table td{border-bottom-color:#3a3c43}.world-table td:first-child{color:#e5a0a8}.world-image-placeholder{border-color:#71404a;background:#1b171b;color:#f06a7a}.lore-body blockquote{border-left-color:#e04b60;background:#24171c;color:#d6cbd0}.lore-body hr{border-top-color:#41434b}
+.footer{border-color:#393b43;background:#14151a;color:#aeb0b8}.footer b{color:#e6e7eb}
+@media(max-width:760px){body{padding:10px 9px 18px}.shell{width:100%;max-width:740px}.topline{font-size:9px;letter-spacing:.06em}.hero{gap:15px;padding:21px 15px 17px}.guild-logo{width:min(190px,58vw);max-height:132px;margin-bottom:10px}.portal-tagline{margin-top:9px;padding-top:11px;font-size:12px;letter-spacing:.09em}.bookmark-nav{grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:8px 8px 10px}.bookmark{min-height:61px;padding:6px 2px}.bookmark span svg{width:22px;height:22px}.bookmark b{font-size:10px}.content{padding:21px 15px 24px}.section-title{font-size:17px}.quest-card{grid-template-columns:31px minmax(0,1fr);gap:0 11px;padding:16px 13px}.quest-gate svg{width:27px;height:27px}.quest-card h3{font-size:16px}.quest-card p{font-size:12px}.card-bottom{align-items:flex-start;flex-wrap:wrap}.card-actions{justify-content:flex-end}.admin-layout{grid-template-columns:1fr}.world-frame{padding:13px 10px}}
+@media(max-width:390px){.topline>span:last-child{display:none}.bookmark-nav{grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;padding:7px 5px}.bookmark{min-height:56px}.bookmark b{font-size:9px}.quest-card{grid-template-columns:25px minmax(0,1fr);gap:0 8px;padding:14px 10px}.quest-gate svg{width:23px;height:23px}.content{padding:18px 11px 21px}.section-head{align-items:flex-start}.filter-button{padding:8px 9px;font-size:11px}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -340,18 +384,9 @@ body{padding:14px 16px;background:radial-gradient(ellipse at 50% -10%,#503039 0,
 <main class="shell">
   <div class="topline"><span><i class="sigil">✧</i> &nbsp;天護 · HUNTER GUILD</span><span>GUILD HEADQUARTERS · KOREA</span></div>
   <div class="page-layout">
-    <nav class="bookmark-nav" aria-label="페이지 이동">
-      <button class="bookmark active" type="button" data-page="quests" aria-current="page"><span>⚔</span><b>퀘스트</b></button>
-      <button class="bookmark" type="button" data-page="shop"><span>✦</span><b>상점</b></button>
-      <button class="bookmark" type="button" data-page="profile"><span>♙</span><b>프로필</b></button>
-      <button class="bookmark" type="button" data-page="world"><span>✧</span><b>세계관</b></button>
-      <button class="bookmark" type="button" data-page="settings"><span>⚙</span><b>규칙·설정</b></button>
-      <button class="bookmark" type="button" data-page="profileGuide"><span>▤</span><b>프로필 가이드</b></button>
-      <button class="bookmark hidden" type="button" data-page="admin" id="adminBookmark"><span>♜</span><b>관리자</b></button>
-    </nav>
   <section class="panel">
     <header class="hero">
-      <div class="hero-copy"><div class="eyebrow">천호 길드 · 임무 접수처</div><h1>모험가 모집 공고</h1></div>
+      <div class="hero-copy"><img class="guild-logo" src="./천호_로고.png" alt="천호 길드 로고"><div class="portal-tagline">천호 길드 공식 미션 포털</div></div>
       <div class="auth-panel" id="loginCard">
         <h2 id="authTitle">길드 로그인</h2>
         <p id="authDescription">아이디와 비밀번호로 로그인하세요.</p>
@@ -372,8 +407,17 @@ body{padding:14px 16px;background:radial-gradient(ellipse at 50% -10%,#503039 0,
       </div>
       <div class="user-panel hidden" id="userPanel"><div class="welcome"><span class="sigil">✦</span> 로그인: <strong id="loggedName"></strong><span class="admin-badge hidden" id="adminBadge">관리자</span><span class="wallet" id="walletBalance">소지금 0G</span></div><button class="logout header-logout" id="headerLogoutButton" type="button">로그아웃</button></div>
     </header>
+    <nav class="bookmark-nav" aria-label="페이지 이동">
+      <button class="bookmark active" type="button" data-page="quests" aria-current="page"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M6 27V16a10 10 0 0 1 20 0v11M3 27h26M10 27v-8m12 8v-8M11 10l5-5 5 5"/></svg></span><b>퀘스트</b></button>
+      <button class="bookmark" type="button" data-page="shop"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 11h22l-2 16H7L5 11Zm5 0 2-6h8l2 6M11 16h10"/></svg></span><b>상점</b></button>
+      <button class="bookmark" type="button" data-page="profile"><span aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="10" r="5"/><path d="M6 27c.7-6 4.4-9 10-9s9.3 3 10 9H6Z"/></svg></span><b>프로필</b></button>
+      <button class="bookmark" type="button" data-page="world"><span aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><path d="M4 16h24M16 4c4 4 6 8 6 12s-2 8-6 12c-4-4-6-8-6-12s2-8 6-12Z"/></svg></span><b>세계관</b></button>
+      <button class="bookmark" type="button" data-page="settings"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 5h14l5 5v17H7zM21 5v6h5M11 16h11M11 21h11"/></svg></span><b>규칙·설정</b></button>
+      <button class="bookmark" type="button" data-page="profileGuide"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M4 7c5-2 9-1 12 2v18c-3-3-7-4-12-2V7Zm24 0c-5-2-9-1-12 2v18c3-3 7-4 12-2V7Z"/></svg></span><b>프로필 가이드</b></button>
+      <button class="bookmark hidden" type="button" data-page="admin" id="adminBookmark"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 12h22l-2 15H7L5 12Zm3 0 3-7h10l3 7M12 19h8"/></svg></span><b>관리자</b></button>
+    </nav>
     <section class="content" id="board" aria-live="polite">
-      <div class="section-head"><h2 class="section-title">길드 게시판 <span class="board-subtitle">· 의뢰 및 모험가 구인</span></h2><button class="filter-button" id="toggleJoined" type="button" disabled>참여한 퀘스트</button></div>
+      <div class="section-head"><h2 class="section-title">오늘의 퀘스트</h2><button class="filter-button" id="toggleJoined" type="button" disabled>참여한 퀘스트</button></div>
       <div class="cards" id="questList"></div>
       <p class="status" id="boardStatus"></p>
       <p class="note">로그인한 계정은 각 퀘스트에 한 번씩 참여할 수 있고, 다른 퀘스트에도 참여할 수 있습니다.</p>
@@ -695,10 +739,10 @@ body{padding:14px 16px;background:radial-gradient(ellipse at 50% -10%,#503039 0,
 
     <section class="content hidden world-content" id="profileGuidePage" aria-live="polite">
       <div class="world-cover"><div class="world-ornament">✧ · · ── ▤ ── · · ✧</div><span class="world-kicker">天護 · PERSONNEL FILE</span><h2>캐릭터 프로필 가이드</h2><p>모험가 등록 시 아래 양식을 복사해 작성해 주세요.</p><div class="world-ornament">❧ ───────── ✧ ───────── ❧</div></div>
-      <div class="world-frame"><div class="world-frame-corner top-left">✧</div><div class="world-frame-corner top-right">✧</div>
-       <div class="world-articles">
-<details class="lore-section"><summary>대한민국 통합 헌터 길드 천호(天護)</summary><div class="lore-body">
+      <div class="world-frame"><div class="world-frame-corner top-left">✧</div><div class="world-frame-corner top-right">✧</div><div class="world-articles"><details class="lore-section"><summary>캐릭터 프로필 작성 가이드</summary><div class="lore-body">
 <h3 class="lore-subhead">[소속/이름/나이]</h3>
+</div></details>
+<details class="lore-section"><summary>대한민국 통합 헌터 길드 천호(天護)</summary><div class="lore-body">
 <h3 class="lore-subhead">“ 🔵 캐릭터를 대표하는 한마디 “</h3>
 <p class=""><strong>※ 🔵 표시가 있는 예시 및 안내 문구는 삭제 후 작성해 주세요.</strong></p>
 <h3 class="lore-subhead"><strong>[캐릭터 이미지]</strong></h3>
@@ -1009,7 +1053,7 @@ body{padding:14px 16px;background:radial-gradient(ellipse at 50% -10%,#503039 0,
       const disabled=!currentUser||joined||full||awarded;
       const label=awarded?'퀘스트 종료':!currentUser?'로그인 후 참여':joined?'참여 완료':full?'모집 마감':'참여하기';
       const adminAction=isAdmin?`<button class="button award" data-award="${q.id}" ${awarded||count===0?'disabled':''}>${awarded?'지급 완료':'보상 지급'}</button>`:'';
-      return `<article class="quest-card"><div class="card-top"><div><span class="tag">${q.type}</span><h3>${q.title}</h3></div><span class="count">${count}/${q.max}명${awarded?' · 지급 완료':''}</span></div><p>${q.description}</p><div class="meta">의뢰인 ${q.client} · 보상 ${q.reward} · ${q.duration} · ${q.difficulty}</div><div class="card-bottom"><span class="members">${joined?'내 참여 기록 있음':currentUser?'참여 가능':'참여하려면 로그인하세요'}</span><div class="card-actions">${adminAction}<button class="button join" data-quest="${q.id}" ${disabled?'disabled':''}>${label}</button></div></div></article>`;
+      return `<article class="quest-card"><div class="quest-gate" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 40V23a16 16 0 0 1 32 0v17M4 40h40M13 40V24a11 11 0 0 1 22 0v16M17 40v-9m14 9v-9M20 12l4-5 4 5"/></svg></div><div class="quest-body"><div class="card-top"><div><span class="tag">${q.type}</span><h3>${q.title}</h3></div><span class="count">${count}/${q.max}명${awarded?' · 지급 완료':''}</span></div><p>${q.description}</p><div class="meta">의뢰인 ${q.client} · 보상 ${q.reward} · ${q.duration} · ${q.difficulty}</div><div class="card-bottom"><span class="members">${joined?'내 참여 기록 있음':currentUser?'참여 가능':'참여하려면 로그인하세요'}</span><div class="card-actions">${adminAction}<button class="button join" data-quest="${q.id}" ${disabled?'disabled':''}>${label}</button></div></div></div></article>`;
     }).join('');
     document.querySelectorAll('[data-quest]').forEach(button=>button.addEventListener('click',()=>joinQuest(button.dataset.quest)));
     document.querySelectorAll('[data-award]').forEach(button=>button.addEventListener('click',()=>awardQuest(button.dataset.award)));
