@@ -979,11 +979,13 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     shopCatalog=data||[];drawShop();drawAdminItems();
   }
   async function loadPurchases(){
-    if(!currentUser){purchaseRows=[];inventoryRows=[];drawProfile();return}
+    const profileStatus=document.querySelector('#profileStatus');
+    if(profileStatus)profileStatus.textContent='';
+    if(!currentUser){purchaseRows=[];inventoryRows=[];usedRows=[];drawProfile();return}
     const [purchases,inventory,used]=await Promise.all([supabase.rpc('get_my_purchases'),supabase.rpc('get_my_inventory'),supabase.rpc('get_my_used_items')]);
-    if(purchases.error){document.querySelector('#profileStatus').textContent='구매 목록 오류: '+purchases.error.message;return}
-    if(inventory.error){document.querySelector('#profileStatus').textContent='보유 아이템 오류: '+inventory.error.message;return}
-    if(used.error){document.querySelector('#profileStatus').textContent='사용 내역 오류: '+used.error.message;return}
+    if(purchases.error){purchaseRows=[];inventoryRows=[];usedRows=[];drawProfile();profileStatus.textContent='구매 목록 오류: '+purchases.error.message;return}
+    if(inventory.error){purchaseRows=[];inventoryRows=[];usedRows=[];drawProfile();profileStatus.textContent='보유 아이템 오류: '+inventory.error.message;return}
+    if(used.error){purchaseRows=[];inventoryRows=[];usedRows=[];drawProfile();profileStatus.textContent='사용 내역 오류: '+used.error.message;return}
     purchaseRows=purchases.data||[];inventoryRows=inventory.data||[];usedRows=used.data||[];drawProfile();
   }
   function drawShop(){
