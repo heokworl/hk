@@ -1106,6 +1106,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     const {data,error}=await supabase.rpc('admin_grant_gold',{p_user_id:userId,p_amount:amount});
     button.disabled=false;
     if(error){status.textContent='골드 지급 오류: '+error.message;return}
+    if(data!=='granted'){status.textContent=`골드 지급 확인 실패: 서버 응답 ${String(data)}`;return}
     document.querySelector('#adminGoldAmount').value='';status.textContent=`${target.username}에게 ${amount.toLocaleString('ko-KR')}G를 지급했습니다.`;
     await loadAdminUsers();if(userId===currentUser?.id)await loadWallet();
   }
@@ -1120,7 +1121,9 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     const {data,error}=await supabase.rpc('admin_grant_shop_item',{p_user_id:userId,p_item_id:itemId});
     button.disabled=false;
     if(error){status.textContent='아이템 지급 오류: '+error.message;return}
-    status.textContent=data==='already_owned'?`${target.username}은(는) 이미 이 아이템을 보유하고 있습니다.`:`${target.username}에게 ${item.item_name}을(를) 지급했습니다.`;
+    if(data==='already_owned'){status.textContent=`${target.username}은(는) 이미 이 아이템을 보유하고 있습니다.`;return}
+    if(data!=='granted'){status.textContent=`아이템 지급 확인 실패: 서버 응답 ${String(data)}`;return}
+    status.textContent=`${target.username}에게 ${item.item_name}을(를) 지급했습니다.`;
     await Promise.all([loadAdminUsers(),loadShopCatalog()]);if(userId===currentUser?.id)await loadPurchases();
   }
   async function loadBoard(){
@@ -1236,6 +1239,11 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     else if(data.session?.user)ensureDisplayNameMetadata(data.session.user).then(showSignedIn);
     else{showSignedOut();loadBoard();loadShopCatalog();}
   });
+  async function refreshCurrentAccountViews(){
+    if(!currentUser||document.visibilityState!=='visible')return;
+    await Promise.all([loadWallet(),loadShopCatalog()]);
+    if(activePage==='profile')await loadPurchases();
+  }
   async function verifySessionUser(){
     if(sessionCheckBusy||!currentUser)return;
     sessionCheckBusy=true;
@@ -1244,6 +1252,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
       const message=String(error?.message||'').toLowerCase();
       const invalid=Boolean(error&&(/user from sub claim|user not found|user does not exist|invalid jwt|jwt expired|session not found/.test(message)))||!data?.user||data.user.id!==currentUser.id;
       if(invalid){await supabase.auth.signOut({scope:'local'});showSignedOut('계정이 삭제되었거나 세션이 만료되어 로그아웃했어요.');}
+      else await refreshCurrentAccountViews();
     }catch(_error){/* 일시적인 네트워크 문제로는 로그인 상태를 지우지 않음 */}
     finally{sessionCheckBusy=false;}
   }
