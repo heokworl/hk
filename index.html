@@ -1178,8 +1178,9 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     document.querySelector('#shopStatus').textContent='구매를 처리하는 중…';
     const {data,error}=await supabase.rpc('purchase_shop_item',{p_item_id:itemId,p_quantity:quantity});
     if(error){document.querySelector('#shopStatus').textContent='구매 오류: '+error.message;if(button)button.disabled=false;return}
-    if(data==='insufficient_funds')document.querySelector('#shopStatus').textContent='소지금이 부족합니다.';
-    else document.querySelector('#shopStatus').textContent=`${item.item_name} ${quantity.toLocaleString('ko-KR')}개 구매 완료! 총 ${total.toLocaleString('ko-KR')}G를 차감했어요.`;
+    if(data==='insufficient_funds'){document.querySelector('#shopStatus').textContent='소지금이 부족합니다.';if(button)button.disabled=false;return}
+    if(data!=='purchased'){document.querySelector('#shopStatus').textContent=`구매 실패: 서버 응답을 확인해 주세요 (${String(data)})`;if(button)button.disabled=false;return}
+    document.querySelector('#shopStatus').textContent=`${item.item_name} ${quantity.toLocaleString('ko-KR')}개 구매 완료! 총 ${total.toLocaleString('ko-KR')}G를 차감했어요.`;
     await Promise.all([loadWallet(),loadShopCatalog(),loadPurchases()]);
   }
   async function logout(){
