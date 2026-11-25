@@ -377,6 +377,37 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 @media(max-width:760px){body{padding:10px 9px 18px}.shell{width:100%;max-width:740px}.topline{font-size:9px;letter-spacing:.06em}.hero{gap:15px;padding:21px 15px 17px}.guild-logo{width:min(190px,58vw);max-height:132px;margin-bottom:10px}.portal-tagline{margin-top:9px;padding-top:11px;font-size:12px;letter-spacing:.09em}.bookmark-nav{grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:8px 8px 10px}.bookmark{min-height:61px;padding:6px 2px}.bookmark span svg{width:22px;height:22px}.bookmark b{font-size:10px}.content{padding:21px 15px 24px}.section-title{font-size:17px}.quest-card{grid-template-columns:31px minmax(0,1fr);gap:0 11px;padding:16px 13px}.quest-gate svg{width:27px;height:27px}.quest-card h3{font-size:16px}.quest-card p{font-size:12px}.card-bottom{align-items:flex-start;flex-wrap:wrap}.card-actions{justify-content:flex-end}.admin-layout{grid-template-columns:1fr}.world-frame{padding:13px 10px}}
 @media(max-width:390px){.topline>span:last-child{display:none}.bookmark-nav{grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;padding:7px 5px}.bookmark{min-height:56px}.bookmark b{font-size:9px}.quest-card{grid-template-columns:25px minmax(0,1fr);gap:0 8px;padding:14px 10px}.quest-gate svg{width:23px;height:23px}.content{padding:18px 11px 21px}.section-head{align-items:flex-start}.filter-button{padding:8px 9px;font-size:11px}}
 
+/* Contrast and page-state cleanup: override legacy paper-theme leftovers. */
+.content,.content:not(.hidden){background:transparent!important;color:#f3f4f6!important}
+.section-head,#board .section-head,#shopPage .section-head,#profilePage .section-head,#adminPage .section-head{padding:0 0 12px!important;margin:0 0 18px!important;border:0!important;border-bottom:1px solid #676a73!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+.section-title,#board .section-title,#shopPage .section-title,#profilePage .section-title,#adminPage .section-title{color:#f5f6f8!important}
+.section-title:before{color:#ff536b!important;text-shadow:none!important}
+.section-head .filter-button{background:#24252b!important;border-color:#9da0a8!important;color:#fff!important}
+.section-head .filter-button:disabled{opacity:1!important;color:#e0e1e5!important}
+.quest-card,.shop-card,.admin-card,.profile-summary,.profile-columns>section,.list-row,.profile-empty,.admin-user-row,.admin-used-row,.admin-target{background:#222329!important;border-color:#595b64!important;color:#f3f4f6!important;box-shadow:none!important}
+.quest-card h3,.shop-card h3,.list-row strong,.profile-summary strong,.admin-list-title,.admin-user-row strong,.admin-used-user,.admin-used-item strong{color:#fff!important}
+.quest-card p,.shop-card p,.meta,.members,.list-row span,.list-row p,.profile-label,.admin-hint,.admin-used-item small,.profile-empty,.admin-target{color:#d0d2d8!important}
+.quest-card .tag{background:#501c29!important;border-color:#e25569!important;color:#ff9aa8!important}
+.count,.quest-gate,.bookmark span,.bookmark.active span,.bookmark.active b{color:#ff536b!important}
+.bookmark b{color:#f1f2f5!important}
+.bookmark-nav{background:#1c1d22!important;border-color:#595b64!important}
+.bookmark{background:transparent!important;border-color:transparent!important;color:#f3f4f6!important;box-shadow:none!important}
+.bookmark.active{background:#3c2028!important;border-color:#cf4056!important;box-shadow:inset 0 -2px #ff536b!important}
+.quest-card{background:linear-gradient(110deg,#27282f,#202127)!important;border-color:#63656e!important;border-left-color:#f0445c!important}
+.quest-card:after,.shop-card:after{content:none!important;display:none!important}
+.button,.join,.card-actions .button{background:#842638!important;border:1px solid #d94b60!important;color:#fff!important;box-shadow:none!important}
+.button:hover:not(:disabled),.join:hover:not(:disabled){background:#ad3047!important;border-color:#ff6578!important;transform:none!important;filter:none!important}
+.button:disabled,.join:disabled,.shop-card button:disabled{background:#3b3c43!important;border-color:#686a72!important;color:#d0d1d6!important;opacity:1!important}
+.auth-panel,.user-panel,.auth-form input,.admin-card select,.admin-card input{background:#222329!important;border-color:#64666f!important;color:#f5f6f8!important}
+.auth-form label,.auth-panel p#authDescription{color:#e0e1e5!important}
+.profile-columns>section .section-title{border-color:#5c5e67!important;color:#fff!important}
+.world-cover,.world-frame,.lore-section,.world-image-placeholder{background:#222329!important;border-color:#62646c!important;color:#f3f4f6!important;box-shadow:none!important}
+.world-cover h2,.world-cover p,.lore-section>summary,.lore-body,.world-table,.world-table td{color:#f0f1f4!important}
+.world-kicker,.world-ornament,.world-frame-corner,.world-cover:before,.world-cover:after,.lore-section>summary:before,.lore-section>summary:after,.world-table th,.world-table td:first-child{color:#ff687b!important}
+.world-table th{background:#3b242b!important}.world-table th,.world-table td,.world-table-wrap{border-color:#62646c!important}
+.footer{background:#1c1d22!important;border-color:#565861!important;color:#d3d5da!important}.footer b{color:#fff!important}
+.hidden{display:none!important}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -832,7 +863,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     {id:'quarantine_clear',type:'토벌 의뢰 · 격리 구역',title:'격리동 잔류 마물 소탕',client:'본부 방재실',reward:'1인당 220G',difficulty:'★★★★☆ 위험',duration:'약 2시간',max:4,description:'훈련동 지하 격리실의 보강벽이 손상되어 소형 마물 몇 마리가 통제 구역 안으로 빠져나왔습니다. 방재실의 봉쇄 확인을 받은 뒤 구역을 수색하고 잔류 개체를 제거해 주세요.'},
     {id:'night_patrol',type:'정기 임무 · 본부 방호',title:'천호 본부 외곽 야간 순찰',client:'본부 경비대',reward:'1인당 100G',difficulty:'★☆☆☆☆ 쉬움',duration:'약 1시간',max:5,description:'최근 본부 외곽 담장 주변에서 정체불명의 흔적이 발견됐습니다. 지정된 순찰 경로를 돌며 방호 장치와 출입 기록을 확인하고, 이상 징후를 경비대에 보고해 주세요.'}
   ];
-  let currentUser=null,questStatus=[],shopCatalog=[],purchaseRows=[],inventoryRows=[],usedRows=[],adminUsers=[],refreshId=0,authMode='login',showJoinedOnly=false,currentBalance=0,isAdmin=false,currentName='모험가',sessionCheckBusy=false;
+  let currentUser=null,questStatus=[],shopCatalog=[],purchaseRows=[],inventoryRows=[],usedRows=[],adminUsers=[],refreshId=0,authMode='login',showJoinedOnly=false,currentBalance=0,isAdmin=false,currentName='모험가',sessionCheckBusy=false,activePage='quests';
   const loginCard=document.querySelector('#loginCard');
   const userPanel=document.querySelector('#userPanel');
   const authMessage=document.querySelector('#authMessage');
@@ -873,7 +904,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     authMessage.textContent='';
   }
   function showSignedOut(message=''){
-    currentUser=null;currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];usedRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned:false}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');document.querySelector('#adminBookmark').classList.add('hidden');if(!document.querySelector('#adminPage').classList.contains('hidden'))showPage('quests');
+    currentUser=null;currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];usedRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned:false}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');document.querySelector('#adminBookmark').classList.add('hidden');showPage('quests');
     document.querySelector('#toggleJoined').disabled=true;
     document.querySelector('#profileLogoutButton').disabled=true;
     document.querySelector('#shopWallet').textContent='로그인 후 소지금 표시';
@@ -883,6 +914,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     authMessage.textContent=message;drawList();drawProfile();drawShop();
   }
   async function showSignedIn(user){
+    if(currentUser?.id===user.id)return;
     currentUser=user;loginCard.classList.add('hidden');userPanel.classList.remove('hidden');
     document.querySelector('#loggedName').textContent=displayName(user);
     document.querySelector('#toggleJoined').disabled=false;
@@ -940,12 +972,15 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   }
   function showPage(page){
     if(page==='admin'&&!isAdmin)return;
+    if((page==='profile'||page==='admin')&&!currentUser)page='quests';
+    const changed=activePage!==page;activePage=page;
     const pages={quests:document.querySelector('#board'),shop:document.querySelector('#shopPage'),profile:document.querySelector('#profilePage'),world:document.querySelector('#worldPage'),settings:document.querySelector('#settingsPage'),profileGuide:document.querySelector('#profileGuidePage'),admin:document.querySelector('#adminPage')};
     Object.entries(pages).forEach(([key,element])=>element.classList.toggle('hidden',key!==page));
     document.querySelectorAll('[data-page]').forEach(button=>{
       const active=button.dataset.page===page;button.classList.toggle('active',active);
       if(active)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
     });
+    if(!changed)return;
     if(page==='shop')loadShopCatalog();
     if(page==='profile')loadPurchases();
     if(page==='admin'){loadAdminUsers();loadShopCatalog();}
