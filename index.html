@@ -276,6 +276,62 @@ body{padding:18px 20px}
  .admin-used-user{grid-column:1/-1;padding-bottom:6px;border-bottom:1px solid #e1d4bf}
 }
 @media(max-width:390px){.bookmark-nav{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:8px}.bookmark b{font-size:9px}.bookmark{min-height:48px}.profile-summary{gap:10px}}
+
+/* Compact guild interface: top tabs on desktop, in-flow side rail on mobile. */
+body{padding:14px 16px;background:radial-gradient(ellipse at 50% -10%,#503039 0,transparent 35%),linear-gradient(145deg,#100e11,#171216 58%,#100e11)}
+.shell{width:min(900px,100%);max-width:900px;margin:0 auto}
+.page-layout{display:flex;flex-direction:column;align-items:stretch;gap:10px;width:100%;min-width:0}
+.bookmark-nav{position:static;inset:auto;transform:none;order:0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;width:100%;max-height:none;overflow:visible;margin:0;padding:6px;border:1px solid #705441;border-radius:12px;background:linear-gradient(135deg,#251b1f,#171417);box-shadow:0 5px 16px #0005}
+.page-layout>.panel{order:1;width:100%;max-width:100%;min-width:0}
+.bookmark{flex:1 1 auto;display:flex;flex-direction:row;justify-content:center;align-items:center;gap:7px;width:auto;min-width:86px;min-height:44px;padding:8px 12px;border:1px solid #614a41;border-bottom:3px solid #b48a58;border-radius:7px;background:linear-gradient(135deg,#292024,#1b171a);box-shadow:0 3px 7px #0004}
+.bookmark span{font-size:15px}
+.bookmark b{writing-mode:horizontal-tb;font-size:11px;line-height:1.2;letter-spacing:.02em;white-space:nowrap}
+.bookmark.active{transform:none;border-color:#cba86d;background:linear-gradient(135deg,#55372f,#302328);box-shadow:0 4px 10px #0005,0 0 10px #caa36620}
+.content{padding:24px 27px 28px}
+.hero{padding:25px 29px;min-height:190px}
+.hero h1{font-size:clamp(26px,4vw,38px)}
+.section-title{font-size:19px}
+.world-cover{margin-left:0;margin-right:0;padding:22px 18px}
+.world-cover h2{font-size:25px}
+.world-frame{padding:16px}
+.lore-section{margin-bottom:10px}
+.admin-used-row{grid-template-columns:minmax(100px,.7fr) minmax(0,1.5fr) auto}
+@media(max-width:760px){
+ body{padding:8px}
+ .shell{width:100%;max-width:none}
+ .topline{font-size:9px;letter-spacing:.08em;margin-bottom:8px}
+ .page-layout{display:grid;grid-template-columns:48px minmax(0,1fr);align-items:start;gap:8px;width:100%}
+ .bookmark-nav{position:static;grid-column:1;grid-row:1;display:grid;grid-template-columns:1fr;align-content:start;justify-content:stretch;gap:6px;width:48px;margin:0;padding:4px;border-radius:10px}
+ .page-layout>.panel{grid-column:2;grid-row:1;width:100%;max-width:100%;min-width:0}
+ .bookmark{display:flex;flex-direction:column;justify-content:center;gap:4px;min-width:0;width:100%;min-height:48px;padding:5px 2px;border:1px solid #614a41;border-left:3px solid #b48a58;border-radius:6px;background:linear-gradient(135deg,#292024,#1b171a)}
+ .bookmark span{font-size:13px}
+ .bookmark b{writing-mode:vertical-rl;font-size:9px;line-height:1.05;letter-spacing:.03em;white-space:normal}
+ .bookmark.active{transform:none}
+ .hero{display:grid;gap:13px;padding:16px 12px;min-height:0}
+ .hero-copy{min-height:0;padding:13px 7px 13px 57px}
+ .hero-copy:before{width:44px;height:50px;font-size:13px}
+ .hero h1{font-size:clamp(21px,6vw,28px);line-height:1.25;word-break:keep-all}
+ .auth-panel,.user-panel{width:100%;max-width:none}
+ .content{padding:16px 11px 18px}
+ .section-head{flex-wrap:wrap;padding:9px 10px;gap:8px}
+ .section-title{font-size:16px;line-height:1.35}
+ .tag{font-size:9px;padding:5px 7px}
+ .quest-card{padding:13px 11px}
+ .quest-card h3{font-size:16px;line-height:1.35}
+ .quest-card p,.shop-card p,.lore-body{font-size:12px}
+ .card-bottom{flex-wrap:wrap;align-items:flex-start}
+ .card-actions{flex-wrap:wrap}
+ .world-cover{padding:16px 10px;margin:0 0 12px}
+ .world-cover h2{font-size:21px}
+ .world-frame{padding:10px 7px}
+ .lore-section>summary{padding:11px 34px 11px 11px;font-size:13px}
+ .lore-body{padding:0 10px 12px}
+ .world-table{min-width:380px;font-size:11px}
+ .admin-layout{grid-template-columns:1fr}
+ .admin-used-row{grid-template-columns:minmax(0,1fr) auto;gap:8px}
+ .admin-used-user{grid-column:1/-1;padding-bottom:5px;border-bottom:1px solid #e1d4bf}
+}
+@media(max-width:390px){.page-layout{grid-template-columns:44px minmax(0,1fr);gap:6px}.bookmark-nav{width:44px;padding:3px;gap:5px}.bookmark{min-height:44px}.bookmark b{font-size:8px}.content{padding-right:9px;padding-left:9px}.world-table{min-width:340px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -289,7 +345,6 @@ body{padding:18px 20px}
       <button class="bookmark" type="button" data-page="profile"><span>♙</span><b>프로필</b></button>
       <button class="bookmark" type="button" data-page="world"><span>✧</span><b>세계관</b></button>
       <button class="bookmark" type="button" data-page="settings"><span>⚙</span><b>규칙·설정</b></button>
-      <button class="bookmark" type="button" data-page="rules"><span>❖</span><b>커뮤니티 룰</b></button>
       <button class="bookmark" type="button" data-page="profileGuide"><span>▤</span><b>프로필 가이드</b></button>
       <button class="bookmark hidden" type="button" data-page="admin" id="adminBookmark"><span>♜</span><b>관리자</b></button>
     </nav>
@@ -489,11 +544,7 @@ body{padding:18px 20px}
 </div><div class="world-frame-corner bottom-left">✧</div><div class="world-frame-corner bottom-right">✧</div></div>
     </section>
     <section class="content hidden world-content" id="settingsPage" aria-live="polite">
-      <div class="world-cover"><div class="world-ornament">✧ · · ── ⚙ ── · · ✧</div><span class="world-kicker">天護 · FIELD MANUAL</span><h2>규칙 및 설정</h2><p>천호 길드의 운영 기준과 캐릭터 등록 자료를 확인하세요.</p><div class="world-ornament">❧ ───────── ✧ ───────── ❧</div></div>
-      <div class="admin-actions"><button class="shop-card settings-link" type="button" data-page="rules"><span><strong>커뮤니티 룰</strong><small>상호 존중 · 캐릭터 설정 · 임무 진행 · 운영 방침</small></span><b>열기 →</b></button><button class="shop-card settings-link" type="button" data-page="profileGuide"><span><strong>캐릭터 프로필 가이드</strong><small>기본 정보 · 이능력 · 한계 및 과사용 페널티</small></span><b>열기 →</b></button></div>
-    </section>
-    <section class="content hidden world-content" id="rulesPage" aria-live="polite">
-      <div class="world-cover"><div class="world-ornament">✧ · · ── ❖ ── · · ✧</div><span class="world-kicker">天護 · COMMUNITY CHARTER</span><h2>커뮤니티 룰</h2><p>모두가 안전하고 즐겁게 이야기를 이어가기 위한 길드 운영 규정.</p><div class="world-ornament">❧ ───────── ✧ ───────── ❧</div></div>
+      <div class="world-cover"><div class="world-ornament">✧ · · ── ⚙ ── · · ✧</div><span class="world-kicker">天護 · FIELD MANUAL</span><h2>규칙 및 설정</h2><p>천호 길드의 커뮤니티 운영 규칙과 캐릭터 설정 기준.</p><div class="world-ornament">❧ ───────── ✧ ───────── ❧</div></div>
       <div class="world-frame"><div class="world-frame-corner top-left">✧</div><div class="world-frame-corner top-right">✧</div><div class="world-articles"><details class="lore-section"><summary>커뮤니티 운영 규칙</summary><div class="lore-body">
 <p class="">본 커뮤니티는 현대 대한민국을 배경으로 한 헌터물 창작 캐릭터 커뮤니티입니다.</p>
 <p class="">모든 러너가 동등한 환경에서 자유롭게 서사를 만들어 갈 수 있도록 아래의 규칙을 마련하였습니다.</p>
@@ -844,7 +895,7 @@ body{padding:18px 20px}
   }
   function showPage(page){
     if(page==='admin'&&!isAdmin)return;
-    const pages={quests:document.querySelector('#board'),shop:document.querySelector('#shopPage'),profile:document.querySelector('#profilePage'),world:document.querySelector('#worldPage'),settings:document.querySelector('#settingsPage'),rules:document.querySelector('#rulesPage'),profileGuide:document.querySelector('#profileGuidePage'),admin:document.querySelector('#adminPage')};
+    const pages={quests:document.querySelector('#board'),shop:document.querySelector('#shopPage'),profile:document.querySelector('#profilePage'),world:document.querySelector('#worldPage'),settings:document.querySelector('#settingsPage'),profileGuide:document.querySelector('#profileGuidePage'),admin:document.querySelector('#adminPage')};
     Object.entries(pages).forEach(([key,element])=>element.classList.toggle('hidden',key!==page));
     document.querySelectorAll('[data-page]').forEach(button=>{
       const active=button.dataset.page===page;button.classList.toggle('active',active);
