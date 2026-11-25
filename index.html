@@ -101,6 +101,86 @@ html,body{max-width:100%;overflow-x:hidden}
  .hero h1{font-size:clamp(22px,8vw,30px);white-space:nowrap;letter-spacing:-.04em}
  .bookmark{min-width:62px;padding:7px 8px}
 }
+
+/* Warm guild recruitment board / post-it header */
+:root{--ink:#33251f;--muted:#78645a;--bg:#35251e;--line:#8e7257;--gold:#805331;--green:#68452d;--red:#a34e3a}
+body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ellipse at 15% 15%,#8a68444d,transparent 40%),radial-gradient(ellipse at 90% 80%,#704b3744,transparent 40%),repeating-linear-gradient(3deg,#493327 0,#493327 2px,#49332700 3px,#49332700 8px),linear-gradient(125deg,#5c412e,#39291f 62%,#4b3427);background-attachment:fixed}
+.topline{color:#f0ddbd;letter-spacing:.1em;font-size:11px}
+.topline>span:first-child{color:#fff0d1}
+.sigil{color:#f1cd82;text-shadow:0 1px 8px #ffe6a766}
+.panel{border:7px solid #4d3528;border-radius:7px;background-color:#805b3c;background-image:radial-gradient(ellipse at 10% 25%,#d2a36c16 0 1px,transparent 2px),radial-gradient(ellipse at 80% 65%,#2e1c171e 0 1px,transparent 2px),repeating-linear-gradient(8deg,#8b65431a 0 2px,#62442e11 3px 5px),linear-gradient(135deg,#876143,#735033 52%,#805939);box-shadow:0 24px 65px #160e0ac2,inset 0 0 0 2px #c69a6950,inset 0 0 0 5px #543c2b}
+.hero{align-items:flex-start;gap:20px;padding:26px 30px 22px;background:transparent;border:0;overflow:visible}
+.hero:after{display:none}
+.hero-copy{position:relative;flex:1 1 270px;min-height:142px;padding:25px 26px 21px;background:linear-gradient(135deg,#f6e7a9,#ecd884 65%,#e6ce75);border:1px solid #d6be70;border-radius:2px;color:#443521;box-shadow:2px 8px 14px #38211469,0 1px 0 #fff6 inset;transform:rotate(-1deg)}
+.hero-copy:before{content:"";left:auto;right:18px;top:13px;transform:none;width:13px;height:13px;clip-path:none;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4ad96,#a44336 70%);box-shadow:0 2px 3px #57402b88,0 0 0 3px #fff4}
+.hero-copy:after{content:"GUILD NOTICE  ·  No. 01";position:absolute;left:26px;bottom:12px;color:#8c6940;font-size:9px;letter-spacing:.17em}
+.hero .eyebrow{color:#765538;font-size:10px;letter-spacing:.18em}
+.hero h1{margin:10px 0 13px;color:#3e3027;font-family:inherit;font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-.04em;line-height:1.25;text-shadow:none}
+.auth-panel,.user-panel{flex:0 1 330px;align-self:center;border:1px solid #d5c5a6;border-radius:3px;background:#f2ead8;color:#3b3028;box-shadow:2px 5px 10px #35221955,inset 0 1px #fff9}
+.auth-panel h2{color:#4d3829;font-family:inherit;font-size:17px;font-weight:800}
+.auth-panel p#authDescription{color:#77665a}
+.auth-panel .note{color:#8b7c70}
+.auth-form label{color:#5c4b3e}
+.auth-form input{border-color:#c5b69e;border-radius:3px;background:#fffdf6;color:#302720}
+.auth-form input:focus{outline-color:#b78c53}
+.auth-switch{color:#764d31}
+.error{color:#a74739}
+.button{border:1px solid #774d31;border-radius:3px;background:linear-gradient(#a36b3f,#855333);color:#fff6e7;box-shadow:0 2px 0 #603b25,inset 0 1px #ffffff4d}
+.button:hover:not(:disabled){filter:brightness(1.07);box-shadow:0 2px 0 #603b25,0 0 0 2px #f1d7a455}
+.content{padding:22px 26px 26px}
+.section-head{padding:12px 15px;margin:0 0 14px;border:1px solid #ddc99f;border-radius:3px;background:#f1e7d1;box-shadow:2px 3px 6px #36221455}
+.section-title{font-family:inherit;color:#4a3628;font-size:20px;font-weight:800;letter-spacing:-.03em}
+.board-subtitle{color:#866747;font-size:13px;font-weight:500;letter-spacing:0}
+.tag{border-color:#ac8a62;border-radius:2px;background:#e9dcc1;color:#69482f}
+.filter-button,.logout{border:1px solid #987658;border-radius:3px;background:#f5ecd9;color:#513a29}
+.filter-button:hover,.logout:hover{background:#fff6e4;border-color:#704a2d}
+.quest-card,.shop-card{border:1px solid #d6c5a4;border-radius:3px;background:linear-gradient(135deg,#fff9eb,#f1e6cf);color:#3c3027;box-shadow:2px 4px 7px #37251955}
+.quest-card{padding:18px 19px 16px;border-left:4px solid #9b6743}
+.quest-card:nth-child(odd){transform:rotate(-.18deg)}
+.quest-card:nth-child(even){transform:rotate(.15deg)}
+.quest-card:after,.shop-card:after{content:"●";right:13px;top:8px;color:#a74d3b;font-size:11px;text-shadow:0 1px 1px #63453366}
+.quest-card h3,.shop-card h3{font-family:inherit;color:#473328;font-size:18px;font-weight:750}
+.quest-card p,.shop-card p{color:#5c4c40}
+.meta,.members{color:#806b5c}
+.count,.shop-price,.gold-amount,.wallet{color:#805331}
+.status{color:#f3e3c4}
+.empty-state,.profile-empty{border:1px dashed #aa8b68;border-radius:3px;background:#f4ead5;color:#6e5948;box-shadow:2px 4px 8px #38261944}
+.profile-summary{border:1px solid #ddc99f;border-radius:3px;background:#f2e8d3;color:#433328;box-shadow:2px 4px 8px #38261944}
+.profile-label{color:#806d5e}
+.profile-columns>section{padding:15px;border:1px solid #d7c5a3;border-radius:3px;background:#87614366}
+.profile-columns .section-title{padding:11px 13px;border:1px solid #ddc99f;border-radius:3px;background:#f2e8d3;color:#4a3628}
+.list-row{border:1px solid #d6c5a4;border-radius:3px;background:#fff8e9;color:#3e3026;box-shadow:1px 2px 4px #35221530}
+.list-row strong{color:#493426}
+.list-row span,.list-row p{color:#746153}
+.footer{border-top:1px solid #d9c49c;background:#704f35;color:#f1dfbd}
+.footer b{color:#fff0cc}
+.world-cover{border:1px solid #d9c28f;border-radius:3px;background:linear-gradient(135deg,#f4e6bd,#e9d59e);box-shadow:2px 6px 11px #34211455;color:#433328}
+.world-cover h2{font-family:inherit;color:#433328;font-size:26px;font-weight:800;text-shadow:none}
+.world-cover h2 span{color:#725536}
+.world-cover p{color:#685341}
+.world-ornament,.world-kicker{color:#8a633a;text-shadow:none}
+.world-frame{border:1px solid #d9c49c;border-radius:3px;background:#87614366;box-shadow:inset 0 0 0 1px #ffedc433}
+.world-frame-corner{color:#f1d89e;text-shadow:0 0 6px #fde4a8}
+.lore-section{border:1px solid #d5c19c;border-radius:3px;background:#f7efdd;box-shadow:1px 3px 6px #34211432}
+.lore-section[open]{border-color:#b28d5c;box-shadow:1px 3px 8px #3421143f}
+.lore-section>summary{color:#543b2b;font-family:inherit;font-size:15px;font-weight:750}
+.lore-major>summary{background:#e9dcc1;color:#583d2b;font-size:16px}
+.lore-body{color:#514339}
+.lore-body strong{color:#6f472c}
+.lore-subhead{font-family:inherit;color:#745233;font-size:14px;font-weight:750}
+.world-table-wrap{border-color:#cab58d;border-radius:3px}
+.world-table{color:#4d4035}
+.world-table th{background:#e5d4b2;color:#593e2b}
+.world-table th,.world-table td{border-bottom-color:#d4c29e}
+.world-table td:first-child{color:#764f2f}
+.world-image-placeholder{border-color:#c1a476;border-radius:3px;background:#f4ead5;color:#875a34}
+.lore-body blockquote{border-left-color:#aa7747;background:#efe1c3;color:#66503c}
+.lore-body hr{border-top-color:#d4c29e}
+.world-cover:before,.world-cover:after{color:#9e714866}
+.world-kicker{font-size:9px}
+.bookmark-nav{scrollbar-color:#d6b474 #21191c}
+@media(max-width:760px){.hero{padding:20px 15px 16px;gap:14px}.hero-copy{min-height:128px;padding:22px 19px 20px}.hero-copy:after{left:19px}.auth-panel,.user-panel{margin:0}.content{padding:18px 13px 20px}.section-head{padding:10px 11px}.section-title{font-size:18px}.board-subtitle{font-size:11px}.quest-card{padding:15px 14px 14px}.profile-columns>section{padding:11px}.world-frame{padding:12px 9px}}
+@media(max-width:390px){.hero h1{white-space:normal;font-size:22px}.section-head{align-items:flex-start}.board-subtitle{display:block;margin-top:2px}.filter-button{font-size:11px;padding:8px 9px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -117,7 +197,7 @@ html,body{max-width:100%;overflow-x:hidden}
     </nav>
   <section class="panel">
     <header class="hero">
-      <div class="hero-copy"><div class="eyebrow">천호 길드 · 모험가 게시판</div><h1>오늘의 퀘스트</h1></div>
+      <div class="hero-copy"><div class="eyebrow">천호 길드 · 임무 접수처</div><h1>모험가 모집 공고</h1></div>
       <div class="auth-panel" id="loginCard">
         <h2 id="authTitle">길드 로그인</h2>
         <p id="authDescription">아이디와 비밀번호로 로그인하세요.</p>
@@ -139,7 +219,7 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="user-panel hidden" id="userPanel"><div class="welcome"><span class="sigil">✦</span> 로그인: <strong id="loggedName"></strong><span class="admin-badge hidden" id="adminBadge">관리자</span><span class="wallet" id="walletBalance">소지금 0G</span></div></div>
     </header>
     <section class="content" id="board" aria-live="polite">
-      <div class="section-head"><h2 class="section-title">퀘스트 목록</h2><button class="filter-button" id="toggleJoined" type="button" disabled>참여한 퀘스트</button></div>
+      <div class="section-head"><h2 class="section-title">길드 게시판 <span class="board-subtitle">· 의뢰 및 모험가 구인</span></h2><button class="filter-button" id="toggleJoined" type="button" disabled>참여한 퀘스트</button></div>
       <div class="cards" id="questList"></div>
       <p class="status" id="boardStatus"></p>
       <p class="note">로그인한 계정은 각 퀘스트에 한 번씩 참여할 수 있고, 다른 퀘스트에도 참여할 수 있습니다.</p>
@@ -648,7 +728,7 @@ html,body{max-width:100%;overflow-x:hidden}
   function drawList(){
     const visibleQuests=showJoinedOnly&&currentUser?quests.filter(q=>Boolean(statusFor(q.id).has_joined)):quests;
     const list=document.querySelector('#questList');
-    if(!visibleQuests.length){list.innerHTML='<div class="empty-state">등록된 퀘스트가 없습니다.</div>';return}
+    if(!visibleQuests.length){list.innerHTML='<div class="empty-state">현재 모집 중인 의뢰가 없습니다. 새 공고를 기다려 주세요.</div>';return}
     list.innerHTML=visibleQuests.map(q=>{
       const status=statusFor(q.id),count=Number(status.participant_count)||0,joined=Boolean(status.has_joined),full=count>=q.max,awarded=Boolean(status.awarded);
       const disabled=!currentUser||joined||full||awarded;
