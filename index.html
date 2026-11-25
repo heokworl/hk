@@ -1100,14 +1100,28 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     await loadAdminUsedItems();
     if(userId===currentUser?.id)await loadPurchases();
   }
+  let itemUseBusy=false;
   async function useItem(itemId){
-    if(!currentUser)return;
-    const button=document.querySelector(`[data-use-item="${CSS.escape(itemId)}"]`);if(button)button.disabled=true;
-    document.querySelector('#profileStatus').textContent='아이템을 사용하는 중…';
-    const {data,error}=await supabase.rpc('use_shop_item',{p_item_id:itemId});
-    if(error){document.querySelector('#profileStatus').textContent='아이템 사용 오류: '+error.message;if(button)button.disabled=false;return}
-    document.querySelector('#profileStatus').textContent=data==='used'?'아이템 1개를 사용했고 사용 내역에 기록했습니다.':'보유 수량이 없습니다.';
-    await loadPurchases();
+    if(!currentUser||itemUseBusy)return;
+    itemUseBusy=true;
+    const status=document.querySelector('#profileStatus');
+    document.querySelectorAll('[data-use-item]').forEach(button=>button.disabled=true);
+    status.textContent='아이템을 사용하는 중…';
+    try{
+      const {data,error}=await supabase.rpc('use_shop_item',{p_item_id:itemId});
+      if(error){status.textContent='아이템 사용 오류: '+error.message;return}
+      if(data!=='used'){
+        await loadPurchases();
+        status.textContent=data==='not_owned'?'서버에서 사용 가능한 수량을 찾지 못했습니다. 표시 수량과 사용 함수의 계산이 일치하는지 확인이 필요합니다.':'아이템 사용 실패: '+String(data);
+        return;
+      }
+      await Promise.all([loadPurchases(),loadShopCatalog()]);
+      status.textContent='아이템 1개를 사용했고 사용 내역에 기록했습니다.';
+    }catch(error){status.textContent='아이템 사용 오류: '+String(error?.message||error)}
+    finally{
+      itemUseBusy=false;
+      document.querySelectorAll('[data-use-item]').forEach(button=>button.disabled=false);
+    }
   }
   async function grantGold(){
     if(!isAdmin)return;
