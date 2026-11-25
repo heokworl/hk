@@ -5,30 +5,198 @@
 <title>길드 퀘스트 게시판</title>
 <style>
 :root{--ink:#f4f1e9;--muted:#aaa99f;--bg:#101312;--panel:#191e1b;--line:#303832;--gold:#d9b66d;--green:#b7d7ad;--red:#d98c79}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -12%,#354035 0,transparent 44%),var(--bg);color:var(--ink);font-family:Inter,Pretendard,"Noto Sans KR",sans-serif;display:grid;place-items:center;padding:26px}button{font:inherit;cursor:pointer}.shell{width:min(100%,780px)}.topline{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;letter-spacing:.17em;text-transform:uppercase;margin:0 0 22px}.sigil{color:var(--gold);font-size:19px}.panel{border:1px solid #485248;background:linear-gradient(145deg,rgba(34,42,36,.97),rgba(20,24,22,.98));box-shadow:0 26px 80px #0008;border-radius:20px;overflow:hidden}.hero{padding:54px 30px 49px;text-align:center;background:linear-gradient(0deg,#151a17e8,#151a17c9),radial-gradient(ellipse at 50% 15%,#b7a36955,transparent 65%);border-bottom:1px solid var(--line)}.eyebrow{font-size:11px;color:var(--gold);letter-spacing:.24em}.hero h1{font-family:Georgia,"Noto Serif KR",serif;font-size:clamp(32px,7vw,48px);font-weight:500;margin:17px 0 10px}.hero p{margin:0;color:#c0c2b8;font-size:14px;line-height:1.8}.primary,.join{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 20px;border:1px solid #e2c982;background:var(--gold);color:#1e211a;border-radius:8px;font-weight:750;transition:.2s}.primary:hover,.join:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.07)}.hero .primary{margin-top:30px}.content{display:none;padding:28px}.content.visible{display:block;animation:arrive .3s ease}@keyframes arrive{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}.view-title{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px}.view-title h2{font-family:Georgia,"Noto Serif KR",serif;font-size:26px;font-weight:500;margin:0}.back{background:transparent;border:1px solid #596057;color:#e2e4da;border-radius:8px;padding:9px 13px}.back:hover{background:#ffffff12}.cards{display:grid;gap:13px}.quest-card{border:1px solid var(--line);background:#111613;border-radius:12px;padding:18px}.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.tag{font-size:11px;color:var(--green);letter-spacing:.08em;border:1px solid #52634e;padding:6px 9px;border-radius:30px;white-space:nowrap}.quest-card h3{font-family:Georgia,"Noto Serif KR",serif;font-size:20px;font-weight:500;margin:10px 0 7px}.quest-card p{font-size:13px;color:#c5c8be;line-height:1.7;margin:0}.meta{color:var(--muted);font-size:12px;margin-top:10px}.card-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:16px}.count{font-size:12px;color:var(--gold)}.join{padding:10px 14px;white-space:nowrap}.join:disabled{background:#333a34;border-color:#454d46;color:#858d84;cursor:not-allowed;transform:none}.detail-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.detail-head h2{font-family:Georgia,"Noto Serif KR",serif;font-size:clamp(23px,5vw,30px);font-weight:500;margin:9px 0 0}.desc{font-size:14px;color:#dedfd7;line-height:1.9;margin:20px 0}.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}.fact{background:#111613;border:1px solid var(--line);border-radius:10px;padding:13px}.fact small{display:block;color:var(--muted);font-size:11px;margin-bottom:7px}.fact strong{font-size:13px}.fact input{display:block;width:100%;margin-top:8px;padding:10px 11px;border:1px solid #4b554d;border-radius:7px;background:#0f1411;color:var(--ink);font:inherit}.fact input:focus{outline:2px solid #d9b66d;outline-offset:1px}.track{height:7px;border-radius:8px;background:#343a35;overflow:hidden;margin-top:10px}.fill{height:100%;background:linear-gradient(90deg,#96b487,#d9c27d);border-radius:8px;transition:width .3s}.members{display:flex;gap:8px;margin:14px 0 20px}.member{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#343d35;border:1px solid #566353;color:#e9e6d6;font-size:12px}.member.empty{background:transparent;border:1px dashed #586057;color:#798078}.actions{display:flex;gap:10px}.actions .join{flex:1}.status{min-height:20px;margin:12px 0 0;color:var(--muted);font-size:12px;text-align:center}.status.full{color:var(--red)}.footer{display:flex;justify-content:space-between;padding:15px 20px;color:#858c82;font-size:11px;letter-spacing:.05em;border-top:1px solid var(--line)}.footer b{color:#c1c8b7;font-weight:500}.note{text-align:center;color:#777e75;font-size:11px;margin:16px 0 0}@media(max-width:560px){body{padding:14px}.hero{padding:42px 19px}.content{padding:21px 17px}.facts{grid-template-columns:1fr 1fr}.facts .fact:last-child{grid-column:span 2}.quest-card{padding:15px}.card-bottom{align-items:flex-end}.footer{padding:13px 15px}}
-</style></head>
-<body><main class="shell"><div class="topline"><span><i class="sigil">✦</i> &nbsp;Adventure Guild</span><span>Quest board · 07</span></div><section class="panel">
-<div class="hero" id="intro"><div class="eyebrow">THE FRONTIER IS CALLING</div><h1>오늘의 의뢰</h1><p>길드 게시판에 새로운 퀘스트가 도착했습니다.<br>의뢰를 확인하고 함께할 동료를 찾아보세요.</p><button class="primary" id="getQuest"><span>✦</span> 퀘스트 받기</button></div>
-<section class="content" id="sessionView"><div class="view-title"><h2>세션 입장</h2><span class="tag">NAME LOGIN</span></div><p class="desc">세션 이름과 참여자 이름을 입력하세요. 같은 세션에서 같은 이름은 퀘스트를 한 번만 수락할 수 있습니다.</p><form id="sessionForm" class="cards"><label class="fact">세션 이름<input id="sessionName" required maxlength="40" placeholder="예: 길드 1팀"></label><label class="fact">참여자 이름<input id="participantName" required maxlength="30" placeholder="예: 모험가 이름"></label><button class="primary" type="submit">퀘스트 목록 보기</button></form><p class="note">비밀번호 없이 이름으로 참여를 구분하는 예시 로그인입니다.</p></section>
-<section class="content" id="listView" aria-live="polite"><div class="view-title"><h2>모집 중인 퀘스트</h2><span class="tag">QUEST LIST</span></div><div class="cards" id="questList"></div><p class="status" id="listStatus"></p><p class="note" id="listIdentity"></p></section>
-<section class="content" id="detailView" aria-live="polite"><div class="view-title"><h2>퀘스트 상세</h2><button class="back" id="backToList">← 목록으로</button></div><div id="detailContent"></div></section>
-<div class="footer"><span>GUILD NOTICE</span><b>모집 마감 전까지 참여 가능</b></div></section></main>
+</style>
+</head>
+<body>
+<main class="shell">
+  <div class="topline"><span><i class="sigil">✦</i> &nbsp;Adventure Guild</span><span>Quest board · 07</span></div>
+  <section class="panel">
+    <div class="hero" id="intro">
+      <div class="eyebrow">THE FRONTIER IS CALLING</div>
+      <h1>오늘의 의뢰</h1>
+      <p>길드 게시판에 새로운 퀘스트가 도착했습니다.<br>의뢰를 확인하고 함께할 동료를 찾아보세요.</p>
+      <button class="primary" id="getQuest"><span>✦</span> 퀘스트 받기</button>
+    </div>
+
+    <section class="content" id="sessionView">
+      <div class="view-title"><h2>세션 입장</h2><span class="tag">NAME LOGIN</span></div>
+      <p class="desc">세션 이름과 참여자 이름을 입력하세요. 같은 세션에서 같은 이름은 퀘스트를 한 번만 수락할 수 있습니다.</p>
+      <form id="sessionForm" class="cards">
+        <label class="fact">세션 이름<input id="sessionName" required maxlength="40" placeholder="예: 길드 1팀"></label>
+        <label class="fact">참여자 이름<input id="participantName" required maxlength="30" placeholder="예: 모험가 이름"></label>
+        <button class="primary" type="submit">퀘스트 목록 보기</button>
+      </form>
+      <p class="note">비밀번호 없이 이름으로 참여를 구분하는 예시 로그인입니다.</p>
+    </section>
+
+    <section class="content" id="listView" aria-live="polite">
+      <div class="view-title"><h2>모집 중인 퀘스트</h2><span class="tag">QUEST LIST</span></div>
+      <div class="cards" id="questList"></div>
+      <p class="status" id="listStatus"></p>
+      <p class="note" id="listIdentity"></p>
+    </section>
+
+    <section class="content" id="detailView" aria-live="polite">
+      <div class="view-title"><h2>퀘스트 상세</h2><button class="back" id="backToList">← 목록으로</button></div>
+      <div id="detailContent"></div>
+    </section>
+
+    <div class="footer"><span>GUILD NOTICE</span><b>모집 마감 전까지 참여 가능</b></div>
+  </section>
+</main>
+
 <script>
 (()=>{
 const quests=[
-{id:'lantern',type:'긴급 의뢰 · 탐사',title:'안개숲의 잃어버린 등불',client:'북부 관문 관리인',reward:'1인당 120G',difficulty:'★★☆☆☆ 보통',duration:'약 2시간',max:3,description:'사흘 전부터 안개숲의 길잡이 등불이 꺼져, 숲을 지나던 상인들이 돌아오지 못하고 있습니다. 숲 가장자리의 낡은 초소를 확인하고 등불을 다시 밝혀 주세요. 해가 지기 전 복귀하는 것이 좋습니다.'},
-{id:'herbs',type:'채집 의뢰 · 지원',title:'달빛초 약초 채집',client:'성채 의무실',reward:'팀 보상 90G',difficulty:'★☆☆☆☆ 쉬움',duration:'약 1시간',max:4,description:'야간 치료에 필요한 달빛초가 부족합니다. 북쪽 언덕 주변에서 약초를 채집해 의무실로 가져다주세요. 해가 진 뒤에만 잎을 구분할 수 있습니다.'},
-{id:'bridge',type:'호위 의뢰 · 전투',title:'무너진 다리의 짐마차',client:'상인 조합',reward:'1인당 160G',difficulty:'★★★☆☆ 어려움',duration:'약 3시간',max:2,description:'비가 내린 뒤 동쪽 다리가 무너져 짐마차가 계곡 앞에 멈춰 있습니다. 우회로를 정찰하고 상인과 화물을 안전하게 마을까지 호위해 주세요.'}
+  {id:'lantern',type:'긴급 의뢰 · 탐사',title:'안개숲의 잃어버린 등불',client:'북부 관문 관리인',reward:'1인당 120G',difficulty:'★★☆☆☆ 보통',duration:'약 2시간',max:3,description:'사흘 전부터 안개숲의 길잡이 등불이 꺼져, 숲을 지나던 상인들이 돌아오지 못하고 있습니다. 숲 가장자리의 낡은 초소를 확인하고 등불을 다시 밝혀 주세요. 해가 지기 전 복귀하는 것이 좋습니다.'},
+  {id:'herbs',type:'채집 의뢰 · 지원',title:'달빛초 약초 채집',client:'성채 의무실',reward:'팀 보상 90G',difficulty:'★☆☆☆☆ 쉬움',duration:'약 1시간',max:4,description:'야간 치료에 필요한 달빛초가 부족합니다. 북쪽 언덕 주변에서 약초를 채집해 의무실로 가져다주세요. 해가 진 뒤에만 잎을 구분할 수 있습니다.'},
+  {id:'bridge',type:'호위 의뢰 · 전투',title:'무너진 다리의 짐마차',client:'상인 조합',reward:'1인당 160G',difficulty:'★★★☆☆ 어려움',duration:'약 3시간',max:2,description:'비가 내린 뒤 동쪽 다리가 무너져 짐마차가 계곡 앞에 멈춰 있습니다. 우회로를 정찰하고 상인과 화물을 안전하게 마을까지 호위해 주세요.'}
 ];
-let selected=quests[0],identity=null;const storage='guildQuestDataV2';
-const intro=document.querySelector('#intro'),sessionView=document.querySelector('#sessionView'),listView=document.querySelector('#listView'),detailView=document.querySelector('#detailView');
-const norm=s=>s.trim().toLocaleLowerCase('ko-KR');const pairKey=()=>`accept:${encodeURIComponent(norm(identity.session))}:${encodeURIComponent(norm(identity.name))}`;const dataKey=()=>`counts:${encodeURIComponent(norm(identity.session))}`;
-function getData(){try{return JSON.parse(localStorage.getItem(storage)||'{}')}catch{return {}}}function setData(d){try{localStorage.setItem(storage,JSON.stringify(d))}catch{}}
-function counts(){const d=getData(),c=d[dataKey()]||{};return c}function count(q){return (counts()[q.id]||[]).length}function roster(q){return counts()[q.id]||[]}function alreadyAccepted(){return getData()[pairKey()]===true}
-function acceptQuest(id){if(alreadyAccepted())return;const q=quests.find(x=>x.id===id);if(!q||count(q)>=q.max)return;const d=getData(),k=dataKey();d[k]=d[k]||{};d[k][q.id]=d[k][q.id]||[];d[k][q.id].push(identity.name);d[pairKey()]=true;setData(d);drawList();if(detailView.classList.contains('visible'))drawDetail()}
-function drawList(){const used=alreadyAccepted();document.querySelector('#questList').innerHTML=quests.map(q=>{const n=count(q),full=n>=q.max;return `<article class="quest-card"><div class="card-top"><div><span class="tag">${q.type}</span><h3>${q.title}</h3></div><span class="count">${n}/${q.max}명</span></div><p>${q.description}</p><div class="meta">보상 ${q.reward} · ${q.duration}</div><div class="card-bottom"><button class="back details" data-id="${q.id}">상세 보기</button><button class="join quick-join" data-id="${q.id}" ${full||used?'disabled':''}>${full?'모집 마감':used?'이번 세션 참여 완료':'참여하기'}</button></div></article>`}).join('');document.querySelectorAll('.details').forEach(b=>b.onclick=()=>showDetail(b.dataset.id));document.querySelectorAll('.quick-join').forEach(b=>b.onclick=()=>acceptQuest(b.dataset.id));document.querySelector('#listStatus').textContent=used?`${identity.name}님은 이 세션에서 이미 퀘스트를 수락했어요.`:'';document.querySelector('#listIdentity').textContent=`현재 세션: ${identity.session} · 참여자: ${identity.name}`}
-function showDetail(id){selected=quests.find(q=>q.id===id)||quests[0];listView.classList.remove('visible');detailView.classList.add('visible');drawDetail()}
-function drawDetail(){const q=selected,n=count(q),full=n>=q.max,used=alreadyAccepted(),names=roster(q);const slots=Array.from({length:q.max},(_,i)=>`<div class="member ${i>=n?'empty':''}">${i<n?escapeHtml(names[i]):'＋'}</div>`).join('');document.querySelector('#detailContent').innerHTML=`<div class="detail-head"><div><span class="tag">${q.type}</span><h2>${q.title}</h2><div class="meta">의뢰인: ${q.client} · 보상: ${q.reward}</div></div><span class="sigil">✧</span></div><p class="desc">${q.description}</p><div class="facts"><div class="fact"><small>난이도</small><strong>${q.difficulty}</strong></div><div class="fact"><small>예상 소요</small><strong>${q.duration}</strong></div><div class="fact"><small>모집 인원</small><strong>${n} / ${q.max}명</strong></div></div><div class="count">함께 갈 동료 · ${full?'모집 마감':n+' / '+q.max+'명 모집 중'}</div><div class="track"><div class="fill" style="width:${Math.min(100,n/q.max*100)}%"></div></div><div class="members">${slots}</div><div class="actions"><button class="join" id="detailJoin" ${full||used?'disabled':''}>${full?'모집 마감':used?'이번 세션 참여 완료':'퀘스트 수락 · 참여하기'}</button></div><p class="status ${full?'full':''}" id="detailStatus">${full?'모집 인원이 모두 찼습니다.':used?'이 세션 이름 조합은 이미 수락 기록이 있어요.':'참여하기를 누르면 세션 이름과 참여자 이름 조합으로 기록됩니다.'}</p>`;document.querySelector('#detailJoin').onclick=()=>acceptQuest(q.id)}
-function escapeHtml(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-document.querySelector('#getQuest').onclick=()=>{intro.style.display='none';sessionView.classList.add('visible')};document.querySelector('#sessionForm').addEventListener('submit',e=>{e.preventDefault();const session=document.querySelector('#sessionName').value.trim(),name=document.querySelector('#participantName').value.trim();if(!session||!name)return;identity={session,name};sessionView.classList.remove('visible');listView.classList.add('visible');drawList()});document.querySelector('#backToList').onclick=()=>{detailView.classList.remove('visible');listView.classList.add('visible');drawList()};
+
+let selected=quests[0],identity=null;
+const storage='guildQuestDataV2';
+const intro=document.querySelector('#intro');
+const sessionView=document.querySelector('#sessionView');
+const listView=document.querySelector('#listView');
+const detailView=document.querySelector('#detailView');
+
+const norm=s=>s.trim().toLocaleLowerCase('ko-KR');
+const pairKey=()=>`accept:${encodeURIComponent(norm(identity.session))}:${encodeURIComponent(norm(identity.name))}`;
+const dataKey=()=>`counts:${encodeURIComponent(norm(identity.session))}`;
+
+function getData(){
+  try{return JSON.parse(localStorage.getItem(storage)||'{}')}
+  catch{return {}}
+}
+function setData(d){
+  try{localStorage.setItem(storage,JSON.stringify(d))}
+  catch{}
+}
+function counts(){
+  const d=getData(),c=d[dataKey()]||{};
+  return c;
+}
+function count(q){
+  return (counts()[q.id]||[]).length;
+}
+function roster(q){
+  return counts()[q.id]||[];
+}
+function alreadyAccepted(){
+  return getData()[pairKey()]===true;
+}
+
+function acceptQuest(id){
+  if(alreadyAccepted())return;
+  const q=quests.find(x=>x.id===id);
+  if(!q||count(q)>=q.max)return;
+
+  const d=getData(),k=dataKey();
+  d[k]=d[k]||{};
+  d[k][q.id]=d[k][q.id]||[];
+  d[k][q.id].push(identity.name);
+  d[pairKey()]=true;
+  setData(d);
+  drawList();
+  if(detailView.classList.contains('visible'))drawDetail();
+}
+
+function drawList(){
+  const used=alreadyAccepted();
+  document.querySelector('#questList').innerHTML=quests.map(q=>{
+    const n=count(q),full=n>=q.max;
+    return `<article class="quest-card">
+      <div class="card-top">
+        <div><span class="tag">${q.type}</span><h3>${q.title}</h3></div>
+        <span class="count">${n}/${q.max}명</span>
+      </div>
+      <p>${q.description}</p>
+      <div class="meta">보상 ${q.reward} · ${q.duration}</div>
+      <div class="card-bottom">
+        <button class="back details" data-id="${q.id}">상세 보기</button>
+        <button class="join quick-join" data-id="${q.id}" ${full||used?'disabled':''}>${full?'모집 마감':used?'이번 세션 참여 완료':'참여하기'}</button>
+      </div>
+    </article>`;
+  }).join('');
+
+  document.querySelectorAll('.details').forEach(b=>b.onclick=()=>showDetail(b.dataset.id));
+  document.querySelectorAll('.quick-join').forEach(b=>b.onclick=()=>acceptQuest(b.dataset.id));
+  document.querySelector('#listStatus').textContent=used?`${identity.name}님은 이 세션에서 이미 퀘스트를 수락했어요.`:'';
+  document.querySelector('#listIdentity').textContent=`현재 세션: ${identity.session} · 참여자: ${identity.name}`;
+}
+
+function showDetail(id){
+  selected=quests.find(q=>q.id===id)||quests[0];
+  listView.classList.remove('visible');
+  detailView.classList.add('visible');
+  drawDetail();
+}
+
+function drawDetail(){
+  const q=selected,n=count(q),full=n>=q.max,used=alreadyAccepted(),names=roster(q);
+  const slots=Array.from({length:q.max},(_,i)=>
+    `<div class="member ${i>=n?'empty':''}">${i<n?escapeHtml(names[i]):'＋'}</div>`
+  ).join('');
+
+  document.querySelector('#detailContent').innerHTML=`
+    <div class="detail-head">
+      <div>
+        <span class="tag">${q.type}</span>
+        <h2>${q.title}</h2>
+        <div class="meta">의뢰인: ${q.client} · 보상: ${q.reward}</div>
+      </div>
+      <span class="sigil">✧</span>
+    </div>
+    <p class="desc">${q.description}</p>
+    <div class="facts">
+      <div class="fact"><small>난이도</small><strong>${q.difficulty}</strong></div>
+      <div class="fact"><small>예상 소요</small><strong>${q.duration}</strong></div>
+      <div class="fact"><small>모집 인원</small><strong>${n} / ${q.max}명</strong></div>
+    </div>
+    <div class="count">함께 갈 동료 · ${full?'모집 마감':n+' / '+q.max+'명 모집 중'}</div>
+    <div class="track"><div class="fill" style="width:${Math.min(100,n/q.max*100)}%"></div></div>
+    <div class="members">${slots}</div>
+    <div class="actions">
+      <button class="join" id="detailJoin" ${full||used?'disabled':''}>${full?'모집 마감':used?'이번 세션 참여 완료':'퀘스트 수락 · 참여하기'}</button>
+    </div>
+    <p class="status ${full?'full':''}" id="detailStatus">${full?'모집 인원이 모두 찼습니다.':used?'이 세션 이름 조합은 이미 수락 기록이 있어요.':'참여하기를 누르면 세션 이름과 참여자 이름 조합으로 기록됩니다.'}</p>
+  `;
+  document.querySelector('#detailJoin').onclick=()=>acceptQuest(q.id);
+}
+
+function escapeHtml(x){
+  return String(x).replace(/[&<>"']/g,c=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[c]));
+}
+
+document.querySelector('#getQuest').onclick=()=>{
+  intro.style.display='none';
+  sessionView.classList.add('visible');
+};
+
+document.querySelector('#sessionForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const session=document.querySelector('#sessionName').value.trim();
+  const name=document.querySelector('#participantName').value.trim();
+  if(!session||!name)return;
+
+  identity={session,name};
+  sessionView.classList.remove('visible');
+  listView.classList.add('visible');
+  drawList();
+});
+
+document.querySelector('#backToList').onclick=()=>{
+  detailView.classList.remove('visible');
+  listView.classList.add('visible');
+  drawList();
+};
 })();
-</script></body></html>
+</script>
+</body>
+</html>
