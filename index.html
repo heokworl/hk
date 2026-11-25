@@ -222,17 +222,17 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
 }
 @media(max-width:390px){.admin-inline{flex-wrap:wrap}.admin-inline .button{width:100%}}
 
-/* Reflow safely in narrow embeds; show every bookmark without a horizontal rail. */
+/* Fixed guild bookmarks that leave the page content its full readable width. */
 html,body{width:100%;max-width:100%;min-width:0;overflow-x:hidden}
-body{padding:clamp(8px,2vw,22px)}
-.shell{width:min(100%,1120px);max-width:100%;margin:0 auto}
-.page-layout{display:grid;grid-template-columns:58px minmax(0,1fr);gap:12px;align-items:start;width:100%;min-width:0}
+body{padding:18px 20px}
+.shell{width:min(1120px,calc(100vw - 120px));max-width:100%;margin:0 0 0 auto}
+.page-layout{display:block;width:100%;min-width:0}
 .page-layout>.panel{width:100%;min-width:0;max-width:100%}
-.bookmark-nav{position:sticky;top:10px;left:auto;transform:none;display:grid;grid-template-columns:1fr;gap:6px;width:58px;max-height:none;overflow:visible;padding:0;align-self:start}
-.bookmark{width:100%;min-width:0;min-height:48px;padding:5px 3px;gap:4px;border-left-width:3px;border-radius:4px 9px 9px 4px}
-.bookmark b{font-size:10px;line-height:1.05;writing-mode:vertical-rl;letter-spacing:.08em}
+.bookmark-nav{position:fixed;left:max(12px,calc(100vw - 1210px));top:50%;transform:translateY(-50%);z-index:100;display:grid;grid-template-columns:1fr;gap:8px;width:62px;max-height:calc(100dvh - 32px);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:9px 7px;border:1px solid #705441;border-radius:14px;background:linear-gradient(145deg,#21191cf2,#151316f2);box-shadow:0 14px 36px #0008,inset 0 0 0 1px #d0ab6b13;backdrop-filter:blur(12px);scrollbar-width:thin;scrollbar-color:#9b744c #21191c}
+.bookmark{width:100%;min-width:0;min-height:54px;padding:6px 3px;gap:5px;border:1px solid #614a41;border-left:3px solid #b48a58;border-radius:8px;background:linear-gradient(135deg,#292024,#1b171a);box-shadow:0 4px 9px #0004}
+.bookmark b{font-size:10px;line-height:1.05;writing-mode:vertical-rl;letter-spacing:.09em}
 .bookmark span{font-size:16px;line-height:1}
-.bookmark.active{transform:translateX(2px)}
+.bookmark.active{transform:translateX(2px);border-color:#d0ad70;background:linear-gradient(135deg,#55372f,#302328);box-shadow:0 5px 14px #0006,0 0 12px #caa36624}
 .section-title:before{content:"✦";display:inline-block;margin-right:.5em;color:#bc8e58;font-size:.72em;vertical-align:.12em;text-shadow:0 0 9px #d0a16455}
 .lore-section>summary:before{content:"▸  GUILD FILE";display:block;margin:0 0 5px;color:#b98d5b;font:800 9px/1.2 Inter,Pretendard,"Noto Sans KR",sans-serif;letter-spacing:.18em}
 .admin-user-row>span{display:grid;gap:3px;min-width:0}
@@ -241,13 +241,24 @@ body{padding:clamp(8px,2vw,22px)}
 .item-use{margin-top:10px;padding:7px 11px;font-size:12px}
 .item-use:disabled{opacity:.5}
 .profile-columns{grid-template-columns:1fr;gap:17px}
+.admin-used-card{grid-column:1/-1}
+.admin-hint{margin:0 0 12px;color:#78645a;font-size:12px;line-height:1.55}
+.admin-used-list{display:grid;gap:8px;max-height:520px;overflow:auto}
+.admin-used-row{display:grid;grid-template-columns:minmax(110px,.75fr) minmax(0,1.5fr) auto;align-items:center;gap:12px;padding:10px 12px;border:1px solid #d6c5a4;border-radius:4px;background:#fff8e9;color:#49372b}
+.admin-used-user{font-size:13px;font-weight:800;color:#63442e;overflow-wrap:anywhere}
+.admin-used-item{display:grid;gap:4px;min-width:0}
+.admin-used-item strong{font-size:13px;overflow-wrap:anywhere}
+.admin-used-item small{color:#78645a;font-size:10px}
+.admin-used-row .restore-item{padding:8px 12px;font-size:12px}
 @media(max-width:760px){
- .page-layout{display:flex;flex-direction:column;gap:8px;width:100%}
- .bookmark-nav{position:sticky;top:0;z-index:50;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;width:100%;max-height:none;padding:5px 4px;background:linear-gradient(180deg,#171316 88%,#171316e8);border-bottom:1px solid #735746}
- .bookmark{display:flex;flex-direction:row;justify-content:center;align-items:center;min-height:42px;width:100%;padding:5px 4px;border:1px solid #57433e;border-top:3px solid #b48a58;border-radius:7px 7px 3px 3px;gap:5px}
- .bookmark b{writing-mode:initial;font-size:10px;letter-spacing:0;white-space:nowrap}
- .bookmark span{font-size:13px}
- .bookmark.active{transform:translateY(1px)}
+ body{padding:10px 10px 152px}
+ .shell{width:100%;margin:0 auto}
+ .page-layout{display:block;width:100%}
+ .bookmark-nav{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));top:auto;transform:none;z-index:100;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;width:auto;max-height:none;overflow:visible;padding:10px;border:1px solid #705441;border-radius:16px;background:linear-gradient(145deg,#21191cf2,#151316f2);box-shadow:0 12px 34px #0009,inset 0 0 0 1px #d0ab6b17;backdrop-filter:blur(14px)}
+ .bookmark{display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:50px;width:100%;padding:6px 3px;border:1px solid #614a41;border-top:2px solid #b48a58;border-radius:8px;background:linear-gradient(135deg,#292024,#1b171a);gap:4px}
+ .bookmark b{writing-mode:initial;font-size:9px;line-height:1.05;letter-spacing:0;white-space:normal;text-align:center;overflow-wrap:anywhere}
+ .bookmark span{font-size:14px}
+ .bookmark.active{transform:translateY(-1px)}
  .page-layout>.panel{width:100%;max-width:100%}
  .hero{width:100%;gap:14px;padding:20px 15px;min-height:0}
  .hero-copy{flex:1 1 100%;min-width:0;min-height:0;padding:15px 8px 14px 64px}
@@ -261,8 +272,10 @@ body{padding:clamp(8px,2vw,22px)}
  .quest-card,.shop-card,.admin-card{min-width:0;max-width:100%}
  .card-bottom{flex-wrap:wrap;align-items:flex-start}
  .card-actions{max-width:100%}
+ .admin-used-row{grid-template-columns:minmax(0,1fr) auto;gap:8px}
+ .admin-used-user{grid-column:1/-1;padding-bottom:6px;border-bottom:1px solid #e1d4bf}
 }
-@media(max-width:390px){.bookmark-nav{grid-template-columns:repeat(4,minmax(0,1fr))}.bookmark b{font-size:9px}.bookmark{min-height:40px}.profile-summary{gap:10px}}
+@media(max-width:390px){.bookmark-nav{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:8px}.bookmark b{font-size:9px}.bookmark{min-height:48px}.profile-summary{gap:10px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -700,10 +713,10 @@ body{padding:clamp(8px,2vw,22px)}
           <div class="admin-target" id="adminTargetInfo">계정을 선택해 주세요.</div>
           <div class="admin-form-row"><label class="admin-label" for="adminGoldAmount">지급 골드</label><div class="admin-inline"><input id="adminGoldAmount" type="number" min="1" max="1000000" step="1" placeholder="액수 입력"><button class="button" id="adminGoldButton" type="button">골드 지급</button></div></div>
           <div class="admin-form-row"><label class="admin-label" for="adminItemSelect">지급 상점 아이템</label><div class="admin-inline"><select id="adminItemSelect"><option value="">상품 선택</option></select><button class="button" id="adminItemButton" type="button">아이템 지급</button></div></div>
-          <div class="admin-form-row"><h3 class="admin-list-title">사용 아이템 복구</h3><div id="adminUsedItems" class="admin-user-list"><div class="profile-empty">먼저 길드원을 선택하세요.</div></div></div>
           <p class="status" id="adminStatus" aria-live="polite"></p>
         </section>
         <section class="admin-card"><h3 class="admin-list-title">길드원 및 보유 골드</h3><div id="adminUserList" class="admin-user-list"><div class="profile-empty">계정 목록을 불러오는 중…</div></div></section>
+        <section class="admin-card admin-used-card"><h3 class="admin-list-title">사용 아이템 복구</h3><p class="admin-hint">사용자가 프로필에서 사용한 아이템이에요. 복구하면 해당 사용자의 보유 목록에 다시 나타납니다.</p><div id="adminUsedItems" class="admin-used-list"><div class="profile-empty">사용된 아이템을 불러오는 중…</div></div></section>
       </div>
     </section>
 
@@ -869,25 +882,24 @@ body{padding:clamp(8px,2vw,22px)}
     adminUsers=data||[];drawAdminUsers();status.textContent='';await loadAdminUsedItems();
   }
   async function loadAdminUsedItems(){
-    const userId=document.querySelector('#adminUserSelect').value,box=document.querySelector('#adminUsedItems');
-    if(!userId){box.innerHTML='<div class="profile-empty">먼저 길드원을 선택하세요.</div>';return}
+    const box=document.querySelector('#adminUsedItems');
+    if(!isAdmin){box.innerHTML='<div class="profile-empty">관리자만 볼 수 있습니다.</div>';return}
     box.innerHTML='<div class="profile-empty">사용 기록을 불러오는 중…</div>';
-    const {data,error}=await supabase.rpc('admin_get_user_used_items',{p_user_id:userId});
+    const {data,error}=await supabase.rpc('admin_get_used_items');
     if(error){box.innerHTML=`<div class="profile-empty">복구 목록 오류: ${escapeHtml(error.message)}</div>`;return}
     const rows=data||[];
-    box.innerHTML=rows.length?rows.map(row=>`<div class="admin-user-row"><span><strong>${escapeHtml(row.item_name)}</strong><small>${new Date(row.used_at).toLocaleString('ko-KR')}</small></span><button class="button restore-item" type="button" data-restore-use="${row.use_id}">복구</button></div>`).join(''):'<div class="profile-empty">복구할 사용 아이템이 없습니다.</div>';
-    box.querySelectorAll('[data-restore-use]').forEach(button=>button.addEventListener('click',()=>restoreUsedItem(button.dataset.restoreUse)));
+    box.innerHTML=rows.length?rows.map(row=>`<div class="admin-used-row"><span class="admin-used-user">${escapeHtml(row.username)}</span><span class="admin-used-item"><strong>${escapeHtml(row.item_name)}</strong><small>${new Date(row.used_at).toLocaleString('ko-KR')}</small></span><button class="button restore-item" type="button" data-restore-use="${row.use_id}" data-user-id="${escapeHtml(row.user_id)}" data-user-name="${escapeHtml(row.username)}" data-item-name="${escapeHtml(row.item_name)}">복구</button></div>`).join(''):'<div class="profile-empty">복구할 사용 아이템이 없습니다.</div>';
+    box.querySelectorAll('[data-restore-use]').forEach(button=>button.addEventListener('click',()=>restoreUsedItem(button.dataset.restoreUse,button.dataset.userId,button.dataset.userName,button.dataset.itemName)));
   }
-  async function restoreUsedItem(useId){
+  async function restoreUsedItem(useId,userId,userName,itemName){
     if(!isAdmin)return;
-    const target=adminUsers.find(user=>user.user_id===document.querySelector('#adminUserSelect').value);
-    if(!target||!window.confirm(`${target.username}의 사용 아이템을 복구할까요?`))return;
+    if(!window.confirm(`${userName} · ${itemName} 아이템을 복구할까요?`))return;
     const {data,error}=await supabase.rpc('admin_restore_used_item',{p_use_id:Number(useId)});
     const status=document.querySelector('#adminStatus');
     if(error){status.textContent='아이템 복구 오류: '+error.message;return}
-    status.textContent=data==='restored'?`${target.username}의 아이템을 보유 목록으로 복구했습니다.`:'이미 복구된 사용 기록입니다.';
+    status.textContent=data==='restored'?`${userName}의 ${itemName}을 보유 목록으로 복구했습니다.`:'이미 복구된 사용 기록입니다.';
     await loadAdminUsedItems();
-    if(target.user_id===currentUser?.id)await loadPurchases();
+    if(userId===currentUser?.id)await loadPurchases();
   }
   async function useItem(itemId){
     if(!currentUser)return;
@@ -1032,7 +1044,6 @@ body{padding:clamp(8px,2vw,22px)}
   document.querySelector('#adminUserSelect').addEventListener('change',updateAdminTargetInfo);
   document.querySelector('#adminGoldButton').addEventListener('click',grantGold);
   document.querySelector('#adminItemButton').addEventListener('click',grantShopItem);
-  document.querySelector('#adminUserSelect').addEventListener('change',()=>{updateAdminTargetInfo();loadAdminUsedItems();});
   supabase.auth.onAuthStateChange((_event,session)=>{
     if(session?.user)showSignedIn(session.user);else showSignedOut();
   });
