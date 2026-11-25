@@ -221,6 +221,48 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
  .admin-inline .button{padding:9px 10px}
 }
 @media(max-width:390px){.admin-inline{flex-wrap:wrap}.admin-inline .button{width:100%}}
+
+/* Reflow safely in narrow embeds; show every bookmark without a horizontal rail. */
+html,body{width:100%;max-width:100%;min-width:0;overflow-x:hidden}
+body{padding:clamp(8px,2vw,22px)}
+.shell{width:min(100%,1120px);max-width:100%;margin:0 auto}
+.page-layout{display:grid;grid-template-columns:58px minmax(0,1fr);gap:12px;align-items:start;width:100%;min-width:0}
+.page-layout>.panel{width:100%;min-width:0;max-width:100%}
+.bookmark-nav{position:sticky;top:10px;left:auto;transform:none;display:grid;grid-template-columns:1fr;gap:6px;width:58px;max-height:none;overflow:visible;padding:0;align-self:start}
+.bookmark{width:100%;min-width:0;min-height:48px;padding:5px 3px;gap:4px;border-left-width:3px;border-radius:4px 9px 9px 4px}
+.bookmark b{font-size:10px;line-height:1.05;writing-mode:vertical-rl;letter-spacing:.08em}
+.bookmark span{font-size:16px;line-height:1}
+.bookmark.active{transform:translateX(2px)}
+.section-title:before{content:"✦";display:inline-block;margin-right:.5em;color:#bc8e58;font-size:.72em;vertical-align:.12em;text-shadow:0 0 9px #d0a16455}
+.lore-section>summary:before{content:"▸  GUILD FILE";display:block;margin:0 0 5px;color:#b98d5b;font:800 9px/1.2 Inter,Pretendard,"Noto Sans KR",sans-serif;letter-spacing:.18em}
+.admin-user-row>span{display:grid;gap:3px;min-width:0}
+.admin-user-row small{color:#78645a;font-size:10px}
+.restore-item{padding:6px 9px;font-size:11px}
+.item-use{margin-top:10px;padding:7px 11px;font-size:12px}
+.item-use:disabled{opacity:.5}
+.profile-columns{grid-template-columns:1fr;gap:17px}
+@media(max-width:760px){
+ .page-layout{display:flex;flex-direction:column;gap:8px;width:100%}
+ .bookmark-nav{position:sticky;top:0;z-index:50;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;width:100%;max-height:none;padding:5px 4px;background:linear-gradient(180deg,#171316 88%,#171316e8);border-bottom:1px solid #735746}
+ .bookmark{display:flex;flex-direction:row;justify-content:center;align-items:center;min-height:42px;width:100%;padding:5px 4px;border:1px solid #57433e;border-top:3px solid #b48a58;border-radius:7px 7px 3px 3px;gap:5px}
+ .bookmark b{writing-mode:initial;font-size:10px;letter-spacing:0;white-space:nowrap}
+ .bookmark span{font-size:13px}
+ .bookmark.active{transform:translateY(1px)}
+ .page-layout>.panel{width:100%;max-width:100%}
+ .hero{width:100%;gap:14px;padding:20px 15px;min-height:0}
+ .hero-copy{flex:1 1 100%;min-width:0;min-height:0;padding:15px 8px 14px 64px}
+ .hero-copy:before{width:48px;height:54px;font-size:14px}
+ .hero h1{font-size:clamp(22px,6vw,30px);line-height:1.2;overflow-wrap:anywhere}
+ .auth-panel,.user-panel{flex:1 1 100%;width:100%;max-width:none}
+ .content{width:100%;min-width:0;padding:18px 13px}
+ .section-head{flex-wrap:wrap;min-width:0}
+ .section-title{font-size:17px;min-width:0}
+ .section-title:before{margin-right:.35em}
+ .quest-card,.shop-card,.admin-card{min-width:0;max-width:100%}
+ .card-bottom{flex-wrap:wrap;align-items:flex-start}
+ .card-actions{max-width:100%}
+}
+@media(max-width:390px){.bookmark-nav{grid-template-columns:repeat(4,minmax(0,1fr))}.bookmark b{font-size:9px}.bookmark{min-height:40px}.profile-summary{gap:10px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -277,8 +319,9 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
       <div class="section-head"><h2 class="section-title">모험가 프로필</h2><span class="tag">GUILD MEMBER</span></div>
       <div class="profile-summary"><div><span class="profile-label">이름</span><strong id="profileName">로그인 필요</strong></div><div><span class="profile-label">소지금화</span><strong class="gold-amount" id="profileBalance">0G</strong></div><button class="logout" id="profileLogoutButton" type="button" disabled>로그아웃</button></div>
       <div class="profile-columns">
-        <section><h3 class="section-title">구매 목록</h3><div class="profile-list" id="purchaseHistory"></div></section>
         <section><h3 class="section-title">보유 아이템</h3><div class="profile-list" id="inventoryList"></div></section>
+        <section><h3 class="section-title">구매 내역</h3><div class="profile-list" id="purchaseHistory"></div></section>
+        <section><h3 class="section-title">사용 내역</h3><div class="profile-list" id="usedHistory"></div></section>
       </div>
       <p class="status" id="profileStatus" aria-live="polite"></p>
     </section>
@@ -650,13 +693,14 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
 
     <section class="content hidden" id="adminPage" aria-live="polite">
       <div class="section-head"><h2 class="section-title">길드 관리자 페이지</h2><span class="tag">AUTHORIZED</span></div>
-      <p class="note page-note">대상 계정을 선택해 골드 또는 상점 아이템을 지급할 수 있습니다. 지급은 기록에 남고 되돌릴 수 없습니다.</p>
+      <p class="note page-note">대상 계정에 골드·아이템을 지급하거나, 사용한 아이템을 복구할 수 있습니다.</p>
       <div class="admin-layout">
         <section class="admin-card">
           <label class="admin-label" for="adminUserSelect">지급 대상</label><select id="adminUserSelect"><option value="">계정 목록 불러오는 중…</option></select>
           <div class="admin-target" id="adminTargetInfo">계정을 선택해 주세요.</div>
           <div class="admin-form-row"><label class="admin-label" for="adminGoldAmount">지급 골드</label><div class="admin-inline"><input id="adminGoldAmount" type="number" min="1" max="1000000" step="1" placeholder="액수 입력"><button class="button" id="adminGoldButton" type="button">골드 지급</button></div></div>
           <div class="admin-form-row"><label class="admin-label" for="adminItemSelect">지급 상점 아이템</label><div class="admin-inline"><select id="adminItemSelect"><option value="">상품 선택</option></select><button class="button" id="adminItemButton" type="button">아이템 지급</button></div></div>
+          <div class="admin-form-row"><h3 class="admin-list-title">사용 아이템 복구</h3><div id="adminUsedItems" class="admin-user-list"><div class="profile-empty">먼저 길드원을 선택하세요.</div></div></div>
           <p class="status" id="adminStatus" aria-live="polite"></p>
         </section>
         <section class="admin-card"><h3 class="admin-list-title">길드원 및 보유 골드</h3><div id="adminUserList" class="admin-user-list"><div class="profile-empty">계정 목록을 불러오는 중…</div></div></section>
@@ -679,7 +723,7 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
     {id:'quarantine_clear',type:'토벌 의뢰 · 격리 구역',title:'격리동 잔류 마물 소탕',client:'본부 방재실',reward:'1인당 220G',difficulty:'★★★★☆ 위험',duration:'약 2시간',max:4,description:'훈련동 지하 격리실의 보강벽이 손상되어 소형 마물 몇 마리가 통제 구역 안으로 빠져나왔습니다. 방재실의 봉쇄 확인을 받은 뒤 구역을 수색하고 잔류 개체를 제거해 주세요.'},
     {id:'night_patrol',type:'정기 임무 · 본부 방호',title:'천호 본부 외곽 야간 순찰',client:'본부 경비대',reward:'1인당 100G',difficulty:'★☆☆☆☆ 쉬움',duration:'약 1시간',max:5,description:'최근 본부 외곽 담장 주변에서 정체불명의 흔적이 발견됐습니다. 지정된 순찰 경로를 돌며 방호 장치와 출입 기록을 확인하고, 이상 징후를 경비대에 보고해 주세요.'}
   ];
-  let currentUser=null,questStatus=[],shopCatalog=[],purchaseRows=[],inventoryRows=[],adminUsers=[],refreshId=0,authMode='login',showJoinedOnly=false,currentBalance=0,isAdmin=false,currentName='모험가';
+  let currentUser=null,questStatus=[],shopCatalog=[],purchaseRows=[],inventoryRows=[],usedRows=[],adminUsers=[],refreshId=0,authMode='login',showJoinedOnly=false,currentBalance=0,isAdmin=false,currentName='모험가',sessionCheckBusy=false;
   const loginCard=document.querySelector('#loginCard');
   const userPanel=document.querySelector('#userPanel');
   const authMessage=document.querySelector('#authMessage');
@@ -720,7 +764,7 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
     authMessage.textContent='';
   }
   function showSignedOut(message=''){
-    currentUser=null;currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned:false}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');document.querySelector('#adminBookmark').classList.add('hidden');if(!document.querySelector('#adminPage').classList.contains('hidden'))showPage('quests');
+    currentUser=null;currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];usedRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned:false}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');document.querySelector('#adminBookmark').classList.add('hidden');if(!document.querySelector('#adminPage').classList.contains('hidden'))showPage('quests');
     document.querySelector('#toggleJoined').disabled=true;
     document.querySelector('#profileLogoutButton').disabled=true;
     document.querySelector('#shopWallet').textContent='로그인 후 소지금 표시';
@@ -759,10 +803,11 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
   }
   async function loadPurchases(){
     if(!currentUser){purchaseRows=[];inventoryRows=[];drawProfile();return}
-    const [purchases,inventory]=await Promise.all([supabase.rpc('get_my_purchases'),supabase.rpc('get_my_inventory')]);
+    const [purchases,inventory,used]=await Promise.all([supabase.rpc('get_my_purchases'),supabase.rpc('get_my_inventory'),supabase.rpc('get_my_used_items')]);
     if(purchases.error){document.querySelector('#profileStatus').textContent='구매 목록 오류: '+purchases.error.message;return}
     if(inventory.error){document.querySelector('#profileStatus').textContent='보유 아이템 오류: '+inventory.error.message;return}
-    purchaseRows=purchases.data||[];inventoryRows=inventory.data||[];drawProfile();
+    if(used.error){document.querySelector('#profileStatus').textContent='사용 내역 오류: '+used.error.message;return}
+    purchaseRows=purchases.data||[];inventoryRows=inventory.data||[];usedRows=used.data||[];drawProfile();
   }
   function drawShop(){
     const list=document.querySelector('#shopItems');if(!list)return;
@@ -776,11 +821,13 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
     document.querySelectorAll('[data-buy]').forEach(button=>button.addEventListener('click',()=>buyItem(button.dataset.buy)));
   }
   function drawProfile(){
-    const history=document.querySelector('#purchaseHistory'),inventory=document.querySelector('#inventoryList');
-    if(!history||!inventory)return;
-    if(!currentUser){history.innerHTML='<div class="profile-empty">로그인하면 구매 기록을 볼 수 있어요.</div>';inventory.innerHTML='<div class="profile-empty">로그인하면 보유 아이템을 볼 수 있어요.</div>';return}
+    const history=document.querySelector('#purchaseHistory'),inventory=document.querySelector('#inventoryList'),used=document.querySelector('#usedHistory');
+    if(!history||!inventory||!used)return;
+    if(!currentUser){history.innerHTML='<div class="profile-empty">로그인하면 구매 기록을 볼 수 있어요.</div>';inventory.innerHTML='<div class="profile-empty">로그인하면 보유 아이템을 볼 수 있어요.</div>';used.innerHTML='<div class="profile-empty">로그인하면 사용 기록을 볼 수 있어요.</div>';return}
     history.innerHTML=purchaseRows.length?purchaseRows.map(row=>`<div class="list-row"><strong>${escapeHtml(row.item_name)}</strong><span>${Number(row.price_paid).toLocaleString('ko-KR')}G · ${new Date(row.purchased_at).toLocaleString('ko-KR')}</span></div>`).join(''):'<div class="profile-empty">구매한 상품이 없습니다.</div>';
-    inventory.innerHTML=inventoryRows.length?inventoryRows.map(row=>`<div class="list-row"><strong>${escapeHtml(row.item_name)}</strong><p>${escapeHtml(row.description)}</p><span>보유 중 · 1개 · ${escapeHtml(row.acquisition_type||'구매')} · ${new Date(row.acquired_at).toLocaleDateString('ko-KR')}</span></div>`).join(''):'<div class="profile-empty">보유 아이템이 없습니다.</div>';
+    inventory.innerHTML=inventoryRows.length?inventoryRows.map(row=>`<div class="list-row"><strong>${escapeHtml(row.item_name)}</strong><p>${escapeHtml(row.description)}</p><span>보유 중 · 1개 · ${escapeHtml(row.acquisition_type||'구매')} · ${new Date(row.acquired_at).toLocaleDateString('ko-KR')}</span><button class="button item-use" type="button" data-use-item="${escapeHtml(row.item_id)}">사용하기</button></div>`).join(''):'<div class="profile-empty">보유 아이템이 없습니다.</div>';
+    used.innerHTML=usedRows.length?usedRows.map(row=>`<div class="list-row"><strong>${escapeHtml(row.item_name)}</strong><span>${new Date(row.used_at).toLocaleString('ko-KR')} · ${row.restored_at?'관리자 복구 완료':'사용 완료'}</span></div>`).join(''):'<div class="profile-empty">아직 사용한 아이템이 없습니다.</div>';
+    inventory.querySelectorAll('[data-use-item]').forEach(button=>button.addEventListener('click',()=>useItem(button.dataset.useItem)));
   }
   function showPage(page){
     if(page==='admin'&&!isAdmin)return;
@@ -812,14 +859,44 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
     if(adminUsers.some(user=>user.user_id===current))select.value=current;
     updateAdminTargetInfo();
     list.innerHTML=adminUsers.length?adminUsers.map(user=>`<button class="admin-user-row" type="button" data-admin-select="${escapeHtml(user.user_id)}"><strong>${escapeHtml(user.username)}</strong><span>${Number(user.balance).toLocaleString('ko-KR')}G</span></button>`).join(''):'<div class="profile-empty">등록된 길드원이 없습니다.</div>';
-    list.querySelectorAll('[data-admin-select]').forEach(button=>button.addEventListener('click',()=>{select.value=button.dataset.adminSelect;updateAdminTargetInfo();select.scrollIntoView({behavior:'smooth',block:'nearest'});}));
+    list.querySelectorAll('[data-admin-select]').forEach(button=>button.addEventListener('click',()=>{select.value=button.dataset.adminSelect;updateAdminTargetInfo();loadAdminUsedItems();select.scrollIntoView({behavior:'smooth',block:'nearest'});}));
   }
   async function loadAdminUsers(){
     if(!isAdmin)return;
     const status=document.querySelector('#adminStatus');status.textContent='길드원 목록을 불러오는 중…';
     const {data,error}=await supabase.rpc('admin_get_users');
     if(error){status.textContent='관리자 목록 오류: '+error.message;return}
-    adminUsers=data||[];drawAdminUsers();status.textContent='';
+    adminUsers=data||[];drawAdminUsers();status.textContent='';await loadAdminUsedItems();
+  }
+  async function loadAdminUsedItems(){
+    const userId=document.querySelector('#adminUserSelect').value,box=document.querySelector('#adminUsedItems');
+    if(!userId){box.innerHTML='<div class="profile-empty">먼저 길드원을 선택하세요.</div>';return}
+    box.innerHTML='<div class="profile-empty">사용 기록을 불러오는 중…</div>';
+    const {data,error}=await supabase.rpc('admin_get_user_used_items',{p_user_id:userId});
+    if(error){box.innerHTML=`<div class="profile-empty">복구 목록 오류: ${escapeHtml(error.message)}</div>`;return}
+    const rows=data||[];
+    box.innerHTML=rows.length?rows.map(row=>`<div class="admin-user-row"><span><strong>${escapeHtml(row.item_name)}</strong><small>${new Date(row.used_at).toLocaleString('ko-KR')}</small></span><button class="button restore-item" type="button" data-restore-use="${row.use_id}">복구</button></div>`).join(''):'<div class="profile-empty">복구할 사용 아이템이 없습니다.</div>';
+    box.querySelectorAll('[data-restore-use]').forEach(button=>button.addEventListener('click',()=>restoreUsedItem(button.dataset.restoreUse)));
+  }
+  async function restoreUsedItem(useId){
+    if(!isAdmin)return;
+    const target=adminUsers.find(user=>user.user_id===document.querySelector('#adminUserSelect').value);
+    if(!target||!window.confirm(`${target.username}의 사용 아이템을 복구할까요?`))return;
+    const {data,error}=await supabase.rpc('admin_restore_used_item',{p_use_id:Number(useId)});
+    const status=document.querySelector('#adminStatus');
+    if(error){status.textContent='아이템 복구 오류: '+error.message;return}
+    status.textContent=data==='restored'?`${target.username}의 아이템을 보유 목록으로 복구했습니다.`:'이미 복구된 사용 기록입니다.';
+    await loadAdminUsedItems();
+    if(target.user_id===currentUser?.id)await loadPurchases();
+  }
+  async function useItem(itemId){
+    if(!currentUser)return;
+    const button=document.querySelector(`[data-use-item="${CSS.escape(itemId)}"]`);if(button)button.disabled=true;
+    document.querySelector('#profileStatus').textContent='아이템을 사용하는 중…';
+    const {data,error}=await supabase.rpc('use_shop_item',{p_item_id:itemId});
+    if(error){document.querySelector('#profileStatus').textContent='아이템 사용 오류: '+error.message;if(button)button.disabled=false;return}
+    document.querySelector('#profileStatus').textContent=data==='used'?'아이템을 사용했고 사용 내역에 기록했습니다.':'이미 사용했거나 보유하지 않은 아이템입니다.';
+    await loadPurchases();
   }
   async function grantGold(){
     if(!isAdmin)return;
@@ -955,6 +1032,7 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
   document.querySelector('#adminUserSelect').addEventListener('change',updateAdminTargetInfo);
   document.querySelector('#adminGoldButton').addEventListener('click',grantGold);
   document.querySelector('#adminItemButton').addEventListener('click',grantShopItem);
+  document.querySelector('#adminUserSelect').addEventListener('change',()=>{updateAdminTargetInfo();loadAdminUsedItems();});
   supabase.auth.onAuthStateChange((_event,session)=>{
     if(session?.user)showSignedIn(session.user);else showSignedOut();
   });
@@ -963,6 +1041,20 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
     else if(data.session?.user)ensureDisplayNameMetadata(data.session.user).then(showSignedIn);
     else{showSignedOut();loadBoard();loadShopCatalog();}
   });
+  async function verifySessionUser(){
+    if(sessionCheckBusy||!currentUser)return;
+    sessionCheckBusy=true;
+    try{
+      const {data,error}=await supabase.auth.getUser();
+      const message=String(error?.message||'').toLowerCase();
+      const invalid=Boolean(error&&(/user from sub claim|user not found|user does not exist|invalid jwt|jwt expired|session not found/.test(message)))||!data?.user||data.user.id!==currentUser.id;
+      if(invalid){await supabase.auth.signOut({scope:'local'});showSignedOut('계정이 삭제되었거나 세션이 만료되어 로그아웃했어요.');}
+    }catch(_error){/* 일시적인 네트워크 문제로는 로그인 상태를 지우지 않음 */}
+    finally{sessionCheckBusy=false;}
+  }
+  window.addEventListener('focus',verifySessionUser);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')verifySessionUser()});
+  window.setInterval(verifySessionUser,60000);
 })();
 </script>
 </body>
