@@ -332,6 +332,26 @@ body{padding:14px 16px;background:radial-gradient(ellipse at 50% -10%,#503039 0,
  .admin-used-user{grid-column:1/-1;padding-bottom:5px;border-bottom:1px solid #e1d4bf}
 }
 @media(max-width:390px){.page-layout{grid-template-columns:44px minmax(0,1fr);gap:6px}.bookmark-nav{width:44px;padding:3px;gap:5px}.bookmark{min-height:44px}.bookmark b{font-size:8px}.content{padding-right:9px;padding-left:9px}.world-table{min-width:340px}}
+
+.profile-guide-page .world-frame{padding:18px;border-color:#b69568;background:linear-gradient(145deg,#ddcaa6,#c3a67c);box-shadow:inset 0 0 0 3px #fff4dd55,0 8px 22px #34211435}
+.profile-guide-page .lore-section{border-color:#c9b28d;border-radius:9px;background:linear-gradient(145deg,#fffaf0,#f4ead6);box-shadow:0 4px 12px #34211420}
+.profile-guide-page .lore-section>summary{padding:15px 44px 15px 17px;border-bottom:1px solid #e3d2b2;background:linear-gradient(90deg,#ead9b8,#f6efdf);font-size:15px}
+.profile-guide-page .lore-section>summary:before{margin-bottom:6px}
+.profile-guide-page .lore-body{padding:16px;background:#fbf6e9}
+.profile-guide-page .lore-subhead{margin:17px 0 9px;padding:9px 12px;border-left:3px solid #a8784c;border-radius:0 6px 6px 0;background:#eee1c5;color:#68472e;font-size:14px}
+.profile-guide-page .lore-subhead:first-child{margin-top:0}
+.profile-guide-page .lore-body p{margin:7px 0;padding:9px 11px;border:1px solid #e2d3b5;border-radius:6px;background:#fffaf0;line-height:1.65}
+.profile-guide-page .lore-body p>strong{display:inline-block;margin:-2px 5px -2px -2px;padding:4px 7px;border:1px solid #d7c09a;border-radius:4px;background:#f1e5cc;color:#69482f}
+.profile-guide-page .lore-body blockquote{margin:6px 0 11px;padding:9px 12px;border:1px dashed #b99764;border-left:3px solid #ad8050;border-radius:5px;background:#fffdf7;color:#65513d}
+.profile-guide-page .lore-body .lore-list{padding:9px 12px 9px 30px;border:1px solid #e2d3b5;border-radius:6px;background:#fffaf0}
+@media(max-width:760px){
+ .profile-guide-page .world-frame{padding:10px 7px}
+ .profile-guide-page .lore-section>summary{padding:12px 35px 12px 12px;font-size:13px}
+ .profile-guide-page .lore-body{padding:10px 8px}
+ .profile-guide-page .lore-subhead{font-size:12px;padding:8px 9px}
+ .profile-guide-page .lore-body p{padding:8px;font-size:11px}
+ .profile-guide-page .lore-body blockquote{padding:8px 9px;font-size:11px}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -692,11 +712,10 @@ body{padding:14px 16px;background:radial-gradient(ellipse at 50% -10%,#503039 0,
 </div></details></div><div class="world-frame-corner bottom-left">✧</div><div class="world-frame-corner bottom-right">✧</div></div>
     </section>
 
-    <section class="content hidden world-content" id="profileGuidePage" aria-live="polite">
+    <section class="content hidden world-content profile-guide-page" id="profileGuidePage" aria-live="polite">
       <div class="world-cover"><div class="world-ornament">✧ · · ── ▤ ── · · ✧</div><span class="world-kicker">天護 · PERSONNEL FILE</span><h2>캐릭터 프로필 가이드</h2><p>모험가 등록 시 아래 양식을 복사해 작성해 주세요.</p><div class="world-ornament">❧ ───────── ✧ ───────── ❧</div></div>
-      </details>
-<details class="lore-section"><summary>대한민국 통합 헌터 길드 천호(天護)</summary><div class="lore-body">
-<h3 class="lore-subhead">[소속/이름/나이]</h3>
+      <div class="world-frame"><div class="world-frame-corner top-left">✧</div><div class="world-frame-corner top-right">✧</div><div class="world-articles">
+<details class="lore-section" open><summary>캐릭터 프로필 작성 양식 · [소속/이름/나이]</summary><div class="lore-body">
 <h3 class="lore-subhead">“ 🔵 캐릭터를 대표하는 한마디 “</h3>
 <p class=""><strong>※ 🔵 표시가 있는 예시 및 안내 문구는 삭제 후 작성해 주세요.</strong></p>
 <h3 class="lore-subhead"><strong>[캐릭터 이미지]</strong></h3>
@@ -747,7 +766,7 @@ body{padding:14px 16px;background:radial-gradient(ellipse at 50% -10%,#503039 0,
 <p class=""><strong>기타 설정</strong></p>
 <p class="">🔵 추가로 기재하고 싶은 내용을 자유롭게 작성해 주세요.</p>
 </div></details>
-<details class="lore-section"><summary>작성 안내</summary><div class="lore-body">
+<details class="lore-section" open><summary>작성 안내</summary><div class="lore-body">
 <ul class="lore-list"><li class="indent-0">공식 세계관 및 헌터 등급 체계를 준수해 주세요.</li><li class="indent-0">이능력은 캐릭터당 하나만 설정할 수 있습니다.</li><li class="indent-0">시간·공간·정신 계열 이능력은 금지됩니다.</li><li class="indent-0">능력의 한계와 과사용 페널티는 필수입니다.</li><li class="indent-0">먼치킨 설정 및 타 캐릭터 조종은 금지됩니다.</li><li class="indent-0">특수 설정은 운영진의 확인이 필요합니다.</li><li class="indent-0">닉네임은 프로필 등록 후 [ 소속/이름/나이 ] 로 바꿔주세요</li></ul>
 <p class=""><strong>※ 프로필 제출 전 커뮤니티 운영 규칙을 반드시 확인해 주세요.</strong></p>
 </div></details></div><div class="world-frame-corner bottom-left">✧</div><div class="world-frame-corner bottom-right">✧</div></div>
