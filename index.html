@@ -405,6 +405,20 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 .world-cover h2,.world-cover p,.lore-section>summary,.lore-body,.world-table,.world-table td{color:#f0f1f4!important}
 .world-kicker,.world-ornament,.world-frame-corner,.world-cover:before,.world-cover:after,.lore-section>summary:before,.lore-section>summary:after,.world-table th,.world-table td:first-child{color:#ff687b!important}
 .world-table th{background:#3b242b!important}.world-table th,.world-table td,.world-table-wrap{border-color:#62646c!important}
+.lore-body blockquote{margin:10px 0!important;padding:10px 14px!important;border-left:3px solid #ff536b!important;border-radius:0 6px 6px 0!important;background:#3a1d26!important;color:#f3e9eb!important}
+.lore-indent{margin-left:10px!important;padding:7px 12px!important;border-left:2px solid #ff536b!important;border-radius:0 6px 6px 0!important;background:#2b1b21!important;color:#e7e8ec!important}
+.lore-list li.indent-1,.lore-list li.indent-2,.lore-list li.indent-3{color:#e2e3e8!important}
+#profilePage .profile-columns>section{background:#292a31!important;border-color:#6c6e77!important}
+#profilePage .profile-columns>section .section-title{padding:0 0 11px!important;border:0!important;border-bottom:1px solid #747680!important;border-radius:0!important;background:transparent!important;color:#fff!important}
+#profilePage .list-row,#profilePage .profile-empty{background:#24252b!important;border-color:#686a73!important;color:#f3f4f6!important}
+#profilePage .list-row strong{color:#fff!important}#profilePage .list-row span,#profilePage .list-row p{color:#e0e1e5!important}
+#adminPage .admin-card{background:#292a31!important;border-color:#6c6e77!important;color:#f3f4f6!important}
+#adminPage .admin-label,#adminPage .admin-list-title,#adminPage .admin-user-row strong,#adminPage .admin-used-user{color:#fff!important}
+#adminPage .admin-target,#adminPage .admin-hint,#adminPage .admin-user-row span,#adminPage .admin-user-row small,#adminPage .admin-used-item small,#adminPage .admin-card .status{color:#e0e1e5!important}
+#adminPage .admin-user-row,#adminPage .admin-used-row{background:#24252b!important;border-color:#686a73!important;color:#f3f4f6!important}
+#adminPage .admin-user-row:hover{background:#30242a!important;border-color:#ff536b!important}
+#adminPage .admin-target{border-left-color:#ff536b!important;background:#3a1d26!important}
+.settings-link,.settings-link>span strong,.settings-link>b{color:#f3f4f6!important}.settings-link>span small{color:#d0d2d8!important}
 .footer{background:#1c1d22!important;border-color:#565861!important;color:#d3d5da!important}.footer b{color:#fff!important}
 .hidden{display:none!important}
 
@@ -440,11 +454,11 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     </header>
     <nav class="bookmark-nav" aria-label="페이지 이동">
       <button class="bookmark active" type="button" data-page="quests" aria-current="page"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M6 27V16a10 10 0 0 1 20 0v11M3 27h26M10 27v-8m12 8v-8M11 10l5-5 5 5"/></svg></span><b>퀘스트</b></button>
-      <button class="bookmark" type="button" data-page="shop"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 11h22l-2 16H7L5 11Zm5 0 2-6h8l2 6M11 16h10"/></svg></span><b>상점</b></button>
-      <button class="bookmark" type="button" data-page="profile"><span aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="10" r="5"/><path d="M6 27c.7-6 4.4-9 10-9s9.3 3 10 9H6Z"/></svg></span><b>프로필</b></button>
-      <button class="bookmark" type="button" data-page="world"><span aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><path d="M4 16h24M16 4c4 4 6 8 6 12s-2 8-6 12c-4-4-6-8-6-12s2-8 6-12Z"/></svg></span><b>세계관</b></button>
-      <button class="bookmark" type="button" data-page="settings"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 5h14l5 5v17H7zM21 5v6h5M11 16h11M11 21h11"/></svg></span><b>규칙·설정</b></button>
-      <button class="bookmark" type="button" data-page="profileGuide"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M4 7c5-2 9-1 12 2v18c-3-3-7-4-12-2V7Zm24 0c-5-2-9-1-12 2v18c3-3 7-4 12-2V7Z"/></svg></span><b>프로필 가이드</b></button>
+      <button class="bookmark hidden" type="button" data-page="shop"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 11h22l-2 16H7L5 11Zm5 0 2-6h8l2 6M11 16h10"/></svg></span><b>상점</b></button>
+      <button class="bookmark hidden" type="button" data-page="profile"><span aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="10" r="5"/><path d="M6 27c.7-6 4.4-9 10-9s9.3 3 10 9H6Z"/></svg></span><b>프로필</b></button>
+      <button class="bookmark hidden" type="button" data-page="world"><span aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><path d="M4 16h24M16 4c4 4 6 8 6 12s-2 8-6 12c-4-4-6-8-6-12s2-8 6-12Z"/></svg></span><b>세계관</b></button>
+      <button class="bookmark hidden" type="button" data-page="settings"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 5h14l5 5v17H7zM21 5v6h5M11 16h11M11 21h11"/></svg></span><b>규칙·설정</b></button>
+      <button class="bookmark hidden" type="button" data-page="profileGuide"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M4 7c5-2 9-1 12 2v18c-3-3-7-4-12-2V7Zm24 0c-5-2-9-1-12 2v18c3-3 7-4 12-2V7Z"/></svg></span><b>프로필 가이드</b></button>
       <button class="bookmark hidden" type="button" data-page="admin" id="adminBookmark"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 12h22l-2 15H7L5 12Zm3 0 3-7h10l3 7M12 19h8"/></svg></span><b>관리자</b></button>
     </nav>
     <section class="content" id="board" aria-live="polite">
@@ -582,8 +596,6 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 </tbody></table></div>
 <p class="lore-indent"><strong>※ 시설 이용 안내</strong></p>
 <p class="lore-indent">각 시설은 길드 소속 헌터와 허가된 인원이 이용할 수 있으며, 일부 구역은 출입 권한에 따라 제한됩니다. 숙소 객실은 배정된 인원만 사용할 수 있습니다.</p>
-</div></details>
-<details class="lore-section"><summary>던전 🏰</summary><div class="lore-body">
 </div></details>
 <details class="lore-section"><summary><strong>▶ 던전 등급 체계</strong></summary><div class="lore-body">
 <p class="">던전은 마력 농도, 마물의 위험도, 보스의 전투력 및 공략 난이도를 종합하여 <strong>F급부터 S급까지 총 7단계</strong>로 분류됩니다.</p>
@@ -770,10 +782,8 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 
     <section class="content hidden world-content" id="profileGuidePage" aria-live="polite">
       <div class="world-cover"><div class="world-ornament">✧ · · ── ▤ ── · · ✧</div><span class="world-kicker">天護 · PERSONNEL FILE</span><h2>캐릭터 프로필 가이드</h2><p>모험가 등록 시 아래 양식을 복사해 작성해 주세요.</p><div class="world-ornament">❧ ───────── ✧ ───────── ❧</div></div>
-      <div class="world-frame"><div class="world-frame-corner top-left">✧</div><div class="world-frame-corner top-right">✧</div><div class="world-articles"><details class="lore-section"><summary>캐릭터 프로필 작성 가이드</summary><div class="lore-body">
+<div class="world-frame"><div class="world-frame-corner top-left">✧</div><div class="world-frame-corner top-right">✧</div><div class="world-articles"><details class="lore-section"><summary>대한민국 통합 헌터 길드 천호(天護)</summary><div class="lore-body">
 <h3 class="lore-subhead">[소속/이름/나이]</h3>
-</div></details>
-<details class="lore-section"><summary>대한민국 통합 헌터 길드 천호(天護)</summary><div class="lore-body">
 <h3 class="lore-subhead">“ 🔵 캐릭터를 대표하는 한마디 “</h3>
 <p class=""><strong>※ 🔵 표시가 있는 예시 및 안내 문구는 삭제 후 작성해 주세요.</strong></p>
 <h3 class="lore-subhead"><strong>[캐릭터 이미지]</strong></h3>
@@ -903,8 +913,16 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     document.querySelector('#authSwitch').textContent=signup?'이미 계정이 있나요? 로그인':'처음 오셨나요? 계정 만들기';
     authMessage.textContent='';
   }
+  function setPageAccess(loggedIn){
+    document.querySelectorAll('.bookmark[data-page]').forEach(button=>{
+      const page=button.dataset.page;
+      if(page==='quests')return;
+      if(page==='admin'){if(!loggedIn)button.classList.add('hidden');return}
+      button.classList.toggle('hidden',!loggedIn);
+    });
+  }
   function showSignedOut(message=''){
-    currentUser=null;currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];usedRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned:false}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');document.querySelector('#adminBookmark').classList.add('hidden');showPage('quests');
+    currentUser=null;currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];usedRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned:false}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');setPageAccess(false);showPage('quests');
     document.querySelector('#toggleJoined').disabled=true;
     document.querySelector('#profileLogoutButton').disabled=true;
     document.querySelector('#shopWallet').textContent='로그인 후 소지금 표시';
@@ -914,6 +932,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     authMessage.textContent=message;drawList();drawProfile();drawShop();
   }
   async function showSignedIn(user){
+    setPageAccess(true);
     if(currentUser?.id===user.id)return;
     currentUser=user;loginCard.classList.add('hidden');userPanel.classList.remove('hidden');
     document.querySelector('#loggedName').textContent=displayName(user);
@@ -971,8 +990,8 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     inventory.querySelectorAll('[data-use-item]').forEach(button=>button.addEventListener('click',()=>useItem(button.dataset.useItem)));
   }
   function showPage(page){
+    if(!currentUser&&page!=='quests')page='quests';
     if(page==='admin'&&!isAdmin)return;
-    if((page==='profile'||page==='admin')&&!currentUser)page='quests';
     const changed=activePage!==page;activePage=page;
     const pages={quests:document.querySelector('#board'),shop:document.querySelector('#shopPage'),profile:document.querySelector('#profilePage'),world:document.querySelector('#worldPage'),settings:document.querySelector('#settingsPage'),profileGuide:document.querySelector('#profileGuidePage'),admin:document.querySelector('#adminPage')};
     Object.entries(pages).forEach(([key,element])=>element.classList.toggle('hidden',key!==page));
