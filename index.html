@@ -128,7 +128,7 @@ html,body{max-width:100%;overflow-x:hidden}
         </form>
         <form class="auth-form hidden" id="signupForm">
           <label>아이디<input id="signupId" required minlength="3" maxlength="30" pattern="[A-Za-z0-9._-]{3,30}" autocomplete="username" placeholder="영문·숫자·._- (3~30자)"></label>
-          <label>이름<input id="signupName" required maxlength="40" autocomplete="name" placeholder="사이트에서 표시할 이름"></label>
+          <label>Display name<input id="signupName" required maxlength="40" autocomplete="name" placeholder="사이트에서 사용할 이름"></label>
           <label>비밀번호<input id="signupPassword" type="password" required minlength="6" autocomplete="new-password" placeholder="6자 이상"></label>
           <button class="button" type="submit">계정 만들기</button>
         </form>
@@ -548,7 +548,8 @@ html,body{max-width:100%;overflow-x:hidden}
     if(lower.includes('signup')&&lower.includes('disabled'))return 'Supabase에서 새 계정 가입이 비활성화되어 있습니다. Authentication 설정에서 새 사용자 가입을 허용해 주세요. ('+message+')';
     if(lower.includes('email')&&lower.includes('confirm'))return '이름·비밀번호 계정은 이메일 확인을 사용할 수 없습니다. Supabase Authentication의 Email 설정에서 Confirm email을 꺼 주세요. ('+message+')';
     if(lower.includes('invalid api key')||lower.includes('apikey'))return 'Supabase 키가 거부되었습니다. index.html의 프로젝트 URL과 Publishable key가 같은 프로젝트 값인지 확인해 주세요. ('+message+')';
-    if(lower.includes('already')||lower.includes('registered')||lower.includes('duplicate')||error?.code==='23505')return '이미 사용 중인 아이디 또는 이름입니다. 다른 값을 입력해 주세요. ('+message+')';
+    if(lower.includes('already')||lower.includes('registered')||lower.includes('duplicate')||error?.code==='23505')return '이미 사용 중인 아이디 또는 표시 이름입니다. 다른 값을 입력해 주세요. ('+message+')';
+    if(lower.includes('database error saving new user'))return '가입 정보를 저장하지 못했습니다. Display name이 이미 사용 중인지 확인해 주세요. 중복이 아니라면 Supabase의 길드 프로필 가입 트리거 설정을 확인해야 합니다.';
     return '가입 실패: '+message;
   }
   function displayName(user){return user.user_metadata?.user_name||'모험가'}
