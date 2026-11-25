@@ -557,6 +557,27 @@ begin
 end;
 $$;
 
+create or replace function public.admin_get_used_items()
+returns table (use_id bigint, user_id uuid, username text, item_id text, item_name text, used_at timestamptz)
+language plpgsql
+security definer
+stable
+set search_path = ''
+as $$
+begin
+  if auth.uid() is null or not exists (select 1 from public.quest_admins a where a.user_id = auth.uid()) then
+    raise exception 'administrator access required' using errcode = '42501';
+  end if;
+  return query
+  select u.id, u.user_id, p.username, u.item_id, i.name, u.used_at
+  from public.shop_item_uses u
+  join public.guild_profiles p on p.user_id = u.user_id
+  join public.shop_items i on i.id = u.item_id
+  where u.restored_at is null
+  order by p.username_key, u.used_at desc;
+end;
+$$;
+
 create or replace function public.admin_restore_used_item(p_use_id bigint)
 returns text
 language plpgsql
@@ -586,6 +607,7 @@ revoke all on function public.admin_get_users() from public;
 revoke all on function public.admin_grant_gold(uuid, integer) from public;
 revoke all on function public.admin_grant_shop_item(uuid, text) from public;
 revoke all on function public.admin_get_user_used_items(uuid) from public;
+revoke all on function public.admin_get_used_items() from public;
 revoke all on function public.admin_restore_used_item(bigint) from public;
 revoke all on function public.purchase_shop_item(text) from public;
 revoke all on function public.create_guild_profile() from public;
@@ -602,6 +624,7 @@ grant execute on function public.admin_get_users() to authenticated;
 grant execute on function public.admin_grant_gold(uuid, integer) to authenticated;
 grant execute on function public.admin_grant_shop_item(uuid, text) to authenticated;
 grant execute on function public.admin_get_user_used_items(uuid) to authenticated;
+grant execute on function public.admin_get_used_items() to authenticated;
 grant execute on function public.admin_restore_used_item(bigint) to authenticated;
 grant execute on function public.purchase_shop_item(text) to authenticated;
 grant execute on function public.join_quest(text) to authenticated;
