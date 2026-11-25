@@ -120,14 +120,15 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="hero-copy"><div class="eyebrow">천호 길드 · 모험가 게시판</div><h1>오늘의 퀘스트</h1></div>
       <div class="auth-panel" id="loginCard">
         <h2 id="authTitle">길드 로그인</h2>
-        <p id="authDescription">계정 이름과 비밀번호로 로그인하세요.</p>
+        <p id="authDescription">아이디와 비밀번호로 로그인하세요.</p>
         <form class="auth-form" id="loginForm">
-          <label>계정 이름<input id="loginName" required maxlength="40" autocomplete="username" placeholder="이름"></label>
+          <label>아이디<input id="loginId" required maxlength="30" autocomplete="username" placeholder="아이디"></label>
           <label>비밀번호<input id="loginPassword" type="password" required minlength="6" autocomplete="current-password" placeholder="비밀번호"></label>
           <button class="button" type="submit">로그인</button>
         </form>
         <form class="auth-form hidden" id="signupForm">
-          <label>계정 이름<input id="signupName" required maxlength="40" autocomplete="username" placeholder="사용할 이름"></label>
+          <label>아이디<input id="signupId" required minlength="3" maxlength="30" pattern="[A-Za-z0-9._-]{3,30}" autocomplete="username" placeholder="영문·숫자·._- (3~30자)"></label>
+          <label>이름<input id="signupName" required maxlength="40" autocomplete="name" placeholder="사이트에서 표시할 이름"></label>
           <label>비밀번호<input id="signupPassword" type="password" required minlength="6" autocomplete="new-password" placeholder="6자 이상"></label>
           <button class="button" type="submit">계정 만들기</button>
         </form>
@@ -547,14 +548,14 @@ html,body{max-width:100%;overflow-x:hidden}
     if(lower.includes('signup')&&lower.includes('disabled'))return 'Supabase에서 새 계정 가입이 비활성화되어 있습니다. Authentication 설정에서 새 사용자 가입을 허용해 주세요. ('+message+')';
     if(lower.includes('email')&&lower.includes('confirm'))return '이름·비밀번호 계정은 이메일 확인을 사용할 수 없습니다. Supabase Authentication의 Email 설정에서 Confirm email을 꺼 주세요. ('+message+')';
     if(lower.includes('invalid api key')||lower.includes('apikey'))return 'Supabase 키가 거부되었습니다. index.html의 프로젝트 URL과 Publishable key가 같은 프로젝트 값인지 확인해 주세요. ('+message+')';
-    if(lower.includes('already')||lower.includes('registered')||lower.includes('duplicate')||error?.code==='23505')return '이미 사용 중인 계정 이름입니다. 다른 이름을 선택해 주세요. ('+message+')';
+    if(lower.includes('already')||lower.includes('registered')||lower.includes('duplicate')||error?.code==='23505')return '이미 사용 중인 아이디 또는 이름입니다. 다른 값을 입력해 주세요. ('+message+')';
     return '가입 실패: '+message;
   }
   function displayName(user){return user.user_metadata?.user_name||'모험가'}
   function setAuthMode(mode){
     authMode=mode;const signup=mode==='signup';
     document.querySelector('#authTitle').textContent=signup?'계정 만들기':'길드 로그인';
-    document.querySelector('#authDescription').textContent=signup?'이 사이트에서 사용할 이름과 비밀번호를 정하세요.':'계정 이름과 비밀번호로 로그인하세요.';
+    document.querySelector('#authDescription').textContent=signup?'로그인에 사용할 아이디와 사이트에 표시할 이름을 정하세요.':'아이디와 비밀번호로 로그인하세요.';
     document.querySelector('#loginForm').classList.toggle('hidden',signup);
     document.querySelector('#signupForm').classList.toggle('hidden',!signup);
     document.querySelector('#authSwitch').textContent=signup?'이미 계정이 있나요? 로그인':'처음 오셨나요? 계정 만들기';
@@ -706,21 +707,23 @@ html,body{max-width:100%;overflow-x:hidden}
   document.querySelector('#authSwitch').addEventListener('click',()=>setAuthMode(authMode==='login'?'signup':'login'));
   document.querySelector('#loginForm').addEventListener('submit',async event=>{
     event.preventDefault();authMessage.textContent='로그인 중…';
-    const username=document.querySelector('#loginName').value.trim();
+    const accountId=document.querySelector('#loginId').value.trim();
     const password=document.querySelector('#loginPassword').value;
-    const email=await accountEmail(username);
+    const email=await accountEmail(accountId);
     const {error}=await supabase.auth.signInWithPassword({email,password});
-    if(error){authMessage.textContent='이름 또는 비밀번호를 확인해 주세요.';return}
+    if(error){authMessage.textContent='아이디 또는 비밀번호를 확인해 주세요.';return}
     document.querySelector('#loginPassword').value='';
   });
   document.querySelector('#signupForm').addEventListener('submit',async event=>{
     event.preventDefault();authMessage.textContent='계정을 만드는 중…';
-    const username=document.querySelector('#signupName').value.trim();
+    const accountId=document.querySelector('#signupId').value.trim();
+    const displayName=document.querySelector('#signupName').value.trim();
     const password=document.querySelector('#signupPassword').value;
-    if(!username){authMessage.textContent='계정 이름을 입력해 주세요.';return}
+    if(!/^[A-Za-z0-9._-]{3,30}$/.test(accountId)){authMessage.textContent='아이디는 영문·숫자와 . _ - 기호로 3~30자 입력해 주세요.';return}
+    if(!displayName){authMessage.textContent='이름을 입력해 주세요.';return}
     try{
-      const email=await accountEmail(username);
-      const {data,error}=await supabase.auth.signUp({email,password,options:{data:{user_name:username}}});
+      const email=await accountEmail(accountId);
+      const {data,error}=await supabase.auth.signUp({email,password,options:{data:{user_id:accountId,user_name:displayName}}});
       if(error){authMessage.textContent=authErrorMessage(error);return}
       document.querySelector('#signupPassword').value='';
       if(data.session?.user)await showSignedIn(data.session.user);
