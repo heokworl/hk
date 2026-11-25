@@ -167,6 +167,8 @@ begin
     raise exception 'administrator access required' using errcode = '42501';
   end if;
 
+  perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(p_quest_id, 0));
+
   select reward_amount, reward_mode, awarded_at
     into v_reward, v_mode, v_awarded_at
   from public.quest_limits
