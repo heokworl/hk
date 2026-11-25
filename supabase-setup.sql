@@ -391,3 +391,5 @@ grant execute on function public.award_quest(text) to authenticated;
 insert into public.quest_admins (user_id)
 select id from auth.users where id = '34a5e4ea-2b47-4714-a08b-6dacb0a018e7'::uuid
 on conflict (user_id) do nothing;
+
+notify pgrst, 'reload schema';
