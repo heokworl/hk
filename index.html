@@ -455,6 +455,12 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 @keyframes cheonho-spark{0%{opacity:.85;transform:translate(0,0) rotate(45deg)}100%{opacity:0;transform:translate(var(--spark-x),var(--spark-y)) rotate(90deg)}}
 @media(prefers-reduced-motion:reduce){.cheonho-click-layer{display:none}}
 
+
+.admin-add-product{grid-column:1/-1}
+#adminProductDescription{display:block;width:100%;box-sizing:border-box;resize:vertical;margin-top:6px;padding:11px 12px;border:1px solid #64666f;border-radius:7px;background:#222329;color:#f5f6f8;font:inherit;line-height:1.6}
+#adminProductDescription:focus{outline:2px solid #ff627b;outline-offset:1px}
+#adminProductStatus{overflow-wrap:anywhere;color:#e0e1e5}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -886,6 +892,16 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
           <p class="status" id="adminStatus" aria-live="polite"></p>
         </section>
         <section class="admin-card"><h3 class="admin-list-title">길드원 및 보유 골드</h3><div id="adminUserList" class="admin-user-list"><div class="profile-empty">계정 목록을 불러오는 중…</div></div></section>
+        <section class="admin-card admin-add-product">
+          <h3 class="admin-list-title">상점 상품 추가</h3>
+          <form id="adminProductForm" class="auth-form">
+            <label for="adminProductName">상품명<input id="adminProductName" required maxlength="80" placeholder="상품명 (최대 80자)"></label>
+            <label for="adminProductDescription">상품 설명<textarea id="adminProductDescription" maxlength="2000" rows="3" placeholder="설명 (최대 2000자)"></textarea></label>
+            <label for="adminProductPrice">개당 가격 (G)<input id="adminProductPrice" type="number" required min="1" max="1000000" step="1" inputmode="numeric" placeholder="1~1,000,000"></label>
+            <button class="button" id="adminProductButton" type="submit">상품 추가</button>
+          </form>
+          <p class="status" id="adminProductStatus" aria-live="polite"></p>
+        </section>
         <section class="admin-card admin-used-card"><h3 class="admin-list-title">사용 아이템 복구</h3><p class="admin-hint">사용자가 프로필에서 사용한 아이템이에요. 복구하면 해당 사용자의 보유 목록에 다시 나타납니다.</p><div id="adminUsedItems" class="admin-used-list"><div class="profile-empty">사용된 아이템을 불러오는 중…</div></div></section>
       </div>
     </section>
@@ -1259,6 +1275,34 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   document.querySelector('#profileLogoutButton').addEventListener('click',logout);
   document.querySelector('#headerLogoutButton').addEventListener('click',logout);
   document.querySelector('#adminUserSelect').addEventListener('change',updateAdminTargetInfo);
+  let productAddBusy=false;
+  document.querySelector('#adminProductForm').addEventListener('submit',async event=>{
+    event.preventDefault();
+    if(!currentUser||!isAdmin||productAddBusy)return;
+    const form=event.currentTarget,button=document.querySelector('#adminProductButton');
+    const status=document.querySelector('#adminProductStatus');
+    const name=document.querySelector('#adminProductName').value.trim();
+    const description=document.querySelector('#adminProductDescription').value.trim();
+    const price=Number(document.querySelector('#adminProductPrice').value);
+    if(!name||name.length>80||description.length>2000||!Number.isInteger(price)||price<1||price>1000000){
+      status.textContent='상품명·설명 길이와 가격(1~1,000,000G)을 확인해 주세요.';return;
+    }
+    productAddBusy=true;button.disabled=true;status.textContent='상품을 저장하는 중…';
+    try{
+      const {data,error}=await supabase.rpc('admin_add_shop_item',{p_name:name,p_description:description,p_price:price});
+      if(error){
+        status.textContent=error.code==='23505'?'같은 이름의 상품이 이미 있습니다.':/PGRST202|42883/.test(error.code||'')?'상품 추가 DB 설정이 필요합니다. admin-add-shop-item.sql을 실행해 주세요.':'상품 저장 오류: '+error.message;
+        return;
+      }
+      if(!data?.item_id){status.textContent='저장 결과를 확인할 수 없습니다. 재시도 전에 상점 목록을 확인해 주세요.';return}
+      form.reset();
+      status.textContent=name+' 상품을 저장했습니다. 상점 목록을 갱신하는 중…';
+      await loadShopCatalog();
+      status.textContent=shopCatalog.some(item=>item.item_id===data.item_id)?name+' 상품이 상점에 추가되었습니다.':'상품은 저장됐지만 상점 목록 갱신에 실패했습니다. 다시 지급하거나 추가하지 말고 상점 페이지를 다시 열어 주세요.';
+    }catch(error){
+      status.textContent='통신 오류: '+String(error?.message||error)+'. 재시도 전에 상점 목록을 확인해 주세요.';
+    }finally{productAddBusy=false;button.disabled=false}
+  });
   document.querySelector('#adminGoldButton').addEventListener('click',grantGold);
   document.querySelector('#adminItemButton').addEventListener('click',grantShopItem);
   supabase.auth.onAuthStateChange((_event,session)=>{
