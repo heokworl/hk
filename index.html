@@ -73,6 +73,34 @@ body{background:radial-gradient(ellipse at 51% -10%,#55323b 0,transparent 36%),r
 .lore-body blockquote{border-left-color:#bb955c;background:#c3a4420c;color:#dfcfac}
 .lore-body hr{border-top-color:#493b38}
 @media(max-width:680px){.hero{padding:26px 18px;min-height:0}.hero-copy{padding-left:66px}.hero-copy:before{width:52px;height:60px;font-size:15px}.hero:after{letter-spacing:.12em;font-size:9px}.content{padding:22px 15px}.profile-columns>section{padding:13px}.bookmark{border-left:1px solid #57433e;border-top:4px solid #b48a58}.bookmark.active{transform:translateY(2px)}}
+
+/* Layout fixes for narrow embeds and scrollable bookmark rail */
+html,body{max-width:100%;overflow-x:hidden}
+.page-layout{grid-template-columns:68px minmax(0,1fr);min-width:0;align-items:stretch}
+.page-layout>.panel{min-width:0;width:100%}
+.bookmark-nav{max-height:calc(100dvh - 36px);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#a27c4d #21191c;padding:2px 3px 10px 0}
+.bookmark{flex-shrink:0}
+.hero{flex-wrap:wrap;min-width:0}
+.hero-copy{min-width:0;flex:1 1 240px}
+.hero h1{max-width:100%;font-size:clamp(24px,5vw,47px);line-height:1.22;word-break:keep-all;overflow-wrap:normal}
+.auth-panel,.user-panel{flex:0 1 350px;min-width:0}
+@media(max-width:760px){
+ .page-layout{display:block;width:100%}
+ .bookmark-nav{position:sticky;top:0;z-index:20;display:flex;max-height:none;width:100%;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scroll-snap-type:x proximity;padding:4px 6px 8px;background:linear-gradient(180deg,#151114 80%,#15111400);scrollbar-width:thin}
+ .bookmark{flex:0 0 auto;min-width:68px;min-height:48px;scroll-snap-align:start}
+ .bookmark b{writing-mode:horizontal-tb;white-space:nowrap;font-size:11px}
+ .hero{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;padding:24px 18px 30px}
+ .hero-copy{width:100%;padding:0 58px 0 0;min-height:54px}
+ .hero-copy:before{left:auto;right:0;width:46px;height:54px;font-size:13px}
+ .hero h1{font-size:clamp(24px,7vw,38px);letter-spacing:0;line-height:1.25}
+ .auth-panel,.user-panel{width:100%;max-width:none}
+}
+@media(max-width:390px){
+ .hero-copy{padding-right:0;min-height:0}
+ .hero-copy:before{display:none}
+ .hero h1{font-size:clamp(22px,8vw,30px);white-space:nowrap;letter-spacing:-.04em}
+ .bookmark{min-width:62px;padding:7px 8px}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
