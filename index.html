@@ -526,11 +526,7 @@ html,body{max-width:100%;overflow-x:hidden}
   const SUPABASE_URL='https://lbprhoqyvnztshxiskkd.supabase.co';
   const SUPABASE_KEY='sb_publishable_OyOCS9NwpbMR1A3CuK3jzg_Ayuz0vUE';
   const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-  const quests=[
-    {id:'lantern',type:'긴급 의뢰 · 탐사',title:'안개숲의 잃어버린 등불',client:'북부 관문 관리인',reward:'1인당 120G',difficulty:'★★☆☆☆ 보통',duration:'약 2시간',max:3,description:'사흘 전부터 안개숲의 길잡이 등불이 꺼져, 숲을 지나던 상인들이 돌아오지 못하고 있습니다. 숲 가장자리의 낡은 초소를 확인하고 등불을 다시 밝혀 주세요. 해가 지기 전 복귀하는 것이 좋습니다.'},
-    {id:'herbs',type:'채집 의뢰 · 지원',title:'달빛초 약초 채집',client:'성채 의무실',reward:'팀 보상 90G',difficulty:'★☆☆☆☆ 쉬움',duration:'약 1시간',max:4,description:'야간 치료에 필요한 달빛초가 부족합니다. 북쪽 언덕 주변에서 약초를 채집해 의무실로 가져다주세요. 해가 진 뒤에만 잎을 구분할 수 있습니다.'},
-    {id:'bridge',type:'호위 의뢰 · 전투',title:'무너진 다리의 짐마차',client:'상인 조합',reward:'1인당 160G',difficulty:'★★★☆☆ 어려움',duration:'약 3시간',max:2,description:'비가 내린 뒤 동쪽 다리가 무너져 짐마차가 계곡 앞에 멈춰 있습니다. 우회로를 정찰하고 상인과 화물을 안전하게 마을까지 호위해 주세요.'}
-  ];
+  const quests=[];
   let currentUser=null,questStatus=[],shopCatalog=[],purchaseRows=[],refreshId=0,authMode='login',showJoinedOnly=false,currentBalance=0,isAdmin=false,currentName='모험가';
   const loginCard=document.querySelector('#loginCard');
   const userPanel=document.querySelector('#userPanel');
@@ -644,7 +640,7 @@ html,body{max-width:100%;overflow-x:hidden}
   function drawList(){
     const visibleQuests=showJoinedOnly&&currentUser?quests.filter(q=>Boolean(statusFor(q.id).has_joined)):quests;
     const list=document.querySelector('#questList');
-    if(!visibleQuests.length){list.innerHTML='<div class="empty-state">아직 참여한 퀘스트가 없습니다.</div>';return}
+    if(!visibleQuests.length){list.innerHTML='<div class="empty-state">등록된 퀘스트가 없습니다.</div>';return}
     list.innerHTML=visibleQuests.map(q=>{
       const status=statusFor(q.id),count=Number(status.participant_count)||0,joined=Boolean(status.has_joined),full=count>=q.max,awarded=Boolean(status.awarded);
       const disabled=!currentUser||joined||full||awarded;
