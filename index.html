@@ -439,6 +439,22 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 @media(max-width:360px){.shop-card{grid-template-columns:1fr!important}.shop-purchase{grid-template-columns:68px 1fr}.shop-total{grid-column:1/-1}.shop-purchase .button{grid-column:1/-1}}
 .hidden{display:none!important}
 
+
+/* Cheonho silver reticle and gate click effects */
+@media (hover:hover) and (pointer:fine){
+ html,body,body *{cursor:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%228%22%20fill%3D%22none%22%20stroke%3D%22%23dce2ec%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M16%202v9m0%2010v9M2%2016h9m10%200h9%22%20fill%3D%22none%22%20stroke%3D%22%23dce2ec%22%20stroke-width%3D%221.5%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%221.5%22%20fill%3D%22%23dce2ec%22%2F%3E%3C%2Fsvg%3E") 16 16,auto}
+ a,button,[role="button"],summary,label[for],select,input[type="checkbox"],input[type="radio"],a *,button *,summary *{cursor:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%228%22%20fill%3D%22none%22%20stroke%3D%22%23ff627b%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M16%202v9m0%2010v9M2%2016h9m10%200h9%22%20fill%3D%22none%22%20stroke%3D%22%23ff627b%22%20stroke-width%3D%221.5%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%221.5%22%20fill%3D%22%23ff627b%22%2F%3E%3C%2Fsvg%3E") 16 16,pointer}
+ input:not([type="checkbox"]):not([type="radio"]),textarea,[contenteditable="true"],[contenteditable="true"] *{cursor:text}
+ button:disabled,input:disabled,select:disabled{cursor:not-allowed}
+}
+.cheonho-click-layer{position:fixed;inset:0;z-index:2147483647;pointer-events:none;overflow:hidden}
+.cheonho-click{position:absolute;width:0;height:0;pointer-events:none}
+.cheonho-click-ring{position:absolute;left:0;top:0;width:18px;height:18px;border:1px solid #ff627b;border-radius:50%;box-shadow:0 0 9px #ff35544d;transform:translate(-50%,-50%);animation:cheonho-ring .42s ease-out forwards}
+.cheonho-click-spark{position:absolute;left:-1px;top:-1px;width:3px;height:3px;background:#e4e9f2;transform:rotate(45deg);animation:cheonho-spark .4s ease-out forwards}
+@keyframes cheonho-ring{0%{opacity:.9;transform:translate(-50%,-50%) scale(.45)}100%{opacity:0;transform:translate(-50%,-50%) scale(2.7)}}
+@keyframes cheonho-spark{0%{opacity:.85;transform:translate(0,0) rotate(45deg)}100%{opacity:0;transform:translate(var(--spark-x),var(--spark-y)) rotate(90deg)}}
+@media(prefers-reduced-motion:reduce){.cheonho-click-layer{display:none}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -1261,5 +1277,39 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   window.setInterval(verifySessionUser,60000);
 })();
 </script>
+
+<script>
+/* Visual effects only; no account or purchase state is changed. */
+(()=>{
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const layer=document.createElement('div');
+  layer.className='cheonho-click-layer';
+  layer.setAttribute('aria-hidden','true');
+  document.body.appendChild(layer);
+  document.addEventListener('pointerdown',event=>{
+    if(reduced.matches||event.isPrimary===false||event.button!==0)return;
+    const target=event.target;
+    if(target instanceof Element&&target.closest('input,textarea,select,[contenteditable="true"],:disabled'))return;
+    while(layer.childElementCount>=10)layer.firstElementChild.remove();
+    const burst=document.createElement('span');
+    burst.className='cheonho-click';
+    burst.style.left=event.clientX+'px';
+    burst.style.top=event.clientY+'px';
+    const ring=document.createElement('span');
+    ring.className='cheonho-click-ring';
+    burst.appendChild(ring);
+    for(const [x,y] of [[0,-22],[22,0],[0,22],[-22,0]]){
+      const spark=document.createElement('span');
+      spark.className='cheonho-click-spark';
+      spark.style.setProperty('--spark-x',x+'px');
+      spark.style.setProperty('--spark-y',y+'px');
+      burst.appendChild(spark);
+    }
+    layer.appendChild(burst);
+    setTimeout(()=>burst.remove(),480);
+  },{passive:true});
+})();
+</script>
+
 </body>
 </html>
