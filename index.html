@@ -6,7 +6,7 @@
 <title>길드 퀘스트 게시판</title>
 <style>
 :root{--ink:#f4f1e9;--muted:#aaa99f;--bg:#101312;--line:#303832;--gold:#d9b66d;--green:#b7d7ad;--red:#d98c79}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -12%,#354035 0,transparent 44%),var(--bg);color:var(--ink);font-family:Inter,Pretendard,"Noto Sans KR",sans-serif;padding:26px}.shell{width:min(100%,780px);margin:auto}.topline{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;letter-spacing:.17em;margin:0 0 22px}.sigil{color:var(--gold);font-size:19px}.panel{border:1px solid #485248;background:linear-gradient(145deg,rgba(34,42,36,.97),rgba(20,24,22,.98));box-shadow:0 26px 80px #0008;border-radius:20px;overflow:hidden}.hero{display:flex;align-items:center;justify-content:space-between;gap:28px;padding:26px 28px;background:linear-gradient(0deg,#151a17e8,#151a17c9),radial-gradient(ellipse at 50% 15%,#b7a36955,transparent 65%);border-bottom:1px solid var(--line)}.hero-copy{flex:1}.auth-panel{width:min(100%,350px);padding:16px;border:1px solid #485248;border-radius:13px;background:#111613e8}.auth-panel h2{font-family:Georgia,"Noto Serif KR",serif;font-size:19px;font-weight:500;margin:0 0 10px}.auth-panel .auth-form{gap:8px}.auth-panel .auth-form input{padding:9px 10px}.auth-panel .auth-switch{margin-top:7px}.auth-panel .note{margin:8px 0 0}.user-panel{width:min(100%,350px);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 15px;border:1px solid #52634e;border-radius:11px;background:#182019}.hero .eyebrow{font-size:11px;color:var(--gold);letter-spacing:.24em}.hero h1{font-family:Georgia,"Noto Serif KR",serif;font-size:clamp(32px,7vw,48px);font-weight:500;margin:14px 0 0}.eyebrow{font-size:11px;color:var(--gold);letter-spacing:.24em}.hero h1{font-family:Georgia,"Noto Serif KR",serif;font-size:clamp(32px,7vw,48px);font-weight:500;margin:14px 0 0}.content{padding:24px 28px}.section-title{font-family:Georgia,"Noto Serif KR",serif;font-size:22px;font-weight:500;margin:0 0 12px}.auth-form{display:grid;gap:11px;text-align:left}.auth-form label{color:#c5c8be;font-size:12px}.auth-form input{display:block;width:100%;margin-top:6px;padding:11px 12px;border:1px solid #4b554d;border-radius:7px;background:#0f1411;color:var(--ink);font:inherit}.auth-form input:focus{outline:2px solid var(--gold);outline-offset:1px}.auth-form .button{width:100%;margin-top:3px}.auth-switch{margin-top:13px;padding:5px 8px;border:0;background:transparent;color:var(--green);font:inherit;font-size:12px;cursor:pointer}.auth-switch:hover{text-decoration:underline}.button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border:1px solid #e2c982;background:var(--gold);color:#1e211a;border-radius:8px;font-weight:750;cursor:pointer;font:inherit;font-weight:750}.button:hover:not(:disabled){filter:brightness(1.07);transform:translateY(-1px)}.error{min-height:18px;margin:12px 0 0;color:var(--red);font-size:12px}.logged-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;margin-bottom:22px;border:1px solid #52634e;border-radius:11px;background:#182019}.welcome{font-size:14px}.welcome strong{color:var(--green)}.logout{padding:8px 11px;background:transparent;border:1px solid #596057;border-radius:7px;color:var(--ink);cursor:pointer}.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}.section-title{margin:0}.tag{font-size:11px;color:var(--green);letter-spacing:.08em;border:1px solid #52634e;padding:6px 9px;border-radius:30px;white-space:nowrap}.cards{display:grid;gap:13px}.quest-card{border:1px solid var(--line);background:#111613;border-radius:12px;padding:18px}.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.quest-card h3{font-family:Georgia,"Noto Serif KR",serif;font-size:20px;font-weight:500;margin:10px 0 7px}.quest-card p{font-size:13px;color:#c5c8be;line-height:1.7;margin:0}.meta{color:var(--muted);font-size:12px;line-height:1.6;margin-top:10px}.count{font-size:12px;color:var(--gold);white-space:nowrap}.card-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:16px}.join{padding:10px 14px;white-space:nowrap}.join:disabled{background:#333a34;border-color:#454d46;color:#858d84;cursor:not-allowed;transform:none}.members{font-size:12px;color:#aeb5a9;line-height:1.7}.filter-button{padding:9px 12px;border:1px solid #596057;border-radius:8px;background:transparent;color:var(--ink);font:inherit;cursor:pointer}.filter-button:disabled{opacity:.45;cursor:not-allowed}.empty-state{text-align:center;color:var(--muted);padding:24px;border:1px dashed #485248;border-radius:12px}.status{min-height:18px;margin:12px 0 0;color:var(--muted);font-size:12px;text-align:center}.hidden{display:none!important}.footer{display:flex;justify-content:space-between;padding:15px 20px;color:#858c82;font-size:11px;letter-spacing:.05em;border-top:1px solid var(--line)}.footer b{color:#c1c8b7;font-weight:500}.note{text-align:center;color:#777e75;font-size:11px;line-height:1.6;margin:15px 0 0}@media(max-width:680px){body{padding:14px}.hero{display:grid;gap:20px;padding:26px 18px}.auth-panel,.user-panel{width:100%}.content{padding:19px 15px}.quest-card{padding:15px}.card-bottom{align-items:flex-end}.footer{padding:13px 15px}.section-title{font-size:20px}}
-</style>
+.wallet{display:block;margin-top:5px;color:var(--gold);font-size:12px}.admin-badge{margin-left:6px;color:var(--gold);font-size:10px;border:1px solid #826b3e;border-radius:20px;padding:2px 6px}.card-actions{display:flex;align-items:center;gap:8px}.award{padding:9px 12px;background:transparent;border:1px solid #947b43;color:#e4c879;border-radius:8px;white-space:nowrap}.award:disabled{opacity:.48;cursor:not-allowed}@media(max-width:680px){.card-actions{flex-wrap:wrap;justify-content:flex-end}}</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -32,7 +32,7 @@
         <p class="note">이 사이트에서 계정을 만들어요. 비밀번호 분실 시 이메일 재설정은 지원되지 않습니다.</p>
         <p class="error" id="authMessage" aria-live="polite"></p>
       </div>
-      <div class="user-panel hidden" id="userPanel"><div class="welcome"><span class="sigil">✦</span> 로그인: <strong id="loggedName"></strong></div><button class="logout" id="logoutButton" type="button">로그아웃</button></div>
+      <div class="user-panel hidden" id="userPanel"><div class="welcome"><span class="sigil">✦</span> 로그인: <strong id="loggedName"></strong><span class="admin-badge hidden" id="adminBadge">관리자</span><span class="wallet" id="walletBalance">소지금 0G</span></div><button class="logout" id="logoutButton" type="button">로그아웃</button></div>
     </header>
     <section class="content" id="board" aria-live="polite">
       <div class="section-head"><h2 class="section-title">퀘스트 목록</h2><button class="filter-button" id="toggleJoined" type="button" disabled>참여한 퀘스트</button></div>
@@ -53,7 +53,7 @@
     {id:'herbs',type:'채집 의뢰 · 지원',title:'달빛초 약초 채집',client:'성채 의무실',reward:'팀 보상 90G',difficulty:'★☆☆☆☆ 쉬움',duration:'약 1시간',max:4,description:'야간 치료에 필요한 달빛초가 부족합니다. 북쪽 언덕 주변에서 약초를 채집해 의무실로 가져다주세요. 해가 진 뒤에만 잎을 구분할 수 있습니다.'},
     {id:'bridge',type:'호위 의뢰 · 전투',title:'무너진 다리의 짐마차',client:'상인 조합',reward:'1인당 160G',difficulty:'★★★☆☆ 어려움',duration:'약 3시간',max:2,description:'비가 내린 뒤 동쪽 다리가 무너져 짐마차가 계곡 앞에 멈춰 있습니다. 우회로를 정찰하고 상인과 화물을 안전하게 마을까지 호위해 주세요.'}
   ];
-  let currentUser=null,questStatus=[],refreshId=0,authMode='login',showJoinedOnly=false;
+  let currentUser=null,questStatus=[],refreshId=0,authMode='login',showJoinedOnly=false,currentBalance=0,isAdmin=false;
   const loginCard=document.querySelector('#loginCard');
   const userPanel=document.querySelector('#userPanel');
   const authMessage=document.querySelector('#authMessage');
@@ -84,7 +84,7 @@
     authMessage.textContent='';
   }
   function showSignedOut(message=''){
-    currentUser=null;loginCard.classList.remove('hidden');userPanel.classList.add('hidden');
+    currentUser=null;currentBalance=0;isAdmin=false;loginCard.classList.remove('hidden');userPanel.classList.add('hidden');
     document.querySelector('#toggleJoined').disabled=true;
     authMessage.textContent=message;drawList();
   }
@@ -92,7 +92,16 @@
     currentUser=user;loginCard.classList.add('hidden');userPanel.classList.remove('hidden');
     document.querySelector('#loggedName').textContent=displayName(user);
     document.querySelector('#toggleJoined').disabled=false;
-    await loadBoard();
+    await Promise.all([loadBoard(),loadWallet()]);
+  }
+  async function loadWallet(){
+    const {data,error}=await supabase.rpc('get_my_wallet');
+    if(error){boardStatus.textContent='계정 지갑 오류: '+error.message;return}
+    const row=Array.isArray(data)?data[0]:data;
+    currentBalance=Number(row?.balance)||0;isAdmin=Boolean(row?.is_admin);
+    document.querySelector('#walletBalance').textContent=`소지금 ${currentBalance.toLocaleString('ko-KR')}G`;
+    document.querySelector('#adminBadge').classList.toggle('hidden',!isAdmin);
+    drawList();
   }
   async function loadBoard(){
     const requestId=++refreshId;boardStatus.textContent='퀘스트 정보를 불러오는 중…';
@@ -101,18 +110,20 @@
     if(error){boardStatus.textContent='퀘스트 현황 오류: '+error.message;return}
     questStatus=data||[];boardStatus.textContent='';drawList();
   }
-  function statusFor(questId){return questStatus.find(row=>row.quest_id===questId)||{participant_count:0,has_joined:false}}
+  function statusFor(questId){return questStatus.find(row=>row.quest_id===questId)||{participant_count:0,has_joined:false,reward_amount:0,reward_mode:'per_user',awarded:false}}
   function drawList(){
     const visibleQuests=showJoinedOnly&&currentUser?quests.filter(q=>Boolean(statusFor(q.id).has_joined)):quests;
     const list=document.querySelector('#questList');
     if(!visibleQuests.length){list.innerHTML='<div class="empty-state">아직 참여한 퀘스트가 없습니다.</div>';return}
     list.innerHTML=visibleQuests.map(q=>{
-      const status=statusFor(q.id),count=Number(status.participant_count)||0,joined=Boolean(status.has_joined),full=count>=q.max;
-      const disabled=!currentUser||joined||full;
-      const label=!currentUser?'로그인 후 참여':joined?'참여 완료':full?'모집 마감':'참여하기';
-      return `<article class="quest-card"><div class="card-top"><div><span class="tag">${q.type}</span><h3>${q.title}</h3></div><span class="count">${count}/${q.max}명</span></div><p>${q.description}</p><div class="meta">의뢰인 ${q.client} · 보상 ${q.reward} · ${q.duration} · ${q.difficulty}</div><div class="card-bottom"><span class="members">${joined?'내 참여 기록 있음':currentUser?'참여 가능':'참여하려면 로그인하세요'}</span><button class="button join" data-quest="${q.id}" ${disabled?'disabled':''}>${label}</button></div></article>`;
+      const status=statusFor(q.id),count=Number(status.participant_count)||0,joined=Boolean(status.has_joined),full=count>=q.max,awarded=Boolean(status.awarded);
+      const disabled=!currentUser||joined||full||awarded;
+      const label=awarded?'퀘스트 종료':!currentUser?'로그인 후 참여':joined?'참여 완료':full?'모집 마감':'참여하기';
+      const adminAction=isAdmin?`<button class="button award" data-award="${q.id}" ${awarded||count===0?'disabled':''}>${awarded?'지급 완료':'보상 지급'}</button>`:'';
+      return `<article class="quest-card"><div class="card-top"><div><span class="tag">${q.type}</span><h3>${q.title}</h3></div><span class="count">${count}/${q.max}명${awarded?' · 지급 완료':''}</span></div><p>${q.description}</p><div class="meta">의뢰인 ${q.client} · 보상 ${q.reward} · ${q.duration} · ${q.difficulty}</div><div class="card-bottom"><span class="members">${joined?'내 참여 기록 있음':currentUser?'참여 가능':'참여하려면 로그인하세요'}</span><div class="card-actions">${adminAction}<button class="button join" data-quest="${q.id}" ${disabled?'disabled':''}>${label}</button></div></div></article>`;
     }).join('');
     document.querySelectorAll('[data-quest]').forEach(button=>button.addEventListener('click',()=>joinQuest(button.dataset.quest)));
+    document.querySelectorAll('[data-award]').forEach(button=>button.addEventListener('click',()=>awardQuest(button.dataset.award)));
   }
   async function joinQuest(questId){
     if(!currentUser||statusFor(questId).has_joined)return;
@@ -122,8 +133,22 @@
     if(error){boardStatus.textContent='참여 등록에 실패했습니다. 잠시 후 다시 시도해 주세요.';if(button)button.disabled=false;return}
     if(data==='full')boardStatus.textContent='모집 인원이 모두 찼습니다.';
     else if(data==='already_joined')boardStatus.textContent='이미 참여한 퀘스트입니다.';
+    else if(data==='closed')boardStatus.textContent='이미 보상이 지급되어 퀘스트 참여가 마감됐습니다.';
     else boardStatus.textContent='퀘스트 참여가 등록됐습니다.';
     await loadBoard();
+  }
+  async function awardQuest(questId){
+    if(!currentUser||!isAdmin)return;
+    const quest=quests.find(item=>item.id===questId);
+    if(!window.confirm(`${quest?.title||'퀘스트'} 참여자에게 보상을 지급할까요? 지급 후에는 취소할 수 없습니다.`))return;
+    const button=document.querySelector(`[data-award="${questId}"]`);if(button)button.disabled=true;
+    boardStatus.textContent='보상을 지급하는 중…';
+    const {data,error}=await supabase.rpc('award_quest',{p_quest_id:questId});
+    if(error){boardStatus.textContent='보상 지급 오류: '+error.message;if(button)button.disabled=false;return}
+    if(data==='no_participants')boardStatus.textContent='참여자가 없어 보상을 지급하지 않았습니다.';
+    else if(data==='already_awarded')boardStatus.textContent='이미 보상이 지급된 퀘스트입니다.';
+    else boardStatus.textContent='참여자 계정에 보상을 지급했습니다.';
+    await Promise.all([loadBoard(),loadWallet()]);
   }
   document.querySelector('#toggleJoined').addEventListener('click',()=>{
     showJoinedOnly=!showJoinedOnly;
