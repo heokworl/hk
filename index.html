@@ -181,6 +181,46 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
 .bookmark-nav{scrollbar-color:#d6b474 #21191c}
 @media(max-width:760px){.hero{padding:20px 15px 16px;gap:14px}.hero-copy{min-height:128px;padding:22px 19px 20px}.hero-copy:after{left:19px}.auth-panel,.user-panel{margin:0}.content{padding:18px 13px 20px}.section-head{padding:10px 11px}.section-title{font-size:18px}.board-subtitle{font-size:11px}.quest-card{padding:15px 14px 14px}.profile-columns>section{padding:11px}.world-frame{padding:12px 9px}}
 @media(max-width:390px){.hero h1{white-space:normal;font-size:22px}.section-head{align-items:flex-start}.board-subtitle{display:block;margin-top:2px}.filter-button{font-size:11px;padding:8px 9px}}
+
+/* Fixed guild tabs, compact account card, and admin tools */
+@media(min-width:761px){
+ .bookmark-nav{position:fixed;left:max(8px,calc((100vw - 1040px)/2 - 78px));top:50%;transform:translateY(-50%);z-index:100;max-height:calc(100dvh - 24px);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;}
+}
+.user-panel{flex:0 1 330px;padding:10px 12px;gap:10px;min-width:0}
+.user-panel .welcome{min-width:0;font-size:12px;line-height:1.5}
+.user-panel .welcome strong{color:#493426}
+.user-panel .wallet{color:#805331;font-size:11px}
+.user-panel .header-logout{flex:0 0 auto;margin:0;padding:7px 9px;font-size:11px;white-space:nowrap}
+#adminPage .section-head{margin-bottom:13px}
+.admin-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:14px;align-items:start}
+.admin-card{padding:17px;border:1px solid #d6c5a4;border-radius:3px;background:linear-gradient(135deg,#fff9eb,#f1e6cf);box-shadow:2px 4px 8px #37251944;color:#49372b}
+.admin-label{display:block;margin-bottom:7px;color:#644b38;font-size:12px;font-weight:750}
+.admin-card select,.admin-card input{width:100%;min-width:0;padding:10px;border:1px solid #c5b69e;border-radius:3px;background:#fffdf6;color:#382c25;font:inherit}
+.admin-target{margin:9px 0 16px;padding:10px;border-left:3px solid #a36b3f;background:#eadfc8;color:#654c39;font-size:12px;font-weight:700}
+.admin-form-row{margin-top:14px}
+.admin-inline{display:flex;gap:8px;align-items:center}
+.admin-inline select,.admin-inline input{flex:1}
+.admin-inline .button{flex:0 0 auto;padding:10px 12px;font-size:12px}
+.admin-list-title{margin:0 0 10px;color:#49372b;font-size:15px}
+.admin-user-list{display:grid;gap:7px;max-height:380px;overflow:auto}
+.admin-user-row{display:flex;justify-content:space-between;gap:12px;padding:10px 11px;border:1px solid #d6c5a4;border-radius:3px;background:#fff8e9;color:#49372b;text-align:left;font:inherit;cursor:pointer}
+.admin-user-row:hover{border-color:#a36b3f;background:#fffdf6}
+.admin-user-row span{color:#805331;font-size:12px;white-space:nowrap}
+.settings-link{width:100%;grid-template-columns:1fr auto;align-items:center;text-align:left;cursor:pointer;color:#49372b}
+.settings-link>span{display:grid;gap:5px}
+.settings-link>span strong{font-size:15px}
+.settings-link>span small{font-size:11px;color:#78645a}
+.settings-link>b{font-size:12px;color:#805331;white-space:nowrap}
+.admin-actions{display:grid;gap:12px}
+.admin-card .status{color:#805331;text-align:left}
+@media(max-width:760px){
+ .bookmark-nav{position:sticky;top:0;transform:none;}
+ .user-panel{width:100%;display:flex;justify-content:space-between;}
+ .admin-layout{grid-template-columns:1fr}
+ .admin-inline{align-items:stretch}
+ .admin-inline .button{padding:9px 10px}
+}
+@media(max-width:390px){.admin-inline{flex-wrap:wrap}.admin-inline .button{width:100%}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -193,7 +233,10 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
       <button class="bookmark" type="button" data-page="shop"><span>✦</span><b>상점</b></button>
       <button class="bookmark" type="button" data-page="profile"><span>♙</span><b>프로필</b></button>
       <button class="bookmark" type="button" data-page="world"><span>✧</span><b>세계관</b></button>
+      <button class="bookmark" type="button" data-page="settings"><span>⚙</span><b>규칙·설정</b></button>
       <button class="bookmark" type="button" data-page="rules"><span>❖</span><b>커뮤니티 룰</b></button>
+      <button class="bookmark" type="button" data-page="profileGuide"><span>▤</span><b>프로필 가이드</b></button>
+      <button class="bookmark hidden" type="button" data-page="admin" id="adminBookmark"><span>♜</span><b>관리자</b></button>
     </nav>
   <section class="panel">
     <header class="hero">
@@ -216,7 +259,7 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
         <p class="note">이 사이트에서 계정을 만들어요. 비밀번호 분실 시 이메일 재설정은 지원되지 않습니다.</p>
         <p class="error" id="authMessage" aria-live="polite"></p>
       </div>
-      <div class="user-panel hidden" id="userPanel"><div class="welcome"><span class="sigil">✦</span> 로그인: <strong id="loggedName"></strong><span class="admin-badge hidden" id="adminBadge">관리자</span><span class="wallet" id="walletBalance">소지금 0G</span></div></div>
+      <div class="user-panel hidden" id="userPanel"><div class="welcome"><span class="sigil">✦</span> 로그인: <strong id="loggedName"></strong><span class="admin-badge hidden" id="adminBadge">관리자</span><span class="wallet" id="walletBalance">소지금 0G</span></div><button class="logout header-logout" id="headerLogoutButton" type="button">로그아웃</button></div>
     </header>
     <section class="content" id="board" aria-live="polite">
       <div class="section-head"><h2 class="section-title">길드 게시판 <span class="board-subtitle">· 의뢰 및 모험가 구인</span></h2><button class="filter-button" id="toggleJoined" type="button" disabled>참여한 퀘스트</button></div>
@@ -386,68 +429,12 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
 <ul class="lore-list"><li class="indent-0"><strong>상위 등급 헌터의 필수 동행 조건은 반드시 준수</strong>해야 하며, 조건을 충족하지 못한 팀은 해당 던전의 공략이 제한됩니다.</li><li class="indent-0">팀 편성 시 청룡, 백호, 현무 소속 헌터가 자유롭게 혼합될 수 있으며, 전투·치유·지원 능력의 균형을 권장합니다.</li><li class="indent-0">던전 등급은 헌터 등급과 별개이며, 내부 환경이나 마물의 변이에 따라 위험도가 변경될 수 있습니다.</li><li class="indent-0">제한 시간 내 던전 공략에 실패할 경우, 게이트 밖으로 마물이 쏟아지는 <strong>던전 브레이크</strong>가 발생할 수 있습니다.</li><li class="indent-0">S급 던전은 국가적 재난에 준하는 위험 구역으로, 일반 공략팀 외에도 길드 차원의 추가 지원 전력이 투입될 수 있습니다.</li></ul>
 <div class="world-image-placeholder"><span>✧</span><strong>길드 자료 이미지</strong><small>원본 문서에 표시된 이미지 자리</small><span>✧</span></div>
 </div></details>
-<details class="lore-section"><summary>규칙 및 설정</summary><div class="lore-body">
-</div></details>
 
-<details class="lore-section"><summary>캐릭터 프로필 작성 가이드</summary><div class="lore-body">
-<h3 class="lore-subhead">[소속/이름/나이]</h3>
-</div></details>
-<details class="lore-section"><summary>대한민국 통합 헌터 길드 천호(天護)</summary><div class="lore-body">
-<h3 class="lore-subhead">“ 🔵 캐릭터를 대표하는 한마디 “</h3>
-<p class=""><strong>※ 🔵 표시가 있는 예시 및 안내 문구는 삭제 후 작성해 주세요.</strong></p>
-<h3 class="lore-subhead"><strong>[캐릭터 이미지]</strong></h3>
-<p class="">🔵 캐릭터 이미지를 첨부해 주세요. (최소 반신 이상)</p>
-<p class=""><strong>외형 프롬프트</strong></p>
-<p class="">🔵 AI 이미지 제작에 사용한 캐릭터 외형 프롬프트를 입력해 주세요.</p>
-<p class="">기본 의상 <strong>프롬프트</strong></p>
-<p class="">🔵 AI 이미지 제작에 사용한 캐릭터 외형 프롬프트를 입력해 주세요.</p>
-<p class=""><strong>이름</strong></p>
-<blockquote>🔵 이름 / 영문명 (선택) / 활동명 (영어 이름 가능, 선택)<br></blockquote>
-<p class=""><strong>나이</strong></p>
-<blockquote>🔵 만 00세<br></blockquote>
-<p class=""><strong>성별</strong></p>
-<blockquote>🔵 성별 입력<br></blockquote>
-<p class=""><strong>신장 / 체중</strong></p>
-<blockquote>🔵 신장cm / 체중kg (선택, 체형으로 간단하게 작성 가능)<br></blockquote>
-<p class=""><strong>국적</strong></p>
-<blockquote>🔵 국적 입력<br></blockquote>
-<p class=""><strong>헌터 등급</strong></p>
-<blockquote>🔵 S / A / B / C / D / E / F<br></blockquote>
-<p class=""><strong>소속 부서</strong></p>
-<blockquote>🔵 청룡(공략부) / 백호(구조의료부) / 현무(지원보급부)<br></blockquote>
-<p class=""><strong>직책 및 포지션</strong></p>
-<blockquote>🔵 담당 역할 등을 작성해 주세요.<br></blockquote>
-<h3 class="lore-subhead">캐릭터 정보</h3>
-<p class=""><strong>외형</strong></p>
-<p class="">🔵 외모, 체형, 복장 및 신체적 특징 등을 작성해 주세요.</p>
-<p class=""><strong>성격</strong></p>
-<p class="">🔵 성격과 가치관 등을 자유롭게 작성해 주세요. 키워드 형식도 가능합니다.</p>
-<p class=""><strong>과거사</strong></p>
-<p class="">🔵 성장 배경, 각성 계기, 헌터가 된 이유 등을 작성해 주세요.</p>
-<p class=""><strong>기타 사항</strong></p>
-<p class="">🔵 취미, 호불호, 습관, 소지품 등 자유롭게 작성해 주세요.</p>
-<h3 class="lore-subhead">이능력 정보</h3>
-<p class=""><strong>이능력 명칭</strong></p>
-<p class="">🔵 능력의 이름을 작성해 주세요.</p>
-<p class=""><strong>이능력 설명</strong></p>
-<p class="">🔵 능력의 효과, 활용 방식 및 응용 기술을 작성해 주세요.</p>
-<p class=""><strong>사용 조건 및 한계</strong></p>
-<p class="">🔵 사거리, 지속 시간, 체력 소모, 사용 횟수 등 제약 사항을 작성해 주세요.</p>
-<p class=""><strong>과사용 페널티 (필수)</strong></p>
-<p class="">🔵 능력 과사용으로 발생하는 부작용을 구체적으로 작성해 주세요.</p>
-<ul class="lore-list"><li class="indent-0"><strong>발생 조건 :</strong></li><li class="indent-0"><strong>증상 및 영향 :</strong></li><li class="indent-0"><strong>회복 방법 :</strong> (필수x, 선택)</li><li class="indent-0"><strong>회복 소요 시간 :</strong></li></ul>
-<p class="">🔵 실제 활동에 영향을 미치는 페널티여야 하며, 형식적인 불이익은 인정되지 않습니다</p>
-<h3 class="lore-subhead">추가 설정</h3>
-<p class=""><strong>사전 관계</strong></p>
-<p class="">🔵 기존 관계가 있다면 작성해 주세요. 사전 연인 및 부부 관계는 금지됩니다.</p>
-<p class=""><strong>기타 설정</strong></p>
-<p class="">🔵 추가로 기재하고 싶은 내용을 자유롭게 작성해 주세요.</p>
-</div></details>
-<details class="lore-section"><summary>작성 안내</summary><div class="lore-body">
-<ul class="lore-list"><li class="indent-0">공식 세계관 및 헌터 등급 체계를 준수해 주세요.</li><li class="indent-0">이능력은 캐릭터당 하나만 설정할 수 있습니다.</li><li class="indent-0">시간·공간·정신 계열 이능력은 금지됩니다.</li><li class="indent-0">능력의 한계와 과사용 페널티는 필수입니다.</li><li class="indent-0">먼치킨 설정 및 타 캐릭터 조종은 금지됩니다.</li><li class="indent-0">특수 설정은 운영진의 확인이 필요합니다.</li><li class="indent-0">닉네임은 프로필 등록 후 [ 소속/이름/나이 ] 로 바꿔주세요</li></ul>
-<p class=""><strong>※ 프로필 제출 전 커뮤니티 운영 규칙을 반드시 확인해 주세요.</strong></p>
-</div></details>
 </div><div class="world-frame-corner bottom-left">✧</div><div class="world-frame-corner bottom-right">✧</div></div>
+    </section>
+    <section class="content hidden world-content" id="settingsPage" aria-live="polite">
+      <div class="world-cover"><div class="world-ornament">✧ · · ── ⚙ ── · · ✧</div><span class="world-kicker">天護 · FIELD MANUAL</span><h2>규칙 및 설정</h2><p>천호 길드의 운영 기준과 캐릭터 등록 자료를 확인하세요.</p><div class="world-ornament">❧ ───────── ✧ ───────── ❧</div></div>
+      <div class="admin-actions"><button class="shop-card settings-link" type="button" data-page="rules"><span><strong>커뮤니티 룰</strong><small>상호 존중 · 캐릭터 설정 · 임무 진행 · 운영 방침</small></span><b>열기 →</b></button><button class="shop-card settings-link" type="button" data-page="profileGuide"><span><strong>캐릭터 프로필 가이드</strong><small>기본 정보 · 이능력 · 한계 및 과사용 페널티</small></span><b>열기 →</b></button></div>
     </section>
     <section class="content hidden world-content" id="rulesPage" aria-live="polite">
       <div class="world-cover"><div class="world-ornament">✧ · · ── ❖ ── · · ✧</div><span class="world-kicker">天護 · COMMUNITY CHARTER</span><h2>커뮤니티 룰</h2><p>모두가 안전하고 즐겁게 이야기를 이어가기 위한 길드 운영 규정.</p><div class="world-ornament">❧ ───────── ✧ ───────── ❧</div></div>
@@ -597,6 +584,85 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
 <p class=""><strong>모두가 함께 만들어 가는 세계인 만큼, 서로의 이야기를 존중해 주세요.</strong></p>
 </div></details></div><div class="world-frame-corner bottom-left">✧</div><div class="world-frame-corner bottom-right">✧</div></div>
     </section>
+
+    <section class="content hidden world-content" id="profileGuidePage" aria-live="polite">
+      <div class="world-cover"><div class="world-ornament">✧ · · ── ▤ ── · · ✧</div><span class="world-kicker">天護 · PERSONNEL FILE</span><h2>캐릭터 프로필 가이드</h2><p>모험가 등록 시 아래 양식을 복사해 작성해 주세요.</p><div class="world-ornament">❧ ───────── ✧ ───────── ❧</div></div>
+      <div class="world-frame"><div class="world-frame-corner top-left">✧</div><div class="world-frame-corner top-right">✧</div><div class="world-articles"><details class="lore-section"><summary>캐릭터 프로필 작성 가이드</summary><div class="lore-body">
+<h3 class="lore-subhead">[소속/이름/나이]</h3>
+</div></details>
+<details class="lore-section"><summary>대한민국 통합 헌터 길드 천호(天護)</summary><div class="lore-body">
+<h3 class="lore-subhead">“ 🔵 캐릭터를 대표하는 한마디 “</h3>
+<p class=""><strong>※ 🔵 표시가 있는 예시 및 안내 문구는 삭제 후 작성해 주세요.</strong></p>
+<h3 class="lore-subhead"><strong>[캐릭터 이미지]</strong></h3>
+<p class="">🔵 캐릭터 이미지를 첨부해 주세요. (최소 반신 이상)</p>
+<p class=""><strong>외형 프롬프트</strong></p>
+<p class="">🔵 AI 이미지 제작에 사용한 캐릭터 외형 프롬프트를 입력해 주세요.</p>
+<p class="">기본 의상 <strong>프롬프트</strong></p>
+<p class="">🔵 AI 이미지 제작에 사용한 캐릭터 외형 프롬프트를 입력해 주세요.</p>
+<p class=""><strong>이름</strong></p>
+<blockquote>🔵 이름 / 영문명 (선택) / 활동명 (영어 이름 가능, 선택)<br></blockquote>
+<p class=""><strong>나이</strong></p>
+<blockquote>🔵 만 00세<br></blockquote>
+<p class=""><strong>성별</strong></p>
+<blockquote>🔵 성별 입력<br></blockquote>
+<p class=""><strong>신장 / 체중</strong></p>
+<blockquote>🔵 신장cm / 체중kg (선택, 체형으로 간단하게 작성 가능)<br></blockquote>
+<p class=""><strong>국적</strong></p>
+<blockquote>🔵 국적 입력<br></blockquote>
+<p class=""><strong>헌터 등급</strong></p>
+<blockquote>🔵 S / A / B / C / D / E / F<br></blockquote>
+<p class=""><strong>소속 부서</strong></p>
+<blockquote>🔵 청룡(공략부) / 백호(구조의료부) / 현무(지원보급부)<br></blockquote>
+<p class=""><strong>직책 및 포지션</strong></p>
+<blockquote>🔵 담당 역할 등을 작성해 주세요.<br></blockquote>
+<h3 class="lore-subhead">캐릭터 정보</h3>
+<p class=""><strong>외형</strong></p>
+<p class="">🔵 외모, 체형, 복장 및 신체적 특징 등을 작성해 주세요.</p>
+<p class=""><strong>성격</strong></p>
+<p class="">🔵 성격과 가치관 등을 자유롭게 작성해 주세요. 키워드 형식도 가능합니다.</p>
+<p class=""><strong>과거사</strong></p>
+<p class="">🔵 성장 배경, 각성 계기, 헌터가 된 이유 등을 작성해 주세요.</p>
+<p class=""><strong>기타 사항</strong></p>
+<p class="">🔵 취미, 호불호, 습관, 소지품 등 자유롭게 작성해 주세요.</p>
+<h3 class="lore-subhead">이능력 정보</h3>
+<p class=""><strong>이능력 명칭</strong></p>
+<p class="">🔵 능력의 이름을 작성해 주세요.</p>
+<p class=""><strong>이능력 설명</strong></p>
+<p class="">🔵 능력의 효과, 활용 방식 및 응용 기술을 작성해 주세요.</p>
+<p class=""><strong>사용 조건 및 한계</strong></p>
+<p class="">🔵 사거리, 지속 시간, 체력 소모, 사용 횟수 등 제약 사항을 작성해 주세요.</p>
+<p class=""><strong>과사용 페널티 (필수)</strong></p>
+<p class="">🔵 능력 과사용으로 발생하는 부작용을 구체적으로 작성해 주세요.</p>
+<ul class="lore-list"><li class="indent-0"><strong>발생 조건 :</strong></li><li class="indent-0"><strong>증상 및 영향 :</strong></li><li class="indent-0"><strong>회복 방법 :</strong> (필수x, 선택)</li><li class="indent-0"><strong>회복 소요 시간 :</strong></li></ul>
+<p class="">🔵 실제 활동에 영향을 미치는 페널티여야 하며, 형식적인 불이익은 인정되지 않습니다</p>
+<h3 class="lore-subhead">추가 설정</h3>
+<p class=""><strong>사전 관계</strong></p>
+<p class="">🔵 기존 관계가 있다면 작성해 주세요. 사전 연인 및 부부 관계는 금지됩니다.</p>
+<p class=""><strong>기타 설정</strong></p>
+<p class="">🔵 추가로 기재하고 싶은 내용을 자유롭게 작성해 주세요.</p>
+</div></details>
+<details class="lore-section"><summary>작성 안내</summary><div class="lore-body">
+<ul class="lore-list"><li class="indent-0">공식 세계관 및 헌터 등급 체계를 준수해 주세요.</li><li class="indent-0">이능력은 캐릭터당 하나만 설정할 수 있습니다.</li><li class="indent-0">시간·공간·정신 계열 이능력은 금지됩니다.</li><li class="indent-0">능력의 한계와 과사용 페널티는 필수입니다.</li><li class="indent-0">먼치킨 설정 및 타 캐릭터 조종은 금지됩니다.</li><li class="indent-0">특수 설정은 운영진의 확인이 필요합니다.</li><li class="indent-0">닉네임은 프로필 등록 후 [ 소속/이름/나이 ] 로 바꿔주세요</li></ul>
+<p class=""><strong>※ 프로필 제출 전 커뮤니티 운영 규칙을 반드시 확인해 주세요.</strong></p>
+</div></details></div><div class="world-frame-corner bottom-left">✧</div><div class="world-frame-corner bottom-right">✧</div></div>
+    </section>
+
+
+    <section class="content hidden" id="adminPage" aria-live="polite">
+      <div class="section-head"><h2 class="section-title">길드 관리자 페이지</h2><span class="tag">AUTHORIZED</span></div>
+      <p class="note page-note">대상 계정을 선택해 골드 또는 상점 아이템을 지급할 수 있습니다. 지급은 기록에 남고 되돌릴 수 없습니다.</p>
+      <div class="admin-layout">
+        <section class="admin-card">
+          <label class="admin-label" for="adminUserSelect">지급 대상</label><select id="adminUserSelect"><option value="">계정 목록 불러오는 중…</option></select>
+          <div class="admin-target" id="adminTargetInfo">계정을 선택해 주세요.</div>
+          <div class="admin-form-row"><label class="admin-label" for="adminGoldAmount">지급 골드</label><div class="admin-inline"><input id="adminGoldAmount" type="number" min="1" max="1000000" step="1" placeholder="액수 입력"><button class="button" id="adminGoldButton" type="button">골드 지급</button></div></div>
+          <div class="admin-form-row"><label class="admin-label" for="adminItemSelect">지급 상점 아이템</label><div class="admin-inline"><select id="adminItemSelect"><option value="">상품 선택</option></select><button class="button" id="adminItemButton" type="button">아이템 지급</button></div></div>
+          <p class="status" id="adminStatus" aria-live="polite"></p>
+        </section>
+        <section class="admin-card"><h3 class="admin-list-title">길드원 및 보유 골드</h3><div id="adminUserList" class="admin-user-list"><div class="profile-empty">계정 목록을 불러오는 중…</div></div></section>
+      </div>
+    </section>
+
     <div class="footer"><span>GUILD NOTICE</span><b>모집 마감 전까지 참여 가능</b></div>
   </section>
   </div>
@@ -606,13 +672,20 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
   const SUPABASE_URL='https://lbprhoqyvnztshxiskkd.supabase.co';
   const SUPABASE_KEY='sb_publishable_OyOCS9NwpbMR1A3CuK3jzg_Ayuz0vUE';
   const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-  const quests=[];
-  let currentUser=null,questStatus=[],shopCatalog=[],purchaseRows=[],refreshId=0,authMode='login',showJoinedOnly=false,currentBalance=0,isAdmin=false,currentName='모험가';
+  const quests=[
+    {id:'station_scout',type:'정찰 의뢰 · 청룡',title:'폐역 7번 게이트 사전 정찰',client:'관측국 제2과',reward:'1인당 120G',difficulty:'★★☆☆☆ 보통',duration:'약 2시간',max:3,description:'도심 외곽 폐역에 열린 7번 게이트에서 불규칙한 마력 파동이 감지됐습니다. 공략팀 투입 전 출입구와 내부 지형, 마물 흔적을 확인하고 관측국에 기록을 전달해 주세요.'},
+    {id:'rescue_signal',type:'구조 의뢰 · 백호',title:'끊긴 구조 신호 추적',client:'구조의료부 상황실',reward:'1인당 180G',difficulty:'★★★☆☆ 어려움',duration:'약 3시간',max:4,description:'저등급 던전 공략 중이던 민간 허가팀의 구조 신호가 끊겼습니다. 마지막 좌표를 따라 생존자를 찾아 안전 구역까지 이송하고, 부상자는 의료동 구조팀에 인계해 주세요.'},
+    {id:'mana_transport',type:'호위 의뢰 · 현무',title:'마석 수송대 야간 호위',client:'지원보급부',reward:'1인당 160G',difficulty:'★★☆☆☆ 보통',duration:'약 3시간',max:3,description:'회수한 마석을 본부 보관동으로 옮기는 수송대가 외곽 순환로를 통과합니다. 야간 이동 중 수송차량을 호위하고, 주변 게이트 잔류 반응을 경계해 주세요.'},
+    {id:'quarantine_clear',type:'토벌 의뢰 · 격리 구역',title:'격리동 잔류 마물 소탕',client:'본부 방재실',reward:'1인당 220G',difficulty:'★★★★☆ 위험',duration:'약 2시간',max:4,description:'훈련동 지하 격리실의 보강벽이 손상되어 소형 마물 몇 마리가 통제 구역 안으로 빠져나왔습니다. 방재실의 봉쇄 확인을 받은 뒤 구역을 수색하고 잔류 개체를 제거해 주세요.'},
+    {id:'night_patrol',type:'정기 임무 · 본부 방호',title:'천호 본부 외곽 야간 순찰',client:'본부 경비대',reward:'1인당 100G',difficulty:'★☆☆☆☆ 쉬움',duration:'약 1시간',max:5,description:'최근 본부 외곽 담장 주변에서 정체불명의 흔적이 발견됐습니다. 지정된 순찰 경로를 돌며 방호 장치와 출입 기록을 확인하고, 이상 징후를 경비대에 보고해 주세요.'}
+  ];
+  let currentUser=null,questStatus=[],shopCatalog=[],purchaseRows=[],inventoryRows=[],adminUsers=[],refreshId=0,authMode='login',showJoinedOnly=false,currentBalance=0,isAdmin=false,currentName='모험가';
   const loginCard=document.querySelector('#loginCard');
   const userPanel=document.querySelector('#userPanel');
   const authMessage=document.querySelector('#authMessage');
   const boardStatus=document.querySelector('#boardStatus');
   const normalize=value=>String(value||'').trim().toLocaleLowerCase('ko-KR');
+  const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   async function accountEmail(username){
     const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(normalize(username)));
     const hash=Array.from(new Uint8Array(digest)).slice(0,16).map(byte=>byte.toString(16).padStart(2,'0')).join('');
@@ -647,7 +720,7 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
     authMessage.textContent='';
   }
   function showSignedOut(message=''){
-    currentUser=null;currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];shopCatalog=shopCatalog.map(item=>({...item,owned:false}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');
+    currentUser=null;currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned:false}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');document.querySelector('#adminBookmark').classList.add('hidden');if(!document.querySelector('#adminPage').classList.contains('hidden'))showPage('quests');
     document.querySelector('#toggleJoined').disabled=true;
     document.querySelector('#profileLogoutButton').disabled=true;
     document.querySelector('#shopWallet').textContent='로그인 후 소지금 표시';
@@ -675,18 +748,21 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
     document.querySelector('#profileName').textContent=currentName;
     document.querySelector('#profileBalance').textContent=`${currentBalance.toLocaleString('ko-KR')}G`;
     document.querySelector('#adminBadge').classList.toggle('hidden',!isAdmin);
+    document.querySelector('#adminBookmark').classList.toggle('hidden',!isAdmin);
+    if(!isAdmin&&!document.querySelector('#adminPage').classList.contains('hidden'))showPage('quests');
     drawList();drawShop();drawProfile();
   }
   async function loadShopCatalog(){
     const {data,error}=await supabase.rpc('get_shop_items');
     if(error){document.querySelector('#shopStatus').textContent='상점 정보를 불러오지 못했습니다: '+error.message;return}
-    shopCatalog=data||[];drawShop();
+    shopCatalog=data||[];drawShop();drawAdminItems();
   }
   async function loadPurchases(){
-    if(!currentUser){purchaseRows=[];drawProfile();return}
-    const {data,error}=await supabase.rpc('get_my_purchases');
-    if(error){document.querySelector('#profileStatus').textContent='구매 목록 오류: '+error.message;return}
-    purchaseRows=data||[];drawProfile();
+    if(!currentUser){purchaseRows=[];inventoryRows=[];drawProfile();return}
+    const [purchases,inventory]=await Promise.all([supabase.rpc('get_my_purchases'),supabase.rpc('get_my_inventory')]);
+    if(purchases.error){document.querySelector('#profileStatus').textContent='구매 목록 오류: '+purchases.error.message;return}
+    if(inventory.error){document.querySelector('#profileStatus').textContent='보유 아이템 오류: '+inventory.error.message;return}
+    purchaseRows=purchases.data||[];inventoryRows=inventory.data||[];drawProfile();
   }
   function drawShop(){
     const list=document.querySelector('#shopItems');if(!list)return;
@@ -703,12 +779,12 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
     const history=document.querySelector('#purchaseHistory'),inventory=document.querySelector('#inventoryList');
     if(!history||!inventory)return;
     if(!currentUser){history.innerHTML='<div class="profile-empty">로그인하면 구매 기록을 볼 수 있어요.</div>';inventory.innerHTML='<div class="profile-empty">로그인하면 보유 아이템을 볼 수 있어요.</div>';return}
-    if(!purchaseRows.length){history.innerHTML='<div class="profile-empty">구매한 상품이 없습니다.</div>';inventory.innerHTML='<div class="profile-empty">보유 아이템이 없습니다.</div>';return}
-    history.innerHTML=purchaseRows.map(row=>`<div class="list-row"><strong>${row.item_name}</strong><span>${Number(row.price_paid).toLocaleString('ko-KR')}G · ${new Date(row.purchased_at).toLocaleString('ko-KR')}</span></div>`).join('');
-    inventory.innerHTML=purchaseRows.map(row=>`<div class="list-row"><strong>${row.item_name}</strong><p>${row.description}</p><span>보유 중 · 1개</span></div>`).join('');
+    history.innerHTML=purchaseRows.length?purchaseRows.map(row=>`<div class="list-row"><strong>${escapeHtml(row.item_name)}</strong><span>${Number(row.price_paid).toLocaleString('ko-KR')}G · ${new Date(row.purchased_at).toLocaleString('ko-KR')}</span></div>`).join(''):'<div class="profile-empty">구매한 상품이 없습니다.</div>';
+    inventory.innerHTML=inventoryRows.length?inventoryRows.map(row=>`<div class="list-row"><strong>${escapeHtml(row.item_name)}</strong><p>${escapeHtml(row.description)}</p><span>보유 중 · 1개 · ${escapeHtml(row.acquisition_type||'구매')} · ${new Date(row.acquired_at).toLocaleDateString('ko-KR')}</span></div>`).join(''):'<div class="profile-empty">보유 아이템이 없습니다.</div>';
   }
   function showPage(page){
-    const pages={quests:document.querySelector('#board'),shop:document.querySelector('#shopPage'),profile:document.querySelector('#profilePage'),world:document.querySelector('#worldPage'),rules:document.querySelector('#rulesPage')};
+    if(page==='admin'&&!isAdmin)return;
+    const pages={quests:document.querySelector('#board'),shop:document.querySelector('#shopPage'),profile:document.querySelector('#profilePage'),world:document.querySelector('#worldPage'),settings:document.querySelector('#settingsPage'),rules:document.querySelector('#rulesPage'),profileGuide:document.querySelector('#profileGuidePage'),admin:document.querySelector('#adminPage')};
     Object.entries(pages).forEach(([key,element])=>element.classList.toggle('hidden',key!==page));
     document.querySelectorAll('[data-page]').forEach(button=>{
       const active=button.dataset.page===page;button.classList.toggle('active',active);
@@ -716,6 +792,64 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
     });
     if(page==='shop')loadShopCatalog();
     if(page==='profile')loadPurchases();
+    if(page==='admin'){loadAdminUsers();loadShopCatalog();}
+  }
+  function updateAdminTargetInfo(){
+    const user=adminUsers.find(row=>row.user_id===document.querySelector('#adminUserSelect').value);
+    document.querySelector('#adminTargetInfo').textContent=user?`${user.username} · 현재 ${Number(user.balance).toLocaleString('ko-KR')}G`:'계정을 선택해 주세요.';
+  }
+  function drawAdminItems(){
+    const select=document.querySelector('#adminItemSelect');if(!select)return;
+    const current=select.value;
+    select.innerHTML='<option value="">상품 선택</option>'+shopCatalog.map(item=>`<option value="${escapeHtml(item.item_id)}">${escapeHtml(item.item_name)} · ${Number(item.price_g).toLocaleString('ko-KR')}G</option>`).join('');
+    if(shopCatalog.some(item=>item.item_id===current))select.value=current;
+  }
+  function drawAdminUsers(){
+    const select=document.querySelector('#adminUserSelect'),list=document.querySelector('#adminUserList');
+    if(!select||!list)return;
+    const current=select.value;
+    select.innerHTML='<option value="">지급할 길드원을 선택하세요</option>'+adminUsers.map(user=>`<option value="${escapeHtml(user.user_id)}">${escapeHtml(user.username)} · ${Number(user.balance).toLocaleString('ko-KR')}G</option>`).join('');
+    if(adminUsers.some(user=>user.user_id===current))select.value=current;
+    updateAdminTargetInfo();
+    list.innerHTML=adminUsers.length?adminUsers.map(user=>`<button class="admin-user-row" type="button" data-admin-select="${escapeHtml(user.user_id)}"><strong>${escapeHtml(user.username)}</strong><span>${Number(user.balance).toLocaleString('ko-KR')}G</span></button>`).join(''):'<div class="profile-empty">등록된 길드원이 없습니다.</div>';
+    list.querySelectorAll('[data-admin-select]').forEach(button=>button.addEventListener('click',()=>{select.value=button.dataset.adminSelect;updateAdminTargetInfo();select.scrollIntoView({behavior:'smooth',block:'nearest'});}));
+  }
+  async function loadAdminUsers(){
+    if(!isAdmin)return;
+    const status=document.querySelector('#adminStatus');status.textContent='길드원 목록을 불러오는 중…';
+    const {data,error}=await supabase.rpc('admin_get_users');
+    if(error){status.textContent='관리자 목록 오류: '+error.message;return}
+    adminUsers=data||[];drawAdminUsers();status.textContent='';
+  }
+  async function grantGold(){
+    if(!isAdmin)return;
+    const userId=document.querySelector('#adminUserSelect').value;
+    const amount=Number(document.querySelector('#adminGoldAmount').value);
+    const target=adminUsers.find(user=>user.user_id===userId);
+    const status=document.querySelector('#adminStatus');
+    if(!target){status.textContent='먼저 지급 대상을 선택해 주세요.';return}
+    if(!Number.isInteger(amount)||amount<1||amount>1000000){status.textContent='골드는 1~1,000,000 사이의 정수로 입력해 주세요.';return}
+    if(!window.confirm(`${target.username}에게 ${amount.toLocaleString('ko-KR')}G를 지급할까요?`))return;
+    const button=document.querySelector('#adminGoldButton');button.disabled=true;status.textContent='골드를 지급하는 중…';
+    const {data,error}=await supabase.rpc('admin_grant_gold',{p_user_id:userId,p_amount:amount});
+    button.disabled=false;
+    if(error){status.textContent='골드 지급 오류: '+error.message;return}
+    document.querySelector('#adminGoldAmount').value='';status.textContent=`${target.username}에게 ${amount.toLocaleString('ko-KR')}G를 지급했습니다.`;
+    await loadAdminUsers();if(userId===currentUser?.id)await loadWallet();
+  }
+  async function grantShopItem(){
+    if(!isAdmin)return;
+    const userId=document.querySelector('#adminUserSelect').value,itemId=document.querySelector('#adminItemSelect').value;
+    const target=adminUsers.find(user=>user.user_id===userId),item=shopCatalog.find(row=>row.item_id===itemId);
+    const status=document.querySelector('#adminStatus');
+    if(!target||!item){status.textContent='지급 대상과 아이템을 모두 선택해 주세요.';return}
+    if(!window.confirm(`${target.username}에게 ${item.item_name}을(를) 지급할까요?`))return;
+    const button=document.querySelector('#adminItemButton');button.disabled=true;status.textContent='아이템을 지급하는 중…';
+    const {data,error}=await supabase.rpc('admin_grant_shop_item',{p_user_id:userId,p_item_id:itemId});
+    button.disabled=false;
+    if(error){status.textContent='아이템 지급 오류: '+error.message;return}
+    status.textContent=data==='already_owned'?`${target.username}은(는) 이미 이 아이템을 보유하고 있습니다.`:`${target.username}에게 ${item.item_name}을(를) 지급했습니다.`;
+    await Promise.all([loadAdminUsers(),loadShopCatalog()]);if(userId===currentUser?.id)await loadPurchases();
   }
   async function loadBoard(){
     const requestId=++refreshId;boardStatus.textContent='퀘스트 정보를 불러오는 중…';
@@ -817,6 +951,10 @@ body{color:#33251f;background-color:#36271f;background-image:radial-gradient(ell
     }catch(error){authMessage.textContent=authErrorMessage(error)}
   });
   document.querySelector('#profileLogoutButton').addEventListener('click',logout);
+  document.querySelector('#headerLogoutButton').addEventListener('click',logout);
+  document.querySelector('#adminUserSelect').addEventListener('change',updateAdminTargetInfo);
+  document.querySelector('#adminGoldButton').addEventListener('click',grantGold);
+  document.querySelector('#adminItemButton').addEventListener('click',grantShopItem);
   supabase.auth.onAuthStateChange((_event,session)=>{
     if(session?.user)showSignedIn(session.user);else showSignedOut();
   });
