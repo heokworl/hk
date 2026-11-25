@@ -98,7 +98,7 @@
     const requestId=++refreshId;boardStatus.textContent='퀘스트 정보를 불러오는 중…';
     const {data,error}=await supabase.rpc('get_quest_status');
     if(requestId!==refreshId)return;
-    if(error){boardStatus.textContent='퀘스트 현황을 불러오지 못했습니다. Supabase SQL 설정을 확인해 주세요.';return}
+    if(error){boardStatus.textContent='퀘스트 현황 오류: '+error.message;return}
     questStatus=data||[];boardStatus.textContent='';drawList();
   }
   function statusFor(questId){return questStatus.find(row=>row.quest_id===questId)||{participant_count:0,has_joined:false}}
