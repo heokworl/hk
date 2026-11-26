@@ -486,6 +486,12 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 
 #raidPage[data-layout="1"] .raid-game{min-height:380px;border-radius:0;border-left:4px solid #ff627b;background:linear-gradient(110deg,#301923,#171b23)}
 #raidPage[data-layout="2"] .raid-game{min-height:280px;border:2px double #a7adb9;border-radius:30px;background:radial-gradient(ellipse,#312532,#141820)}
+
+.item-use-panel{display:grid;gap:10px;margin-top:5px;padding-top:11px;border-top:1px solid #67616b}
+.item-use-panel label{display:grid;gap:7px;color:#edeef2;font-size:11px}
+.item-use-panel select{width:100%;min-width:0;padding:8px 5px;border:1px solid #72747c;border-radius:5px;background:#191a1f;color:#fff;font:inherit}
+.item-use-actions{display:flex;flex-wrap:wrap;gap:7px}
+.item-use-actions .button,.item-use-actions .logout{width:100%;padding:8px 6px;font-size:11px}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -540,7 +546,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     <section class="content hidden" id="profilePage" aria-live="polite">
       <div class="section-head"><h2 class="section-title">모험가 프로필</h2><span class="tag">GUILD MEMBER</span></div>
       <div class="profile-summary"><div><span class="profile-label">이름</span><strong id="profileName">로그인 필요</strong></div><div><span class="profile-label">소지금화</span><strong class="gold-amount" id="profileBalance">0G</strong></div><button class="logout" id="profileLogoutButton" type="button" disabled>로그아웃</button></div>
-      <p id="profileVitals" class="member-vitals">HP·MP 확인 중</p><label class="item-target-label" for="itemTargetSelect">아이템 사용 대상</label><select id="itemTargetSelect"><option value="">사용 대상 선택</option></select><div class="profile-columns">
+      <p id="profileVitals" class="member-vitals">HP·MP 확인 중</p><div class="profile-columns">
         <section><h3 class="section-title">보유 아이템</h3><div class="profile-list" id="inventoryList"></div></section>
         <section><h3 class="section-title">구매 내역</h3><div class="profile-list" id="purchaseHistory"></div></section>
         <section><h3 class="section-title">사용 내역</h3><div class="profile-list" id="usedHistory"></div></section>
@@ -954,6 +960,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   ];
   let currentUser=null,questStatus=[],shopCatalog=[],purchaseRows=[],inventoryRows=[],usedRows=[],adminUsers=[],refreshId=0,authMode='login',showJoinedOnly=false,currentBalance=0,isAdmin=false,currentName='모험가',sessionCheckBusy=false,activePage='quests';
 
+  let selectedUseItem=null,selectedUseTarget='';
   let questDetails=[],itemTargets=[],questCategory='daily',expansionBusy=false;
   const raidId=new URLSearchParams(location.search).get('raid');
   function categoryFor(q){return questDetails.find(x=>x.quest_id===q.id)?.category||(q.type.includes('토벌')?'raid':'daily')}
@@ -972,9 +979,8 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
       document.querySelector('#memberVitals').textContent='HP '+stats.data.hp+'/200 · MP '+stats.data.mp+'/200';
       document.querySelector('#profileVitals').textContent='HP '+stats.data.hp+'/200 · MP '+stats.data.mp+'/200';
     }
-    const select=document.querySelector('#itemTargetSelect'),selected=select.value;
-    select.innerHTML='<option value="">사용 대상 선택</option>'+itemTargets.map(x=>'<option value="'+escapeHtml(x.user_id)+'">'+escapeHtml(x.username)+'</option>').join('');
-    if(itemTargets.some(x=>x.user_id===selected))select.value=selected;
+    if(!itemTargets.some(x=>x.user_id===selectedUseTarget))selectedUseTarget='';
+    drawProfile();
     drawList();
     if(raidId){
       const detail=questDetails.find(x=>x.quest_id===raidId),quest=quests.find(x=>x.id===raidId);
@@ -1045,7 +1051,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     });
   }
   function showSignedOut(message=''){
-    currentUser=null;questDetails=[];itemTargets=[];document.querySelector('#itemTargetSelect').innerHTML='<option value="">사용 대상 선택</option>';currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];usedRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned_quantity:0}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');setPageAccess(false);showPage('quests');
+    currentUser=null;questDetails=[];itemTargets=[];selectedUseItem=null;selectedUseTarget='';currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];usedRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned_quantity:0}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');setPageAccess(false);showPage('quests');
     document.querySelector('#toggleJoined').disabled=true;
     document.querySelector('#profileLogoutButton').disabled=true;
     document.querySelector('#shopWallet').textContent='로그인 후 소지금 표시';
@@ -1124,9 +1130,22 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     if(!history||!inventory||!used)return;
     if(!currentUser){history.innerHTML='<div class="profile-empty">로그인하면 구매 기록을 볼 수 있어요.</div>';inventory.innerHTML='<div class="profile-empty">로그인하면 보유 아이템을 볼 수 있어요.</div>';used.innerHTML='<div class="profile-empty">로그인하면 사용 기록을 볼 수 있어요.</div>';return}
     history.innerHTML=purchaseRows.length?purchaseRows.map(row=>`<div class="list-row inventory-row"><strong>${escapeHtml(row.item_name)} <small>× ${Number(row.quantity)||1}</small></strong><span>총 ${Number(row.total_paid??row.price_paid).toLocaleString('ko-KR')}G · 최근 구매 ${new Date(row.purchased_at).toLocaleDateString('ko-KR')}</span></div>`).join(''):'<div class="profile-empty">구매한 상품이 없습니다.</div>';
-    inventory.innerHTML=inventoryRows.length?inventoryRows.map(row=>`<article class="inventory-slot"><div class="inventory-slot-top"><span class="inventory-slot-icon" aria-hidden="true">✦</span><span class="inventory-quantity">× ${Number(row.quantity)||1}</span></div><strong class="inventory-slot-name">${escapeHtml(row.item_name)}</strong><span class="inventory-slot-source">${escapeHtml(row.acquisition_type||'구매')}</span><button class="button item-use" type="button" data-use-item="${escapeHtml(row.item_id)}">1개 사용</button></article>`).join(''):'<div class="profile-empty">보유 아이템이 없습니다.</div>';
+    inventory.innerHTML=inventoryRows.length?inventoryRows.map(row=>`<article class="inventory-slot"><div class="inventory-slot-top"><span class="inventory-slot-icon" aria-hidden="true">✦</span><span class="inventory-quantity">× ${Number(row.quantity)||1}</span></div><strong class="inventory-slot-name">${escapeHtml(row.item_name)}</strong><span class="inventory-slot-source">${escapeHtml(row.acquisition_type||'구매')}</span><button class="button item-use" type="button" data-use-item="${escapeHtml(row.item_id)}" aria-expanded="${selectedUseItem===row.item_id}" ${itemUseBusy?'disabled':''}>사용</button>${selectedUseItem===row.item_id?`<div class="item-use-panel"><label>사용 대상<select data-item-target="${escapeHtml(row.item_id)}"><option value="">대상 선택</option>${itemTargets.map(target=>`<option value="${escapeHtml(target.user_id)}" ${selectedUseTarget===target.user_id?'selected':''}>${escapeHtml(target.username)}</option>`).join('')}</select></label><div class="item-use-actions"><button class="button" type="button" data-confirm-use="${escapeHtml(row.item_id)}" ${itemUseBusy||!selectedUseTarget?'disabled':''}>1개 사용 확정</button><button class="logout" type="button" data-cancel-use ${itemUseBusy?'disabled':''}>취소</button></div></div>`:''}</article>`).join(''):'<div class="profile-empty">보유 아이템이 없습니다.</div>';
     used.innerHTML=usedRows.length?usedRows.map(row=>`<div class="list-row"><strong>${escapeHtml(row.item_name)}</strong><span>${new Date(row.used_at).toLocaleString('ko-KR')} · ${row.restored_at?'관리자 복구 완료':'사용 완료'} · 대상 ${escapeHtml(row.target_name||'기존 기록')}</span></div>`).join(''):'<div class="profile-empty">아직 사용한 아이템이 없습니다.</div>';
-    inventory.querySelectorAll('[data-use-item]').forEach(button=>button.addEventListener('click',()=>useItem(button.dataset.useItem)));
+    inventory.querySelectorAll('[data-use-item]').forEach(button=>button.addEventListener('click',()=>{
+      if(itemUseBusy)return;
+      selectedUseItem=selectedUseItem===button.dataset.useItem?null:button.dataset.useItem;selectedUseTarget='';drawProfile();
+      inventory.querySelector('[data-item-target]')?.focus();
+    }));
+    inventory.querySelectorAll('[data-item-target]').forEach(select=>select.addEventListener('change',()=>{
+      selectedUseTarget=select.value;
+      const confirm=inventory.querySelector('[data-confirm-use]');
+      if(confirm)confirm.disabled=itemUseBusy||!selectedUseTarget;
+    }));
+    inventory.querySelectorAll('[data-confirm-use]').forEach(button=>button.addEventListener('click',()=>useItem(button.dataset.confirmUse,selectedUseTarget)));
+    inventory.querySelectorAll('[data-cancel-use]').forEach(button=>button.addEventListener('click',()=>{
+      if(itemUseBusy)return;selectedUseItem=null;selectedUseTarget='';drawProfile();
+    }));
   }
   function showPage(page){
     if(!currentUser&&page!=='quests')page='quests';
@@ -1191,11 +1210,11 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     if(userId===currentUser?.id)await loadPurchases();
   }
   let itemUseBusy=false;
-  async function useItem(itemId){
+  async function useItem(itemId,targetId){
     if(!currentUser||itemUseBusy)return;
-    const targetId=document.querySelector('#itemTargetSelect').value;
     if(!targetId){document.querySelector('#profileStatus').textContent='아이템을 사용할 대상을 선택해 주세요.';return}
     itemUseBusy=true;
+    drawProfile();
     const status=document.querySelector('#profileStatus');
     document.querySelectorAll('[data-use-item]').forEach(button=>button.disabled=true);
     status.textContent='아이템을 사용하는 중…';
@@ -1207,12 +1226,12 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
         status.textContent=data==='not_owned'?'서버에서 사용 가능한 수량을 찾지 못했습니다. 표시 수량과 사용 함수의 계산이 일치하는지 확인이 필요합니다.':'아이템 사용 실패: '+String(data);
         return;
       }
+      selectedUseItem=null;selectedUseTarget='';
       await Promise.all([loadPurchases(),loadShopCatalog()]);
       status.textContent='아이템 1개를 사용했고 사용 내역에 기록했습니다.';
     }catch(error){status.textContent='아이템 사용 오류: '+String(error?.message||error)}
     finally{
-      itemUseBusy=false;
-      document.querySelectorAll('[data-use-item]').forEach(button=>button.disabled=false);
+      itemUseBusy=false;drawProfile();
     }
   }
   async function grantGold(){
