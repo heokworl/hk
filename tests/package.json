@@ -1,0 +1,7 @@
+{
+  "name": "cheonho-raid-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {"test": "node battle-db.mjs && node battle-ui.mjs"},
+  "devDependencies": {"@electric-sql/pglite": "0.6.0", "jsdom": "31.0.1"}
+}

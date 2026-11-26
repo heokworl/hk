@@ -535,6 +535,8 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="./raid-battle.css?v=1">
+<script src="./raid-battle.js?v=1"></script>
 </head>
 <body>
 <main class="shell">
@@ -1048,29 +1050,23 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     if(!itemTargets.some(x=>x.user_id===selectedUseTarget))selectedUseTarget='';
     drawProfile();
     drawList();
-    if(raidId){
+    if(raidId&&(!raidRouteOpened||activePage==='raid')){
+      const initial=!raidRouteOpened;raidRouteOpened=true;
+      if(initial)showPage('raid');
       await loadRaidPage();
-      if(activePage==='quests')showPage('raid');
     }
   }
-  let raidAccessRequest=0;
+  let raidAccessRequest=0,raidRouteOpened=false;
   async function loadRaidPage(){
     const request=++raidAccessRequest;
     const game=document.querySelector('#raidGame'),version=document.querySelector('#raidVersion');
-    game.textContent='참여 권한 확인 중…';version.textContent='';
-    delete document.querySelector('#raidPage').dataset.layout;
-    if(!currentUser||!raidId){game.textContent='로그인 후 이용해 주세요.';return}
-    const uid=currentUser.id;
+    if(!currentUser||!raidId){window.CheonhoRaid?.destroy();game.textContent='로그인 후 이용해 주세요.';version.textContent='';return}
+    if(!window.CheonhoRaid){game.textContent='전투 화면 파일을 불러오지 못했습니다. 새로고침해 주세요.';return}
     document.querySelector('#raidTitle').textContent=quests.find(q=>q.id===raidId)?.title||'토벌 의뢰';
-    try{
-      const {data,error}=await supabase.rpc('get_raid_page_v1',{p_quest_id:raidId});
-      if(request!==raidAccessRequest||currentUser?.id!==uid)return;
-      if(error){game.textContent='공략 페이지 접근 불가: '+error.message;return}
-      if(!data||data.quest_id!==raidId){game.textContent='공략 페이지 권한을 확인하지 못했습니다.';return}
-      game.textContent=data.content;
-      version.textContent='공략 페이지 · 버전 '+data.game_version;
-      document.querySelector('#raidPage').dataset.layout=String((Number(data.game_version)-1)%3);
-    }catch(error){if(request===raidAccessRequest)game.textContent='권한 확인 오류: '+String(error?.message||error)}
+    version.textContent='공유 보스 · 턴제 협동 공략';
+    await window.CheonhoRaid.open({client:supabase,questId:raidId,userId:currentUser.id,container:game,onVitalsChanged:refreshHeaderVitals});
+    if(request!==raidAccessRequest)return;
+    if(activePage!=='raid')window.CheonhoRaid.suspend();
   }
 
   async function loadQuestBlocks(){
@@ -1136,6 +1132,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     ++memberStatusRequest;document.querySelector('#memberStatusRows').replaceChildren();document.querySelector('#memberStatusMessage').textContent='';
     document.querySelector('#headerHp').textContent='—';document.querySelector('#headerMp').textContent='—';
     for(const id of ['headerHpBar','headerMpBar']){document.getElementById(id).value=0;document.getElementById(id).setAttribute('aria-label','로그인 후 확인');}
+    window.CheonhoRaid?.destroy();raidRouteOpened=false;
     ++raidAccessRequest;document.querySelector('#raidGame').textContent='로그인 후 이용해 주세요.';document.querySelector('#raidVersion').textContent='';
     currentUser=null;questDetails=[];itemTargets=[];selectedUseItem=null;selectedUseTarget='';currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];usedRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned_quantity:0}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');setPageAccess(false);showPage('quests');
     document.querySelector('#toggleJoined').disabled=true;
@@ -1233,6 +1230,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     if(!currentUser&&page!=='quests')page='quests';
     if(page==='admin'&&!isAdmin)return;
     const changed=activePage!==page;activePage=page;
+    if(page!=='raid')window.CheonhoRaid?.suspend();else window.CheonhoRaid?.resume();
     const pages={quests:document.querySelector('#board'),shop:document.querySelector('#shopPage'),profile:document.querySelector('#profilePage'),world:document.querySelector('#worldPage'),settings:document.querySelector('#settingsPage'),profileGuide:document.querySelector('#profileGuidePage'),raid:document.querySelector('#raidPage'),admin:document.querySelector('#adminPage')};
     Object.entries(pages).forEach(([key,element])=>element.classList.toggle('hidden',key!==page));
     document.querySelectorAll('[data-page]').forEach(button=>{
@@ -1409,7 +1407,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     const button=document.querySelector(`[data-quest="${questId}"]`);if(button)button.disabled=true;
     boardStatus.textContent='참여를 등록하는 중…';
     const {data,error}=await supabase.rpc('join_quest',{p_quest_id:questId});
-    if(error){boardStatus.textContent='참여 등록에 실패했습니다. 잠시 후 다시 시도해 주세요.';if(button)button.disabled=false;return}
+    if(error){boardStatus.textContent='참여 등록 실패: '+error.message;if(button)button.disabled=false;return}
     if(data==='blocked')boardStatus.textContent='관리자에 의해 퀘스트 참여가 제한되었습니다.';
     else if(data==='full')boardStatus.textContent='모집 인원이 모두 찼습니다.';
     else if(data==='already_joined')boardStatus.textContent='이미 참여한 퀘스트입니다.';
@@ -1606,3 +1604,4 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 
 </body>
 </html>
+
