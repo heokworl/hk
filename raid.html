@@ -1388,9 +1388,11 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   function statusFor(questId){return questStatus.find(row=>row.quest_id===questId)||{participant_count:0,has_joined:false,reward_amount:0,reward_mode:'per_user',awarded:false}}
   function drawList(){
     const inCategory=quests.filter(q=>categoryFor(q)===questCategory);
-    const visibleQuests=showJoinedOnly&&currentUser?inCategory.filter(q=>Boolean(statusFor(q.id).has_joined)):inCategory;
+    const visibleQuests=showJoinedOnly&&currentUser
+      ?inCategory.filter(q=>Boolean(statusFor(q.id).has_joined)&&!Boolean(statusFor(q.id).awarded))
+      :[...inCategory].sort((a,b)=>Number(Boolean(statusFor(a.id).awarded))-Number(Boolean(statusFor(b.id).awarded)));
     const list=document.querySelector('#questList');
-    if(!visibleQuests.length){list.innerHTML='<div class="empty-state">현재 모집 중인 의뢰가 없습니다. 새 공고를 기다려 주세요.</div>';return}
+    if(!visibleQuests.length){list.innerHTML=showJoinedOnly?'<div class="empty-state">참여 중인 미지급 퀘스트가 없습니다.</div>':'<div class="empty-state">현재 모집 중인 의뢰가 없습니다. 새 공고를 기다려 주세요.</div>';return}
     list.innerHTML=visibleQuests.map(q=>{
       const status=statusFor(q.id),count=Number(status.participant_count)||0,joined=Boolean(status.has_joined),full=count>=q.max,awarded=Boolean(status.awarded);
       const detail=questDetails.find(x=>x.quest_id===q.id),blocked=Boolean(detail?.blocked);
