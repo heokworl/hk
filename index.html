@@ -492,6 +492,23 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 .item-use-panel select{width:100%;min-width:0;padding:8px 5px;border:1px solid #72747c;border-radius:5px;background:#191a1f;color:#fff;font:inherit}
 .item-use-actions{display:flex;flex-wrap:wrap;gap:7px}
 .item-use-actions .button,.item-use-actions .logout{width:100%;padding:8px 6px;font-size:11px}
+
+.admin-member-status{grid-column:1/-1;min-width:0}
+.member-status-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.member-status-heading .admin-list-title{margin:0}
+.member-status-table-wrap{width:100%;overflow-x:auto}
+.member-status-table{width:100%;border-collapse:collapse;color:#f3f4f6;font-size:12px}
+.member-status-table th,.member-status-table td{padding:13px 8px;text-align:left;border-bottom:1px solid #555863}
+.member-status-table thead th{color:#ff9aaa;font-weight:650}
+.member-status-table th[scope="row"]{overflow-wrap:anywhere;width:34%}
+.member-status-table td{width:33%}
+.vital-number{display:block;white-space:nowrap;margin-bottom:6px}
+.member-status-table progress{display:block;width:100%;min-width:50px;height:7px;appearance:none;border:none;border-radius:6px;overflow:hidden;background:#121419}
+.member-status-table progress::-webkit-progress-bar{background:#121419}
+.vital-hp{accent-color:#ff627b}.vital-mp{accent-color:#89b8ff}
+.vital-hp::-webkit-progress-value{background:#ff627b}.vital-mp::-webkit-progress-value{background:#89b8ff}
+.vital-hp::-moz-progress-bar{background:#ff627b}.vital-mp::-moz-progress-bar{background:#89b8ff}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -937,7 +954,13 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
           </form>
           <p class="status" id="adminProductStatus" aria-live="polite"></p>
         </section>
-        <section class="admin-card"><h3 class="admin-list-title">퀘스트 참여 제한</h3><label class="admin-label" for="adminBlockUser">대상 이용자</label><select id="adminBlockUser"></select><label class="admin-label" for="adminBlockQuest">제한 범위</label><select id="adminBlockQuest"></select><div class="admin-inline"><button class="button" type="button" id="blockQuestUser">참여 제한</button><button class="button" type="button" id="unblockQuestUser">제한 해제</button></div><p class="status" id="questBlockStatus"></p><div id="questBlockList"></div></section><section class="admin-card admin-used-card"><h3 class="admin-list-title">사용 아이템 복구</h3><p class="admin-hint">사용자가 프로필에서 사용한 아이템이에요. 복구하면 해당 사용자의 보유 목록에 다시 나타납니다.</p><div id="adminUsedItems" class="admin-used-list"><div class="profile-empty">사용된 아이템을 불러오는 중…</div></div></section>
+        <section class="admin-card"><h3 class="admin-list-title">퀘스트 참여 제한</h3><label class="admin-label" for="adminBlockUser">대상 이용자</label><select id="adminBlockUser"></select><label class="admin-label" for="adminBlockQuest">제한 범위</label><select id="adminBlockQuest"></select><div class="admin-inline"><button class="button" type="button" id="blockQuestUser">참여 제한</button><button class="button" type="button" id="unblockQuestUser">제한 해제</button></div><p class="status" id="questBlockStatus"></p><div id="questBlockList"></div></section><section class="admin-card admin-member-status">
+ <div class="member-status-heading"><h3 class="admin-list-title">전체 이용자 HP · MP</h3><button class="filter-button" type="button" id="refreshMemberStatus">새로고침</button></div>
+ <p class="admin-hint">DB에 저장된 현재 수치입니다. 최대 HP 200 · MP 200</p>
+ <p class="status" id="memberStatusMessage" role="status"></p>
+ <div class="member-status-table-wrap"><table class="member-status-table"><thead><tr><th scope="col">이름</th><th scope="col">HP</th><th scope="col">MP</th></tr></thead><tbody id="memberStatusRows"></tbody></table></div>
+</section>
+<section class="admin-card admin-used-card"><h3 class="admin-list-title">사용 아이템 복구</h3><p class="admin-hint">사용자가 프로필에서 사용한 아이템이에요. 복구하면 해당 사용자의 보유 목록에 다시 나타납니다.</p><div id="adminUsedItems" class="admin-used-list"><div class="profile-empty">사용된 아이템을 불러오는 중…</div></div></section>
       </div>
     </section>
 
@@ -1051,6 +1074,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     });
   }
   function showSignedOut(message=''){
+    ++memberStatusRequest;document.querySelector('#memberStatusRows').replaceChildren();document.querySelector('#memberStatusMessage').textContent='';
     currentUser=null;questDetails=[];itemTargets=[];selectedUseItem=null;selectedUseTarget='';currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];usedRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned_quantity:0}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');setPageAccess(false);showPage('quests');
     document.querySelector('#toggleJoined').disabled=true;
     document.querySelector('#profileLogoutButton').disabled=true;
@@ -1187,8 +1211,32 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     const status=document.querySelector('#adminStatus');status.textContent='길드원 목록을 불러오는 중…';
     const {data,error}=await supabase.rpc('admin_get_users');
     if(error){status.textContent='관리자 목록 오류: '+error.message;return}
-    adminUsers=data||[];drawAdminUsers();status.textContent='';await Promise.all([loadAdminUsedItems(),loadQuestBlocks()]);
+    adminUsers=data||[];drawAdminUsers();status.textContent='';await Promise.all([loadAdminUsedItems(),loadQuestBlocks(),loadAdminMemberStatus()]);
   }
+
+  let memberStatusRequest=0;
+  async function loadAdminMemberStatus(){
+    const request=++memberStatusRequest;
+    const body=document.querySelector('#memberStatusRows'),message=document.querySelector('#memberStatusMessage'),button=document.querySelector('#refreshMemberStatus');
+    if(!currentUser||!isAdmin){body.replaceChildren();message.textContent='';return}
+    const uid=currentUser.id;
+    button.disabled=true;message.textContent='현재 HP·MP를 불러오는 중…';
+    try{
+      const {data,error}=await supabase.rpc('admin_get_member_status_v1');
+      if(request!==memberStatusRequest||currentUser?.id!==uid||!isAdmin)return;
+      if(error){body.replaceChildren();message.textContent='상태 조회 오류: '+error.message;return}
+      const rows=data||[];
+      body.innerHTML=rows.map(row=>{
+        const hp=Number(row.hp),mp=Number(row.mp);
+        if(!Number.isFinite(hp)||!Number.isFinite(mp))return '<tr><td>'+escapeHtml(row.username)+'</td><td colspan="2">수치 확인 실패</td></tr>';
+        return '<tr><th scope="row">'+escapeHtml(row.username)+'</th><td><span class="vital-number">'+hp+' / 200</span><progress class="vital-hp" max="200" value="'+Math.max(0,Math.min(200,hp))+'" aria-label="'+escapeHtml(row.username)+' HP"></progress></td><td><span class="vital-number">'+mp+' / 200</span><progress class="vital-mp" max="200" value="'+Math.max(0,Math.min(200,mp))+'" aria-label="'+escapeHtml(row.username)+' MP"></progress></td></tr>';
+      }).join('');
+      message.textContent=rows.length?rows.length+'명 · 갱신 '+new Date().toLocaleTimeString('ko-KR'):'등록된 이용자가 없습니다.';
+    }catch(error){
+      if(request===memberStatusRequest){body.replaceChildren();message.textContent='상태 조회 오류: '+String(error?.message||error)}
+    }finally{if(request===memberStatusRequest)button.disabled=false}
+  }
+
   async function loadAdminUsedItems(){
     const box=document.querySelector('#adminUsedItems');
     if(!isAdmin){box.innerHTML='<div class="profile-empty">관리자만 볼 수 있습니다.</div>';return}
@@ -1422,6 +1470,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   document.querySelector('#blockQuestUser').addEventListener('click',()=>saveQuestBlock(true));
   document.querySelector('#unblockQuestUser').addEventListener('click',()=>saveQuestBlock(false));
 
+  document.querySelector('#refreshMemberStatus').addEventListener('click',loadAdminMemberStatus);
   document.querySelector('#adminGoldButton').addEventListener('click',grantGold);
   document.querySelector('#adminItemButton').addEventListener('click',grantShopItem);
   supabase.auth.onAuthStateChange((_event,session)=>{
