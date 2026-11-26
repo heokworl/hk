@@ -516,6 +516,23 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 .header-vital strong{color:#fff;font-size:12px;font-variant-numeric:tabular-nums}
 .header-vital small{color:#c6c8d0;font-size:10px}
 
+
+/* Header status bars aligned beneath the account name. */
+.user-panel .welcome{flex:1;min-width:0}
+#memberVitals.header-vitals{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin:12px 0 0!important;padding-left:19px;width:100%;box-sizing:border-box}
+#memberVitals .header-vital{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:8px;align-items:center;padding:0;border:0;border-radius:0;background:transparent}
+#memberVitals .header-vital strong{font-size:11px}
+#memberVitals .header-vital small{font-size:10px}
+.header-vital-value{white-space:nowrap;min-width:58px;text-align:right}
+#memberVitals progress{display:block;width:100%;min-width:30px;height:8px;appearance:none;border:0;border-radius:5px;overflow:hidden;background:#121419}
+#memberVitals progress::-webkit-progress-bar{background:#121419;border-radius:5px}
+#headerHpBar{accent-color:#ff627b}#headerMpBar{accent-color:#89b8ff}
+#headerHpBar::-webkit-progress-value{background:#ff627b;border-radius:5px}
+#headerMpBar::-webkit-progress-value{background:#89b8ff;border-radius:5px}
+#headerHpBar::-moz-progress-bar{background:#ff627b}
+#headerMpBar::-moz-progress-bar{background:#89b8ff}
+#userPanel #walletBalance{display:block;margin:11px 0 0!important;padding-left:19px;line-height:1.5}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -544,7 +561,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
         <p class="note">이 사이트에서 계정을 만들어요. 비밀번호 분실 시 이메일 재설정은 지원되지 않습니다.</p>
         <p class="error" id="authMessage" aria-live="polite"></p>
       </div>
-      <div class="user-panel hidden" id="userPanel"><div class="welcome"><span class="sigil">✦</span> 로그인: <strong id="loggedName"></strong><span class="admin-badge hidden" id="adminBadge">관리자</span><span class="header-vitals" id="memberVitals" aria-live="polite"><span class="header-vital header-hp"><b>HP</b><strong id="headerHp">—</strong><small>/ 200</small></span><span class="header-vital header-mp"><b>MP</b><strong id="headerMp">—</strong><small>/ 200</small></span></span><span class="wallet" id="walletBalance">소지금 0G</span></div><button class="logout header-logout" id="headerLogoutButton" type="button">로그아웃</button></div>
+      <div class="user-panel hidden" id="userPanel"><div class="welcome"><span class="sigil">✦</span> 로그인: <strong id="loggedName"></strong><span class="admin-badge hidden" id="adminBadge">관리자</span><span class="header-vitals" id="memberVitals" aria-live="polite"><span class="header-vital header-hp"><b>HP</b><progress id="headerHpBar" max="200" value="0" aria-label="HP 확인 중"></progress><span class="header-vital-value"><strong id="headerHp">—</strong><small> / 200</small></span></span><span class="header-vital header-mp"><b>MP</b><progress id="headerMpBar" max="200" value="0" aria-label="MP 확인 중"></progress><span class="header-vital-value"><strong id="headerMp">—</strong><small> / 200</small></span></span></span><span class="wallet" id="walletBalance">소지금화 0G</span></div><button class="logout header-logout" id="headerLogoutButton" type="button">로그아웃</button></div>
     </header>
     <nav class="bookmark-nav" aria-label="페이지 이동">
       <button class="bookmark active" type="button" data-page="quests" aria-current="page"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M6 27V16a10 10 0 0 1 20 0v11M3 27h26M10 27v-8m12 8v-8M11 10l5-5 5 5"/></svg></span><b>퀘스트</b></button>
@@ -1000,6 +1017,10 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     const hp=valid?Number(stats.hp):'—',mp=valid?Number(stats.mp):'—';
     document.querySelector('#headerHp').textContent=hp;
     document.querySelector('#headerMp').textContent=mp;
+    for(const [id,label,value] of [['headerHpBar','HP',hp],['headerMpBar','MP',mp]]){
+      const bar=document.getElementById(id);bar.value=valid?Math.max(0,Math.min(200,value)):0;
+      bar.setAttribute('aria-label',valid?label+' '+value+' / 200':label+' 조회 실패');
+    }
     document.querySelector('#profileVitals').textContent=valid?'HP '+hp+'/200 · MP '+mp+'/200':'HP·MP 조회 실패';
   }
   async function refreshHeaderVitals(){
@@ -1114,6 +1135,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   function showSignedOut(message=''){
     ++memberStatusRequest;document.querySelector('#memberStatusRows').replaceChildren();document.querySelector('#memberStatusMessage').textContent='';
     document.querySelector('#headerHp').textContent='—';document.querySelector('#headerMp').textContent='—';
+    for(const id of ['headerHpBar','headerMpBar']){document.getElementById(id).value=0;document.getElementById(id).setAttribute('aria-label','로그인 후 확인');}
     ++raidAccessRequest;document.querySelector('#raidGame').textContent='로그인 후 이용해 주세요.';document.querySelector('#raidVersion').textContent='';
     currentUser=null;questDetails=[];itemTargets=[];selectedUseItem=null;selectedUseTarget='';currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];usedRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned_quantity:0}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');setPageAccess(false);showPage('quests');
     document.querySelector('#toggleJoined').disabled=true;
@@ -1140,7 +1162,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     const row=Array.isArray(data)?data[0]:data;
     currentName=row?.username||displayName(currentUser);currentBalance=Number(row?.balance)||0;isAdmin=Boolean(row?.is_admin);
     document.querySelector('#loggedName').textContent=currentName;
-    document.querySelector('#walletBalance').textContent=`소지금 ${currentBalance.toLocaleString('ko-KR')}G`;
+    document.querySelector('#walletBalance').textContent=`소지금화 ${currentBalance.toLocaleString('ko-KR')}G`;
     document.querySelector('#shopWallet').textContent=`소지금 ${currentBalance.toLocaleString('ko-KR')}G`;
     document.querySelector('#profileName').textContent=currentName;
     document.querySelector('#profileBalance').textContent=`${currentBalance.toLocaleString('ko-KR')}G`;
