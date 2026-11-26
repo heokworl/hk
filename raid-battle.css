@@ -15,3 +15,19 @@
 .raid-members{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0;padding:0}.raid-member{padding:12px;border:1px solid #505461;border-radius:6px;background:#242730;min-width:0}.raid-member-name{display:flex;justify-content:space-between;gap:9px;margin-bottom:13px}.raid-member-name strong{font-size:12px;overflow-wrap:anywhere}.raid-member-name>span{font-size:10px;color:#f5a3b2;white-space:nowrap}.raid-member label{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:10px;font-size:10px;color:#e0e4ef}.raid-member label>span{text-align:right;font-variant-numeric:tabular-nums}.raid-member label progress{grid-column:1/-1}.raid-member.is-down{opacity:.65}
 .raid-log-panel .raid-older{font-size:10px;margin-top:17px;padding:7px 10px}.raid-log-list{list-style:none;margin:16px 0 0;padding:0;max-height:390px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#8d485a #161820}.raid-log-list li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:9px;padding:11px 3px;border-bottom:1px solid #383d49;font-size:11px;line-height:1.7;color:#e0e4ee;overflow-wrap:anywhere}.raid-log-turn{color:#aeb7c9;font-size:10px}.raid-log-turn~span{white-space:pre-wrap}.raid-log-victory,.raid-log-defeat{font-weight:650}.raid-log-victory>span:last-child{color:#f5c8d1}.raid-log-counter>span:last-child{color:#ffb1be}.raid-log-turn>span:last-child{color:#b9caef}
 @media(max-width:500px){.raid-boss,.raid-turn-panel,.raid-log-panel{padding:17px 13px}.raid-members{grid-template-columns:1fr}.raid-action-buttons .button{width:100%;min-width:0}.raid-boss h3{font-size:17px}.raid-boss-art{max-width:240px}.raid-section-heading{align-items:flex-start}.raid-topline .filter-button{font-size:11px}}
+
+.raid-combat-layout{display:grid;grid-template-columns:minmax(0,1fr) 205px;gap:16px;align-items:start}
+.raid-main-content{min-width:0}
+.raid-combat-layout .raid-members{grid-template-columns:1fr}
+.raid-inventory{min-width:0;padding:16px 12px;border:1px solid #68505c;border-radius:9px;background:#221e27;position:sticky;top:16px;max-height:700px;overflow-y:auto;scrollbar-width:thin}
+.raid-inventory-note,.raid-inventory-empty{color:#d5cbd5;font-size:10px;line-height:1.8;margin:12px 0 17px}
+.raid-inventory-list{display:grid;gap:14px}
+.raid-inventory-item{padding:12px 9px;border:1px solid #615562;border-radius:6px;background:#19191f;min-width:0}
+.raid-inventory-title{display:flex;justify-content:space-between;gap:7px;font-size:12px;color:#fff}.raid-inventory-title strong{overflow-wrap:anywhere}.raid-inventory-title span{white-space:nowrap;color:#ffa2b3}
+.raid-inventory-item p{color:#c9c9d5;font-size:10px;line-height:1.6;margin:9px 0;overflow-wrap:anywhere}
+.raid-inventory-item small{display:block;font-size:10px;color:#f1c2cd;margin:8px 0}
+.raid-inventory-item label{display:grid;gap:6px;margin-top:12px;font-size:10px;color:#eee}
+.raid-inventory-item select{width:100%;min-width:0;padding:8px 5px;font:inherit;font-size:11px;border:1px solid #817584;border-radius:5px;background:#29242d;color:#fff}
+.raid-inventory-item .button{width:100%;font-size:10px;padding:9px 5px;margin-top:10px}
+@media(max-width:620px){.raid-combat-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:0}.raid-main-content{display:contents}.raid-combat-layout .raid-boss{grid-row:1}.raid-combat-layout .raid-turn-panel{grid-row:2}.raid-combat-layout .raid-inventory{grid-row:3;position:static;max-height:none;margin-bottom:20px}.raid-combat-layout .raid-log-panel{grid-row:4}.raid-inventory-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}
+@media(max-width:380px){.raid-inventory-list{grid-template-columns:1fr}}

@@ -533,10 +533,12 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 #headerMpBar::-moz-progress-bar{background:#89b8ff}
 #userPanel #walletBalance{display:block;margin:11px 0 0!important;padding-left:19px;line-height:1.5}
 
+
+.quest-admin-gates{display:grid;gap:9px;margin-top:17px;padding-top:13px;border-top:1px solid #60515c}.quest-admin-gates>span{font-size:10px;color:#e6b3c1}.quest-admin-gates>div{display:flex;flex-wrap:wrap;gap:8px}.quest-admin-gates .button{font-size:11px;padding:8px 10px}.raid-entry-wait{font-size:10px;color:#e6b3c1}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="./raid-battle.css?v=1">
-<script src="./raid-battle.js?v=1"></script>
+<link rel="stylesheet" href="./raid-battle.css?v=2">
+<script src="./raid-battle.js?v=2"></script>
 </head>
 <body>
 <main class="shell">
@@ -1394,13 +1396,29 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     list.innerHTML=visibleQuests.map(q=>{
       const status=statusFor(q.id),count=Number(status.participant_count)||0,joined=Boolean(status.has_joined),full=count>=q.max,awarded=Boolean(status.awarded);
       const detail=questDetails.find(x=>x.quest_id===q.id),blocked=Boolean(detail?.blocked);
-      const disabled=!currentUser||joined||full||awarded||blocked;
-      const label=blocked?'참여 제한':awarded?'퀘스트 종료':!currentUser?'로그인 후 참여':joined?'참여 완료':full?'모집 마감':'참여하기';
+      const closed=Boolean(detail?.recruitment_closed),entryReady=Boolean(detail?.raid_entry_enabled)&&closed;
+      const disabled=!currentUser||joined||full||awarded||blocked||closed;
+      const label=blocked?'참여 제한':awarded?'퀘스트 종료':!currentUser?'로그인 후 참여':joined?'참여 완료':closed||full?'모집 마감':'참여하기';
       const adminAction=isAdmin?`<button class="button award" data-award="${q.id}" ${awarded||count===0?'disabled':''}>${awarded?'지급 완료':'보상 지급'}</button>`:'';
-      return `<article class="quest-card${awarded?' quest-paid':''}">${awarded?'<div class="quest-paid-seal"><img src="./assets/quest-paid-seal-v1.png" alt="" width="76" height="76"><span>보상 지급 완료</span></div>':''}<div class="quest-gate" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 40V23a16 16 0 0 1 32 0v17M4 40h40M13 40V24a11 11 0 0 1 22 0v16M17 40v-9m14 9v-9M20 12l4-5 4 5"/></svg></div><div class="quest-body"><div class="card-top"><div><span class="tag">${q.type}</span><h3>${q.title}</h3></div><span class="count">${count}/${q.max}명${awarded?' · 지급 완료':''}</span></div><p>${q.description}</p><div class="meta">의뢰인 ${q.client} · 보상 ${q.reward} · ${q.duration} · ${q.difficulty}</div><div class="card-bottom"><span class="members">참여자: ${!currentUser?'로그인 후 확인':!detail?'불러오는 중':detail.participants.length?detail.participants.map(escapeHtml).join(', '):'아직 없습니다'}</span><div class="card-actions">${categoryFor(q)==='raid'&&currentUser&&joined&&!blocked?`<a class="button" href="./raid.html?raid=${encodeURIComponent(q.id)}">공략 페이지</a>`:''}${adminAction}<button class="button join" data-quest="${q.id}" ${disabled?'disabled':''}>${label}</button></div></div></div></article>`;
+      const gateControls=isAdmin&&!awarded?`<div class="quest-admin-gates"><span>관리자 모집 관리</span><div><button type="button" class="button" data-gate="${closed?'reopen':'close'}" data-gate-quest="${q.id}" ${questGateBusy.has(q.id)||closed&&detail?.battle_started?'disabled':''}>${closed?'모집 다시 열기':'모집 마감'}</button>${categoryFor(q)==='raid'?`<button type="button" class="button" data-gate="${entryReady?'disable':'enable'}" data-gate-quest="${q.id}" ${!closed||questGateBusy.has(q.id)?'disabled':''}>${entryReady?'토벌 입장 비활성화':'토벌 참여 활성화'}</button>`:''}</div></div>`:'';
+      return `<article class="quest-card${awarded?' quest-paid':''}">${awarded?'<div class="quest-paid-seal"><img src="./assets/quest-paid-seal-v1.png" alt="" width="76" height="76"><span>보상 지급 완료</span></div>':''}<div class="quest-gate" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 40V23a16 16 0 0 1 32 0v17M4 40h40M13 40V24a11 11 0 0 1 22 0v16M17 40v-9m14 9v-9M20 12l4-5 4 5"/></svg></div><div class="quest-body"><div class="card-top"><div><span class="tag">${q.type}</span><h3>${q.title}</h3></div><span class="count">${count}/${q.max}명${awarded?' · 지급 완료':''}</span></div><p>${q.description}</p><div class="meta">의뢰인 ${q.client} · 보상 ${q.reward} · ${q.duration} · ${q.difficulty}</div><div class="card-bottom"><span class="members">참여자: ${!currentUser?'로그인 후 확인':!detail?'불러오는 중':detail.participants.length?detail.participants.map(escapeHtml).join(', '):'아직 없습니다'}</span><div class="card-actions">${categoryFor(q)==='raid'&&currentUser&&joined&&!blocked&&entryReady?`<a class="button" href="./raid.html?raid=${encodeURIComponent(q.id)}">공략 페이지</a>`:categoryFor(q)==='raid'&&currentUser&&joined&&!blocked?'<span class="raid-entry-wait">관리자 입장 활성화 대기</span>':''}${adminAction}<button class="button join" data-quest="${q.id}" ${disabled?'disabled':''}>${label}</button></div></div>${gateControls}</div></article>`;
     }).join('');
     document.querySelectorAll('[data-quest]').forEach(button=>button.addEventListener('click',()=>joinQuest(button.dataset.quest)));
     document.querySelectorAll('[data-award]').forEach(button=>button.addEventListener('click',()=>awardQuest(button.dataset.award)));
+    document.querySelectorAll('[data-gate]').forEach(button=>button.addEventListener('click',()=>setQuestGate(button.dataset.gateQuest,button.dataset.gate)));
+  }
+  const questGateBusy=new Set();
+  async function setQuestGate(questId,command){
+    if(!isAdmin||questGateBusy.has(questId))return;
+    questGateBusy.add(questId);drawList();
+    boardStatus.textContent='모집 상태를 저장하는 중…';
+    try{
+      const {data,error}=await supabase.rpc('admin_set_quest_gate_v2',{p_quest_id:questId,p_command:command});
+      if(error){boardStatus.textContent='모집 관리 오류: '+error.message;return}
+      if(data!=='saved'){boardStatus.textContent='모집 상태 저장을 확인하지 못했습니다.';return}
+      await loadBoard();
+      boardStatus.textContent={close:'모집을 마감했습니다. 토벌은 별도로 참여를 활성화해야 입장할 수 있습니다.',reopen:'모집을 다시 열었습니다.',enable:'참여자의 토벌 입장을 활성화했습니다.',disable:'토벌 입장을 비활성화했습니다.'}[command];
+    }finally{questGateBusy.delete(questId);drawList()}
   }
   async function joinQuest(questId){
     if(!currentUser||statusFor(questId).has_joined)return;
@@ -1566,6 +1584,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')verifySessionUser()});
   window.setInterval(verifySessionUser,60000);
   window.setInterval(refreshHeaderVitals,15000);
+  window.setInterval(()=>{if(currentUser&&activePage==='quests'&&document.visibilityState==='visible')loadBoard()},15000);
 })();
 </script>
 

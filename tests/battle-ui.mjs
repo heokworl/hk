@@ -12,7 +12,7 @@ const client={
   if(!permission)return {data:null,error:{code:'42501',message:'참여 권한 없음'}};
   if(name==='raid_get_state_v1')return {data:structuredClone(state),error:null};
   if(name==='raid_start_v1'){state.state='active';state.revision++;return {data:'started',error:null}}
-  if(name==='raid_submit_action_v1'){
+  if(name==='raid_submit_choice_v2'){
    actionCalls++;assert.equal(args.p_turn_no,1);state.members[0].acted=true;state.revision++;
    state.logs.push({id:1,turn_no:1,kind:'ready',message:'<ABLE> 공격 예약 완료'});
    return {data:'submitted',error:null};
@@ -30,7 +30,7 @@ await w.CheonhoRaid.open(config);await settle();
 assert(container.querySelector('.raid-start'));assert.equal(channels,1);assert(container.textContent.includes('<ABLE>'));assert.equal(container.querySelector('able'),null);
 container.querySelector('.raid-start').click();await settle();assert.equal(state.state,'active');assert(container.querySelector('.raid-attack'));
 container.querySelector('.raid-attack').click();container.querySelector('.raid-attack').click();await settle();
-assert.equal(actionCalls,1);assert.equal(state.boss_hp,1000);assert(container.querySelector('.raid-attack').disabled);assert(container.textContent.includes('공격을 예약했습니다'));
+assert.equal(actionCalls,1);assert.equal(state.boss_hp,1000);assert(container.querySelector('.raid-attack').disabled);assert(container.textContent.includes('이번 턴 행동을 예약했습니다'));
 state.members=state.members.map(m=>({...m,hp:190,acted:false}));state.boss_hp=960;state.turn_no=2;state.revision++;
 state.logs.push({id:2,turn_no:1,kind:'counter',message:'B HP -10'},{id:3,turn_no:2,kind:'turn',message:'2턴 시작'});
 notification();await settle();assert(container.textContent.includes('960'));assert(container.textContent.includes('B HP -10'));assert(!container.querySelector('.raid-attack').disabled);assert(vitals>0);
