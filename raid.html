@@ -509,6 +509,13 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 .vital-hp::-webkit-progress-value{background:#ff627b}.vital-mp::-webkit-progress-value{background:#89b8ff}
 .vital-hp::-moz-progress-bar{background:#ff627b}.vital-mp::-moz-progress-bar{background:#89b8ff}
 
+
+#memberVitals.header-vitals{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px!important}
+.header-vital{display:inline-flex;align-items:center;gap:7px;padding:5px 8px;border:1px solid #686873;border-radius:5px;background:#15171d;font-size:11px;line-height:1.4}
+.header-vital b{font-size:10px;letter-spacing:.06em}.header-hp b{color:#ff8595}.header-mp b{color:#9bbfff}
+.header-vital strong{color:#fff;font-size:12px;font-variant-numeric:tabular-nums}
+.header-vital small{color:#c6c8d0;font-size:10px}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -537,7 +544,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
         <p class="note">이 사이트에서 계정을 만들어요. 비밀번호 분실 시 이메일 재설정은 지원되지 않습니다.</p>
         <p class="error" id="authMessage" aria-live="polite"></p>
       </div>
-      <div class="user-panel hidden" id="userPanel"><div class="welcome"><span class="sigil">✦</span> 로그인: <strong id="loggedName"></strong><span class="admin-badge hidden" id="adminBadge">관리자</span><span class="wallet" id="memberVitals">HP·MP 확인 중</span><span class="wallet" id="walletBalance">소지금 0G</span></div><button class="logout header-logout" id="headerLogoutButton" type="button">로그아웃</button></div>
+      <div class="user-panel hidden" id="userPanel"><div class="welcome"><span class="sigil">✦</span> 로그인: <strong id="loggedName"></strong><span class="admin-badge hidden" id="adminBadge">관리자</span><span class="header-vitals" id="memberVitals" aria-live="polite"><span class="header-vital header-hp"><b>HP</b><strong id="headerHp">—</strong><small>/ 200</small></span><span class="header-vital header-mp"><b>MP</b><strong id="headerMp">—</strong><small>/ 200</small></span></span><span class="wallet" id="walletBalance">소지금 0G</span></div><button class="logout header-logout" id="headerLogoutButton" type="button">로그아웃</button></div>
     </header>
     <nav class="bookmark-nav" aria-label="페이지 이동">
       <button class="bookmark active" type="button" data-page="quests" aria-current="page"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M6 27V16a10 10 0 0 1 20 0v11M3 27h26M10 27v-8m12 8v-8M11 10l5-5 5 5"/></svg></span><b>퀘스트</b></button>
@@ -987,6 +994,24 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   let questDetails=[],itemTargets=[],questCategory='daily',expansionBusy=false;
   const raidId=new URLSearchParams(location.search).get('raid');
   function categoryFor(q){return questDetails.find(x=>x.quest_id===q.id)?.category||(q.type.includes('토벌')?'raid':'daily')}
+
+  function renderMemberVitals(stats){
+    const valid=stats&&Number.isFinite(Number(stats.hp))&&Number.isFinite(Number(stats.mp));
+    const hp=valid?Number(stats.hp):'—',mp=valid?Number(stats.mp):'—';
+    document.querySelector('#headerHp').textContent=hp;
+    document.querySelector('#headerMp').textContent=mp;
+    document.querySelector('#profileVitals').textContent=valid?'HP '+hp+'/200 · MP '+mp+'/200':'HP·MP 조회 실패';
+  }
+  async function refreshHeaderVitals(){
+    if(!currentUser||document.visibilityState!=='visible')return;
+    const uid=currentUser.id;
+    try{
+      const {data,error}=await supabase.rpc('get_member_stats_v3');
+      if(currentUser?.id!==uid)return;
+      renderMemberVitals(error?null:data);
+    }catch(_error){if(currentUser?.id===uid)renderMemberVitals(null)}
+  }
+
   async function loadExpansion(){
     if(!currentUser)return;
     const uid=currentUser.id;
@@ -998,10 +1023,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     document.querySelector('#expansionStatus').textContent=errors.length?'추가 기능 DB 오류: '+errors.map(e=>e.message).join(' / '):'';
     if(!details.error)questDetails=details.data||[];
     if(!targets.error)itemTargets=targets.data||[];
-    if(!stats.error&&stats.data){
-      document.querySelector('#memberVitals').textContent='HP '+stats.data.hp+'/200 · MP '+stats.data.mp+'/200';
-      document.querySelector('#profileVitals').textContent='HP '+stats.data.hp+'/200 · MP '+stats.data.mp+'/200';
-    }
+    renderMemberVitals(stats.error?null:stats.data);
     if(!itemTargets.some(x=>x.user_id===selectedUseTarget))selectedUseTarget='';
     drawProfile();
     drawList();
@@ -1075,6 +1097,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   }
   function showSignedOut(message=''){
     ++memberStatusRequest;document.querySelector('#memberStatusRows').replaceChildren();document.querySelector('#memberStatusMessage').textContent='';
+    document.querySelector('#headerHp').textContent='—';document.querySelector('#headerMp').textContent='—';
     currentUser=null;questDetails=[];itemTargets=[];selectedUseItem=null;selectedUseTarget='';currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];usedRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned_quantity:0}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');setPageAccess(false);showPage('quests');
     document.querySelector('#toggleJoined').disabled=true;
     document.querySelector('#profileLogoutButton').disabled=true;
@@ -1503,6 +1526,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   window.addEventListener('focus',verifySessionUser);
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')verifySessionUser()});
   window.setInterval(verifySessionUser,60000);
+  window.setInterval(refreshHeaderVitals,15000);
 })();
 </script>
 
