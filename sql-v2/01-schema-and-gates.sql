@@ -1,6 +1,6 @@
 begin;
 -- Grandfather existing active raids only on the first installation of entry gates.
-do $
+do $$
 declare first_install boolean;
 begin
  select not exists(
@@ -17,7 +17,7 @@ begin
   where b.quest_id=q.quest_id and b.state='active' and q.active and q.category='raid';
  end if;
 end;
-$;
+$$;
 alter table public.shop_items
  add column if not exists hp_restore integer not null default 0 check(hp_restore between 0 and 200),
  add column if not exists mp_restore integer not null default 0 check(mp_restore between 0 and 200);
@@ -52,7 +52,7 @@ end;
 $$;
 
 create or replace function public.admin_set_quest_gate_v2(p_quest_id text,p_command text)
-returns text language plpgsql security definer set search_path='' as $
+returns text language plpgsql security definer set search_path='' as $$
 declare q public.quest_limits%rowtype;
 begin
  if auth.uid() is null or not exists(select 1 from public.quest_admins a where a.user_id=auth.uid()) then
@@ -77,7 +77,7 @@ begin
  else raise exception '알 수 없는 명령입니다.'; end if;
  return 'saved';
 end;
-$;
+$$;
 
 create or replace function public.raid_can_access_v1(p_quest_id text)
 returns boolean language sql stable security definer set search_path='' as $$
@@ -98,7 +98,7 @@ begin
 end;
 $$;
 create or replace function public.get_quest_details_v3()
-returns jsonb language sql stable security definer set search_path='' as $
+returns jsonb language sql stable security definer set search_path='' as $$
  select coalesce(jsonb_agg(jsonb_build_object(
   'quest_id',q.quest_id,'category',q.category,'game_version',q.game_version,
   'recruitment_closed',q.recruitment_closed,'raid_entry_enabled',q.raid_entry_enabled,
@@ -108,7 +108,7 @@ returns jsonb language sql stable security definer set search_path='' as $
   'participants',coalesce((select jsonb_agg(p.username order by e.joined_at)
    from public.quest_participants e join public.guild_profiles p on p.user_id=e.user_id where e.quest_id=q.quest_id),'[]'::jsonb)
  )),'[]'::jsonb) from public.quest_limits q where q.active and auth.uid() is not null;
-$;
+$$;
 create or replace function public.get_raid_page_v1(p_quest_id text)
 returns jsonb language plpgsql stable security definer set search_path='' as $$
 begin
