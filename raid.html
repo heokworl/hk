@@ -607,8 +607,8 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="./raid-battle.css?v=3">
-<script src="./raid-battle.js?v=3"></script>
+<link rel="stylesheet" href="./raid-battle.css?v=4">
+<script src="./raid-battle.js?v=4"></script>
 </head>
 <body>
 <main class="shell">
@@ -1077,7 +1077,10 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     {id:'rescue_signal',type:'구조 의뢰 · 백호',title:'끊긴 구조 신호 추적',client:'구조의료부 상황실',reward:'1인당 180G',difficulty:'★★★☆☆ 어려움',duration:'약 3시간',max:4,description:'저등급 던전 공략 중이던 민간 허가팀의 구조 신호가 끊겼습니다. 마지막 좌표를 따라 생존자를 찾아 안전 구역까지 이송하고, 부상자는 의료동 구조팀에 인계해 주세요.'},
     {id:'mana_transport',type:'호위 의뢰 · 현무',title:'마석 수송대 야간 호위',client:'지원보급부',reward:'1인당 160G',difficulty:'★★☆☆☆ 보통',duration:'약 3시간',max:3,description:'회수한 마석을 본부 보관동으로 옮기는 수송대가 외곽 순환로를 통과합니다. 야간 이동 중 수송차량을 호위하고, 주변 게이트 잔류 반응을 경계해 주세요.'},
     {id:'quarantine_clear',type:'토벌 의뢰 · 격리 구역',title:'격리동 잔류 마물 소탕',client:'본부 방재실',reward:'1인당 220G',difficulty:'★★★★☆ 위험',duration:'약 2시간',max:4,description:'훈련동 지하 격리실의 보강벽이 손상되어 소형 마물 몇 마리가 통제 구역 안으로 빠져나왔습니다. 방재실의 봉쇄 확인을 받은 뒤 구역을 수색하고 잔류 개체를 제거해 주세요.'},
-    {id:'night_patrol',type:'정기 임무 · 본부 방호',title:'천호 본부 외곽 야간 순찰',client:'본부 경비대',reward:'1인당 100G',difficulty:'★☆☆☆☆ 쉬움',duration:'약 1시간',max:5,description:'최근 본부 외곽 담장 주변에서 정체불명의 흔적이 발견됐습니다. 지정된 순찰 경로를 돌며 방호 장치와 출입 기록을 확인하고, 이상 징후를 경비대에 보고해 주세요.'}
+    {id:'night_patrol',type:'정기 임무 · 본부 방호',title:'천호 본부 외곽 야간 순찰',client:'본부 경비대',reward:'1인당 100G',difficulty:'★☆☆☆☆ 쉬움',duration:'약 1시간',max:5,description:'최근 본부 외곽 담장 주변에서 정체불명의 흔적이 발견됐습니다. 지정된 순찰 경로를 돌며 방호 장치와 출입 기록을 확인하고, 이상 징후를 경비대에 보고해 주세요.'},
+    {id:'test_raid_solo_v1',type:'토벌 의뢰 · 1인 테스트',title:'1인 시험 게이트',client:'훈련관리실',reward:'테스트 · 보상 없음',difficulty:'★☆☆☆☆ 테스트',duration:'약 3분',max:1,test:true,description:'1인용 전투 테스트입니다. 입장 시 HP 40~80의 무작위 보스가 생성됩니다. 관리자 모집 마감과 입장 활성화 후 공략할 수 있습니다.'},
+    {id:'test_raid_duo_v1',type:'토벌 의뢰 · 2인 테스트',title:'2인 협동 시험 게이트',client:'훈련관리실',reward:'테스트 · 보상 없음',difficulty:'★☆☆☆☆ 테스트',duration:'약 3분',max:2,test:true,description:'2인용 협동 전투 테스트입니다. 두 명이 참여하면 공략을 시작할 수 있습니다. HP 60~100의 무작위 보스를 상대로 턴 행동과 아이템 사용을 확인하세요.'}
+
   ];
   let currentUser=null,questStatus=[],shopCatalog=[],purchaseRows=[],inventoryRows=[],usedRows=[],adminUsers=[],refreshId=0,authMode='login',showJoinedOnly=false,currentBalance=0,isAdmin=false,currentName='모험가',sessionCheckBusy=false,activePage='quests';
 
@@ -1495,9 +1498,9 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
       const status=statusFor(q.id),count=Number(status.participant_count)||0,joined=Boolean(status.has_joined),full=count>=q.max,awarded=Boolean(status.awarded);
       const detail=questDetails.find(x=>x.quest_id===q.id),blocked=Boolean(detail?.blocked);
       const closed=Boolean(detail?.recruitment_closed),entryReady=Boolean(detail?.raid_entry_enabled)&&closed;
-      const disabled=!currentUser||joined||full||awarded||blocked||closed;
-      const label=blocked?'참여 제한':awarded?'퀘스트 종료':!currentUser?'로그인 후 참여':joined?'참여 완료':closed||full?'모집 마감':'참여하기';
-      const adminAction=isAdmin?`<button class="button award" data-award="${q.id}" ${awarded||count===0?'disabled':''}>${awarded?'지급 완료':'보상 지급'}</button>`:'';
+      const disabled=!currentUser||joined||full||awarded||blocked||closed||(q.test&&!detail);
+      const label=q.test&&!detail?'테스트 DB 등록 필요':blocked?'참여 제한':awarded?'퀘스트 종료':!currentUser?'로그인 후 참여':joined?'참여 완료':closed||full?'모집 마감':'참여하기';
+      const adminAction=isAdmin&&q.test?'<span class="raid-entry-wait">테스트 · 보상 없음</span>':isAdmin?`<button class="button award" data-award="${q.id}" ${awarded||count===0?'disabled':''}>${awarded?'지급 완료':'보상 지급'}</button>`:'';
       const gateControls=isAdmin&&(!awarded||detail?.battle_state==='active')?`<div class="quest-admin-gates"><span>관리자 모집 관리</span><div><button type="button" class="button" data-gate="${closed?'reopen':'close'}" data-gate-quest="${q.id}" ${questGateBusy.has(q.id)||closed&&detail?.battle_started?'disabled':''}>${closed?'모집 다시 열기':'모집 마감'}</button>${categoryFor(q)==='raid'?`<button type="button" class="button" data-gate="${entryReady?'disable':'enable'}" data-gate-quest="${q.id}" ${!closed||questGateBusy.has(q.id)?'disabled':''}>${entryReady?'토벌 입장 비활성화':'토벌 참여 활성화'}</button>`:''}</div></div>`:'';
       return `<article class="quest-card${awarded?' quest-paid':''}">${awarded?'<div class="quest-paid-seal"><img src="./assets/quest-paid-seal-v1.png" alt="" width="76" height="76"><span>보상 지급 완료</span></div>':''}<div class="quest-gate" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 40V23a16 16 0 0 1 32 0v17M4 40h40M13 40V24a11 11 0 0 1 22 0v16M17 40v-9m14 9v-9M20 12l4-5 4 5"/></svg></div><div class="quest-body"><div class="card-top"><div><span class="tag">${q.type}</span><h3>${q.title}</h3></div><span class="count">${count}/${q.max}명${awarded?' · 지급 완료':''}</span></div><p>${q.description}</p><div class="meta">의뢰인 ${q.client} · 보상 ${q.reward} · ${q.duration} · ${q.difficulty}</div><div class="card-bottom"><span class="members">참여자: ${!currentUser?'로그인 후 확인':!detail?'불러오는 중':detail.participants.length?detail.participants.map(escapeHtml).join(', '):'아직 없습니다'}</span><div class="card-actions">${categoryFor(q)==='raid'&&currentUser&&joined&&!blocked&&entryReady?`<a class="button" href="./raid.html?raid=${encodeURIComponent(q.id)}">공략 페이지</a>`:categoryFor(q)==='raid'&&currentUser&&joined&&!blocked?'<span class="raid-entry-wait">관리자 입장 활성화 대기</span>':''}${adminAction}<button class="button join" data-quest="${q.id}" ${disabled?'disabled':''}>${label}</button></div></div>${gateControls}</div></article>`;
     }).join('');

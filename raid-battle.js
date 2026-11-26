@@ -6,6 +6,14 @@
   const clamp=(n,max)=>Math.max(0,Math.min(max,Number(n)||0));
   const statusNames={waiting:'공략 대기',active:'전투 진행',victory:'토벌 성공',defeat:'공략 실패'};
   const bossShape=`<svg viewBox="0 0 320 200" role="img" aria-label="어둠 속 잔류 균열체"><path class="boss-shadow" d="M70 175 42 125 77 111 62 40 112 79 142 35 160 16 178 35 208 79 258 40 243 111 278 125 250 175 210 185 160 174 110 185Z"/><path class="boss-armor" d="m78 113 34-30 48 19 48-19 34 30-35 53-47-13-47 13Z"/><path class="boss-eye" d="m105 112 39 10-18 11Zm110 0-39 10 18 11Z"/><path class="boss-mark" d="m150 139 10-15 10 15-10 15Z"/><path class="boss-cut" d="m160 18-5 52 12 16-11 20m-78 8 35 51m129-51-35 51"/></svg>`;
+
+  function drawBoss(s){
+    if(s.boss_kind==='wisp')return '<svg viewBox="0 0 320 200" role="img" aria-label="균열 젤리"><path class="boss-shadow" d="M50 163C80 150 58 74 111 61C115 22 151 25 160 44C199 13 227 58 222 80C266 88 230 146 271 163Q225 191 190 174Q159 196 126 174Q90 195 50 163Z"/><path class="boss-armor" d="M90 144Q110 79 160 79Q218 76 233 145Q196 131 160 161Q126 133 90 144Z"/><path class="boss-eye" d="m115 104 26 7-11 11Zm90 0-26 7 11 11Z"/></svg>';
+    if(s.boss_kind==='guardian')return '<svg viewBox="0 0 320 200" role="img" aria-label="조각 골렘"><path class="boss-shadow" d="m70 56 52-29h76l52 29 28 104-48 22H90l-48-22Z"/><path class="boss-armor" d="m122 27-15 78 23 59h60l23-59-15-78-38 19Z"/><path class="boss-eye" d="m121 89 27 5-5 11-25-6Zm78 0-27 5 5 11 25-6Z"/><path class="boss-cut" d="m74 59 31 49-17 61m158-110-31 49 17 61m-72-123v31"/></svg>';
+    if(s.boss_kind==='shade')return '<svg viewBox="0 0 320 200" role="img" aria-label="붉은 눈 그림자"><path class="boss-shadow" d="M52 180 88 126 101 72 139 27 160 15 181 27 219 72 232 126 268 180 204 167 160 189 116 167Z"/><path class="boss-armor" d="m109 81 51-36 51 36-12 65-39 20-39-20Z"/><path class="boss-eye" d="m119 88 30 11-12 10-23-9Zm82 0-30 11 12 10 23-9Z"/><path class="boss-cut" d="m160 116-11 20 11 18 11-18Z"/></svg>';
+    return bossShape;
+  }
+
   function labelError(error){
     if(/PGRST202|42883|42P01/.test(error?.code||''))return '전투 DB 설정이 필요합니다. raid-battle-controls-items.sql을 먼저 실행해 주세요.';
     return error?.message||String(error||'알 수 없는 오류');
@@ -19,7 +27,7 @@
   function say(r,message){if(valid(r))r.container.querySelector('.raid-error').textContent=message}
   function syncLabel(r,message){if(valid(r))r.container.querySelector('.raid-sync').textContent=message}
   function memberCard(m,turn,state){
-    const text=m.blocked?'참여 제한':m.hp<=0?'전투 불능':state==='waiting'?'대기 중':state!=='active'?'전투 종료':m.acted?'행동 완료':'행동 대기';
+    const text=m.blocked?'참여 제한':m.hp<=0?'전투 불능 · 자동 제외':state==='waiting'?'대기 중':state!=='active'?'전투 종료':m.acted?'행동 완료':'행동 대기';
     return `<li class="raid-member${m.hp<=0?' is-down':''}"><div class="raid-member-name"><strong>${escape(m.username)}</strong><span>${text}</span></div><label>HP <span>${m.hp} / 200</span><progress class="raid-hp" value="${clamp(m.hp,200)}" max="200"></progress></label><label>MP <span>${m.mp} / 200</span><progress class="raid-mp" value="${clamp(m.mp,200)}" max="200"></progress></label></li>`;
   }
   function inventoryPanel(r,disabled){
@@ -48,14 +56,14 @@
     const s=r.state;if(!s||!valid(r))return;
     const previousLog=r.container.querySelector('.raid-log-list');
     const savedTop=previousLog?.scrollTop,nearBottom=!previousLog||previousLog.scrollHeight-previousLog.scrollTop-previousLog.clientHeight<55;
-    const eligible=s.members.filter(m=>!m.blocked&&m.hp>0),ready=eligible.filter(m=>m.acted).length;
+    const eligible=s.members.filter(m=>m.turn_required==null?!m.blocked&&m.hp>0:m.turn_required),ready=eligible.filter(m=>m.acted).length;
     const me=s.members.find(m=>m.user_id===r.userId);
     const attackDisabled=r.busy||s.state!=='active'||!me||me.blocked||me.hp<=0||me.acted;
     let actionText=s.state==='waiting'?'시작하면 현재 참여 명단이 확정됩니다.':s.state==='victory'?'보스를 처치했습니다. 관리자 보상 지급을 기다려 주세요.':s.state==='defeat'?'공략이 종료되었습니다.':me?.hp<=0?'HP가 0이어서 이번 턴 행동 대상에서 제외됩니다.':me?.acted?'이번 턴 행동을 예약했습니다. 나머지 참여자의 행동을 기다리는 중입니다.':'공격 또는 오른쪽 인벤토리의 아이템 사용 중 하나를 예약하세요.';
-    const key=JSON.stringify([s.state,s.turn_no,s.boss_hp,s.boss_max_hp,s.members,s.inventory,r.inventoryReady,r.inventoryProblem,r.busy,s.can_start]);
+    const key=JSON.stringify([s.state,s.turn_no,s.boss_hp,s.boss_max_hp,s.boss_kind,s.members,s.inventory,r.inventoryReady,r.inventoryProblem,r.busy,s.can_start]);
     if(key!==r.renderKey){
       r.renderKey=key;
-      r.container.querySelector('.raid-view').innerHTML=`<div class="raid-combat-layout"><div class="raid-main-content"><section class="raid-boss raid-state-${escape(s.state)}"><div class="raid-boss-heading"><span class="raid-state-label">${statusNames[s.state]||'확인 중'}</span><span class="raid-turn">TURN ${s.turn_no}</span></div><div class="raid-boss-art">${bossShape}</div><h3>${escape(s.boss_name)}</h3><div class="raid-boss-health"><span>보스 HP</span><strong>${s.boss_hp.toLocaleString('ko-KR')} / ${s.boss_max_hp.toLocaleString('ko-KR')}</strong><progress class="raid-hp" max="${s.boss_max_hp}" value="${s.boss_hp}" aria-label="보스 HP"></progress></div></section><section class="raid-turn-panel"><div class="raid-section-heading"><h3>턴 행동</h3><span>${s.state==='active'?ready+' / '+eligible.length+'명 행동 완료':s.members.length+'명 참여'}</span></div><p class="raid-action-note">${actionText}</p><div class="raid-action-buttons">${s.state==='waiting'?`<button type="button" class="button raid-start" ${r.busy||!s.can_start||eligible.length===0?'disabled':''}>현재 명단으로 공략 시작</button>`:`<button type="button" class="button raid-attack" ${attackDisabled?'disabled':''}>${r.busy?'처리 중…':me?.acted?'이번 턴 행동 완료':'공격 예약 · 피해 '+s.player_damage}</button>`}</div><p class="raid-rules">턴당 공격 / 아이템 중 1회 · 전원 행동 후 효과 적용 · 보스 생존 시 각 참여자에게 ${s.boss_damage} 피해 · HP 0은 행동 제외</p><ul class="raid-members">${s.members.map(m=>memberCard(m,s.turn_no,s.state)).join('')}</ul></section><section class="raid-log-panel"><div class="raid-section-heading"><h3>전투 기록</h3><span>참여자 공통 로그</span></div><button class="filter-button raid-older" type="button">이전 전투 기록</button><ol class="raid-log-list" aria-label="전투 기록"></ol></section></div>${inventoryPanel(r,attackDisabled)}</div>`;
+      r.container.querySelector('.raid-view').innerHTML=`<div class="raid-combat-layout"><div class="raid-main-content"><section class="raid-boss raid-state-${escape(s.state)}"><div class="raid-boss-heading"><span class="raid-state-label">${statusNames[s.state]||'확인 중'}</span><span class="raid-turn">TURN ${s.turn_no}</span></div><div class="raid-boss-art">${drawBoss(s)}</div><h3>${escape(s.boss_name)}</h3><div class="raid-boss-health"><span>보스 HP</span><strong>${s.boss_hp.toLocaleString('ko-KR')} / ${s.boss_max_hp.toLocaleString('ko-KR')}</strong><progress class="raid-hp" max="${s.boss_max_hp}" value="${s.boss_hp}" aria-label="보스 HP"></progress></div></section><section class="raid-turn-panel"><div class="raid-section-heading"><h3>턴 행동</h3><span>${s.state==='active'?ready+' / '+eligible.length+'명 행동 완료':s.members.length+'명 참여'}</span></div><p class="raid-action-note">${actionText}</p><div class="raid-action-buttons">${s.state==='waiting'?`<button type="button" class="button raid-start" ${r.busy||!s.can_start||eligible.length===0?'disabled':''}>현재 명단으로 공략 시작</button>`:`<button type="button" class="button raid-attack" ${attackDisabled?'disabled':''}>${r.busy?'처리 중…':me?.acted?'이번 턴 행동 완료':'공격 예약 · 피해 '+s.player_damage}</button>`}</div><p class="raid-rules">턴당 공격 / 아이템 중 1회 · 전원 행동 후 효과 적용 · 보스 생존 시 각 참여자에게 ${s.boss_damage} 피해 · HP 0은 행동 제외</p><ul class="raid-members">${s.members.map(m=>memberCard(m,s.turn_no,s.state)).join('')}</ul></section><section class="raid-log-panel"><div class="raid-section-heading"><h3>전투 기록</h3><span>참여자 공통 로그</span></div><button class="filter-button raid-older" type="button">이전 전투 기록</button><ol class="raid-log-list" aria-label="전투 기록"></ol></section></div>${inventoryPanel(r,attackDisabled)}</div>`;
       r.container.querySelector('.raid-start')?.addEventListener('click',()=>act(r,'start'));
       r.container.querySelector('.raid-attack')?.addEventListener('click',()=>act(r,'attack'));
       r.container.querySelector('.raid-older').addEventListener('click',()=>older(r));
