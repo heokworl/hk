@@ -1267,16 +1267,21 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     document.querySelectorAll('[data-use-item]').forEach(button=>button.disabled=true);
     status.textContent='아이템을 사용하는 중…';
     try{
-      const {data,error}=await supabase.rpc('use_shop_item_target_v3',{p_item_id:itemId,p_target_user_id:targetId});
+      const {data,error}=await supabase.rpc('use_shop_item_target_v4',{p_item_id:itemId,p_target_user_id:targetId});
       if(error){status.textContent='아이템 사용 오류: '+error.message;return}
-      if(data!=='used'){
+      if(data?.status==='already_full'){status.textContent=(data.target_name||'대상')+'의 회복 가능한 HP·MP가 이미 가득 차 있어 물약을 소모하지 않았습니다.';return}
+      if(data?.status!=='used'){
         await loadPurchases();
-        status.textContent=data==='not_owned'?'서버에서 사용 가능한 수량을 찾지 못했습니다. 표시 수량과 사용 함수의 계산이 일치하는지 확인이 필요합니다.':'아이템 사용 실패: '+String(data);
+        status.textContent=data?.status==='not_owned'?'서버에서 사용 가능한 수량을 찾지 못했습니다. 표시 수량과 사용 함수의 계산이 일치하는지 확인이 필요합니다.':'아이템 사용 실패: '+String(data?.status||data);
         return;
       }
       selectedUseItem=null;selectedUseTarget='';
-      await Promise.all([loadPurchases(),loadShopCatalog()]);
-      status.textContent='아이템 1개를 사용했고 사용 내역에 기록했습니다.';
+      await Promise.all([loadPurchases(),loadShopCatalog(),loadExpansion()]);
+      if(isAdmin)await loadAdminMemberStatus();
+      const effects=[];
+      if(data.hp_restored)effects.push('HP +'+data.hp_restored);
+      if(data.mp_restored)effects.push('MP +'+data.mp_restored);
+      status.textContent=(data.target_name||'대상')+'에게 아이템 1개 사용 완료'+(effects.length?' · '+effects.join(' / ')+' · 현재 HP '+data.hp+'/200, MP '+data.mp+'/200':'');
     }catch(error){status.textContent='아이템 사용 오류: '+String(error?.message||error)}
     finally{
       itemUseBusy=false;drawProfile();
