@@ -1,4 +1,7 @@
 begin;
+alter table public.shop_item_uses
+ add column if not exists target_user_id uuid references auth.users(id) on delete set null;
+
 create or replace function public.use_shop_item_target_v3(p_item_id text,p_target_user_id uuid)
 returns text language plpgsql security definer set search_path='' as $$
 declare v_uid uuid:=auth.uid(); v_qty integer;
