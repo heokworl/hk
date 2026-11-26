@@ -616,15 +616,21 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="./raid-battle.css?v=4">
-<script src="./raid-battle.js?v=4"></script>
-</head>
+<script src="./raid-battle.js?v=5"></script>
+<style>
+/* Home / compact guild terminal */
+.guild-home-link{display:block;line-height:0}.guild-home-link:focus-visible{outline:2px solid #ff6377;outline-offset:8px}
+.bookmark-nav{grid-template-columns:repeat(8,minmax(0,1fr))}
+#homePage{padding:34px 26px 40px;color:#edf0f5}.home-kicker{font-size:10px;letter-spacing:.2em;color:#ff7587;margin:0 0 9px}.home-heading{font-size:20px;font-weight:650;line-height:1.5;margin:0 0 25px}.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}.member-id-card{position:relative;grid-column:1/-1;padding:25px 28px;border:1px solid #67707f;border-radius:12px;background:linear-gradient(115deg,#292c35,#17191f 75%);overflow:hidden}.member-id-card:after{content:'天護';position:absolute;right:24px;top:36px;font-size:76px;font-weight:800;color:#ffffff06;pointer-events:none}.id-card-top{display:flex;justify-content:space-between;gap:12px;color:#c4cad4;font-size:10px;letter-spacing:.16em;padding-bottom:17px;border-bottom:1px solid #ffffff20}.id-card-name{font-size:24px;margin:23px 0 6px;line-height:1.4}.id-card-login{font-size:12px;color:#b9c2d1;margin:0 0 22px;overflow-wrap:anywhere}.id-card-stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:420px;font-size:11px;color:#d5dce7}.id-card-stats progress{width:100%;height:6px;display:block;margin-top:8px;accent-color:#ff6377}.id-card-stats .mp{accent-color:#a9bddb}.id-card-gold{margin:23px 0 0;font-size:12px;color:#e7ecf5}.home-block{min-width:0;padding-top:9px}.home-block h3{font-size:15px;margin:0 0 20px;color:#f0f2f6}.home-row{border-top:1px solid #383c46;padding:18px 0;display:grid;gap:10px}.home-row strong{font-size:13px;line-height:1.65}.home-row small,.home-empty{font-size:12px;line-height:1.9;color:#b8c0ce}.home-row a,.home-row button,.home-more{justify-self:start;background:transparent;border:1px solid #93505d;color:#ffabb7;border-radius:5px;padding:7px 11px;font:inherit;font-size:11px;text-decoration:none;cursor:pointer}.home-result{border-left:3px solid #ff6377;padding:12px 16px;margin-bottom:24px;background:#ff63770c;font-size:13px;line-height:1.8;color:#f7dce1}
+@media(max-width:600px){.bookmark-nav{grid-template-columns:repeat(4,minmax(0,1fr))}#homePage{padding:28px 18px}.home-grid{grid-template-columns:1fr;gap:28px}.member-id-card{padding:21px}.id-card-name{font-size:22px}}
+</style></head>
 <body>
 <main class="shell">
   <div class="topline"><span><i class="sigil">✧</i> &nbsp;天護 · HUNTER GUILD</span><span>GUILD HEADQUARTERS · KOREA</span></div>
   <div class="page-layout">
   <section class="panel">
     <header class="hero">
-      <div class="hero-copy"><img class="guild-logo" src="./cheonho-logo-v2.png?v=2" alt="천호 길드 로고"><div class="portal-tagline">천호 길드 공식 미션 포털</div></div>
+      <div class="hero-copy"><a class="guild-home-link" href="./index.html" aria-label="천호 초기 페이지"><img class="guild-logo" src="./cheonho-logo-v2.png?v=2" alt="천호 길드 로고"></a><div class="portal-tagline">천호 길드 공식 미션 포털</div></div>
       <div class="auth-panel" id="loginCard">
         <h2 id="authTitle">길드 로그인</h2>
         <p id="authDescription">아이디와 비밀번호로 로그인하세요.</p>
@@ -646,7 +652,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
       <div class="user-panel hidden" id="userPanel"><div class="welcome"><span class="sigil">✦</span> 로그인: <strong id="loggedName"></strong><span class="admin-badge hidden" id="adminBadge">관리자</span><span class="header-vitals" id="memberVitals" aria-live="polite"><span class="header-vital header-hp"><b>HP</b><progress id="headerHpBar" max="200" value="0" aria-label="HP 확인 중"></progress><span class="header-vital-value"><strong id="headerHp">—</strong><small> / 200</small></span></span><span class="header-vital header-mp"><b>MP</b><progress id="headerMpBar" max="200" value="0" aria-label="MP 확인 중"></progress><span class="header-vital-value"><strong id="headerMp">—</strong><small> / 200</small></span></span></span><span class="wallet" id="walletBalance">소지금화 0G</span></div><button class="logout header-logout" id="headerLogoutButton" type="button">로그아웃</button></div>
     </header>
     <nav class="bookmark-nav" aria-label="페이지 이동">
-      <button class="bookmark active" type="button" data-page="quests" aria-current="page"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M6 27V16a10 10 0 0 1 20 0v11M3 27h26M10 27v-8m12 8v-8M11 10l5-5 5 5"/></svg></span><b>퀘스트</b></button>
+      <button class="bookmark active" type="button" data-page="home" aria-current="page"><span aria-hidden="true">⌂</span><b>본부</b></button><button class="bookmark hidden" type="button" data-page="quests"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M6 27V16a10 10 0 0 1 20 0v11M3 27h26M10 27v-8m12 8v-8M11 10l5-5 5 5"/></svg></span><b>퀘스트</b></button>
       <button class="bookmark hidden" type="button" data-page="shop"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 11h22l-2 16H7L5 11Zm5 0 2-6h8l2 6M11 16h10"/></svg></span><b>상점</b></button>
       <button class="bookmark hidden" type="button" data-page="profile"><span aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="10" r="5"/><path d="M6 27c.7-6 4.4-9 10-9s9.3 3 10 9H6Z"/></svg></span><b>프로필</b></button>
       <button class="bookmark hidden" type="button" data-page="world"><span aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><path d="M4 16h24M16 4c4 4 6 8 6 12s-2 8-6 12c-4-4-6-8-6-12s2-8 6-12Z"/></svg></span><b>세계관</b></button>
@@ -654,7 +660,8 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
       <button class="bookmark hidden" type="button" data-page="profileGuide"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M4 7c5-2 9-1 12 2v18c-3-3-7-4-12-2V7Zm24 0c-5-2-9-1-12 2v18c3-3 7-4 12-2V7Z"/></svg></span><b>프로필 가이드</b></button>
       <button class="bookmark hidden" type="button" data-page="admin" id="adminBookmark"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 12h22l-2 15H7L5 12Zm3 0 3-7h10l3 7M12 19h8"/></svg></span><b>관리자</b></button>
     </nav>
-    <section class="content" id="board" aria-live="polite">
+    <section class="content" id="homePage"><p class="home-kicker">CHEONHO · MEMBER TERMINAL</p><h2 class="home-heading">천호 길드 본부</h2><div id="homeResult" class="home-result hidden" role="status"></div><div id="homeContent"><p class="home-empty">상단에서 로그인하면 회원증과 진행 중인 의뢰를 확인할 수 있습니다.</p></div></section>
+    <section class="content hidden" id="board" aria-live="polite">
       <div class="section-head"><h2 class="section-title">오늘의 퀘스트</h2><button class="filter-button" id="toggleJoined" type="button" disabled>참여한 퀘스트</button></div>
       <div class="quest-category-tabs" id="questCategories"><button type="button" data-category="daily" class="filter-button active">일상</button><button type="button" data-category="raid" class="filter-button">토벌</button><button type="button" data-category="event" class="filter-button">이벤트</button></div><p class="status" id="expansionStatus"></p><div class="cards" id="questList"></div>
       <p class="status" id="boardStatus"></p>
@@ -1082,7 +1089,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     {id:'test_raid_duo_v1',type:'토벌 의뢰 · 2인 테스트',title:'2인 협동 시험 게이트',client:'훈련관리실',reward:'테스트 · 보상 없음',difficulty:'★☆☆☆☆ 테스트',duration:'약 3분',max:2,test:true,description:'2인용 협동 전투 테스트입니다. 두 명이 참여하면 공략을 시작할 수 있습니다. HP 60~100의 무작위 보스를 상대로 턴 행동과 아이템 사용을 확인하세요.'}
 
   ];
-  let currentUser=null,questStatus=[],shopCatalog=[],purchaseRows=[],inventoryRows=[],usedRows=[],adminUsers=[],refreshId=0,authMode='login',showJoinedOnly=false,currentBalance=0,isAdmin=false,currentName='모험가',sessionCheckBusy=false,activePage='quests';
+  let currentUser=null,questStatus=[],shopCatalog=[],purchaseRows=[],inventoryRows=[],usedRows=[],adminUsers=[],refreshId=0,authMode='login',showJoinedOnly=false,currentBalance=0,isAdmin=false,currentName='모험가',sessionCheckBusy=false,activePage='home';
 
   let selectedUseItem=null,selectedUseTarget='';
   const profileUseQuantities=new Map();
@@ -1090,7 +1097,28 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   const raidId=new URLSearchParams(location.search).get('raid');
   function categoryFor(q){return questDetails.find(x=>x.quest_id===q.id)?.category||(q.type.includes('토벌')?'raid':'daily')}
 
+
+  let homeStats=null,homeWalletReady=false;
+  function renderHome(){
+    const host=document.getElementById('homeContent');if(!host)return;
+    if(!currentUser){homeStats=null;homeWalletReady=false;host.innerHTML='<p class="home-empty">상단에서 로그인하면 회원증과 진행 중인 의뢰를 확인할 수 있습니다.</p>';document.getElementById('homeResult').classList.add('hidden');return}
+    const e=escapeHtml,terminal=q=>['victory','defeat'].includes(questDetails.find(d=>d.quest_id===q.id)?.battle_state);
+    const ongoing=quests.filter(q=>statusFor(q.id).has_joined&&!statusFor(q.id).awarded&&!terminal(q));
+    const raids=quests.filter(q=>categoryFor(q)==='raid'&&!statusFor(q.id).awarded&&!terminal(q));
+    const row=q=>{const s=statusFor(q.id),d=questDetails.find(d=>d.quest_id===q.id);return '<article class="home-row"><strong>'+e(q.title)+'</strong><small>'+Number(s.participant_count||0)+' / '+q.max+'명 · '+(d?.recruitment_closed?'모집 마감':'모집 중')+' · '+e(q.reward)+'</small>'+(s.has_joined&&d?.raid_entry_enabled&&d?.recruitment_closed&&!d?.blocked?'<a href="./raid.html?raid='+encodeURIComponent(q.id)+'">공략 입장 →</a>':'<button type="button" data-home-quests="'+categoryFor(q)+'">의뢰 확인 →</button>')+'</article>'};
+    const bars=['hp','mp'].map(k=>'<label>'+k.toUpperCase()+' '+(homeStats?Number(homeStats[k])+' / 200':'—')+'<progress class="'+k+'" max="200" value="'+(homeStats?Math.max(0,Math.min(200,Number(homeStats[k]))):0)+'"></progress></label>').join('');
+    const loginId=currentUser.user_metadata?.login_id||currentUser.user_metadata?.user_id||currentUser.user_metadata?.username||currentUser.email?.split('@')[0]||'—';
+    host.innerHTML='<div class="home-grid"><article class="member-id-card"><div class="id-card-top"><span>天護 / HUNTER ID CARD</span><span>'+(isAdmin?'ADMINISTRATOR':'GUILD MEMBER')+'</span></div><h3 class="id-card-name">'+e(currentName)+'</h3><p class="id-card-login">ID · '+e(loginId)+'</p><div class="id-card-stats">'+bars+'</div><p class="id-card-gold">소지금화　<strong>'+(homeWalletReady?currentBalance.toLocaleString('ko-KR')+' G':'조회 중…')+'</strong></p></article><section class="home-block"><h3>◇ 진행 중인 의뢰 <small>'+ongoing.length+'</small></h3>'+(ongoing.length?ongoing.slice(0,3).map(row).join(''):'<p class="home-empty">참여 중인 의뢰가 없습니다.</p>')+'<button class="home-more" data-home-quests="daily">전체 의뢰 보기 →</button></section><section class="home-block"><h3>✦ 오늘의 토벌전!</h3>'+(raids.length?raids.slice(0,3).map(row).join(''):'<p class="home-empty">현재 열려 있는 토벌 의뢰가 없습니다.</p>')+'</section></div>';
+    host.querySelectorAll('[data-home-quests]').forEach(b=>b.addEventListener('click',()=>{questCategory=b.dataset.homeQuests;showJoinedOnly=false;showPage('quests');drawList()}));
+    try{const key='cheonho-raid-result:'+currentUser.id,raw=sessionStorage.getItem(key);if(raw){const result=JSON.parse(raw);sessionStorage.removeItem(key);const box=document.getElementById('homeResult');box.textContent=result.state==='victory'?'토벌 성공 · 보상 '+Number(result.user_reward||0).toLocaleString('ko-KR')+'G 지급 완료':'공략이 종료되었습니다. 길드 본부로 복귀했습니다.';box.classList.remove('hidden')}}catch{}
+  }
+  function returnHomeAfterRaid(result){
+    try{sessionStorage.setItem('cheonho-raid-result:'+currentUser.id,JSON.stringify({state:result.state,user_reward:result.user_reward||0}))}catch{}
+    window.location.replace('./index.html');
+  }
+
   function renderMemberVitals(stats){
+    homeStats=stats;renderHome();
     const valid=stats&&Number.isFinite(Number(stats.hp))&&Number.isFinite(Number(stats.mp));
     const hp=valid?Number(stats.hp):'—',mp=valid?Number(stats.mp):'—';
     document.querySelector('#headerHp').textContent=hp;
@@ -1140,7 +1168,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     if(!window.CheonhoRaid){game.textContent='전투 화면 파일을 불러오지 못했습니다. 새로고침해 주세요.';return}
     document.querySelector('#raidTitle').textContent=quests.find(q=>q.id===raidId)?.title||'토벌 의뢰';
     version.textContent='공유 보스 · 턴제 협동 공략';
-    await window.CheonhoRaid.open({client:supabase,questId:raidId,userId:currentUser.id,container:game,onVitalsChanged:refreshHeaderVitals});
+    await window.CheonhoRaid.open({client:supabase,questId:raidId,userId:currentUser.id,container:game,onVitalsChanged:refreshHeaderVitals,onFinished:returnHomeAfterRaid});
     if(request!==raidAccessRequest)return;
     if(activePage!=='raid')window.CheonhoRaid.suspend();
   }
@@ -1199,7 +1227,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   function setPageAccess(loggedIn){
     document.querySelectorAll('.bookmark[data-page]').forEach(button=>{
       const page=button.dataset.page;
-      if(page==='quests')return;
+      if(page==='home')return;
       if(page==='admin'){if(!loggedIn)button.classList.add('hidden');return}
       button.classList.toggle('hidden',!loggedIn);
     });
@@ -1212,7 +1240,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     ++raidAccessRequest;document.querySelector('#raidGame').textContent='로그인 후 이용해 주세요.';document.querySelector('#raidVersion').textContent='';
     adminMemberStatus=[];adminUsedRows=[];document.querySelector('#adminSummaryUsers').textContent='—';document.querySelector('#adminSummaryQuests').textContent='—';document.querySelector('#adminSummaryRestore').textContent='—';setAdminTab('members');
     profileUseQuantities.clear();
-    currentUser=null;questDetails=[];itemTargets=[];selectedUseItem=null;selectedUseTarget='';currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];usedRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned_quantity:0}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');setPageAccess(false);showPage('quests');
+    currentUser=null;questDetails=[];itemTargets=[];selectedUseItem=null;selectedUseTarget='';currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];usedRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned_quantity:0}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');setPageAccess(false);showPage('home');renderHome();
     document.querySelector('#toggleJoined').disabled=true;
     document.querySelector('#profileLogoutButton').disabled=true;
     document.querySelector('#shopWallet').textContent='로그인 후 소지금 표시';
@@ -1235,7 +1263,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     const {data,error}=await supabase.rpc('get_my_wallet');
     if(error){boardStatus.textContent='계정 지갑 오류: '+error.message;return}
     const row=Array.isArray(data)?data[0]:data;
-    currentName=row?.username||displayName(currentUser);currentBalance=Number(row?.balance)||0;isAdmin=Boolean(row?.is_admin);
+    homeWalletReady=true;currentName=row?.username||displayName(currentUser);currentBalance=Number(row?.balance)||0;isAdmin=Boolean(row?.is_admin);
     document.querySelector('#loggedName').textContent=currentName;
     document.querySelector('#walletBalance').textContent=`소지금화 ${currentBalance.toLocaleString('ko-KR')}G`;
     document.querySelector('#shopWallet').textContent=`소지금 ${currentBalance.toLocaleString('ko-KR')}G`;
@@ -1244,7 +1272,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     document.querySelector('#adminBadge').classList.toggle('hidden',!isAdmin);
     document.querySelector('#adminBookmark').classList.toggle('hidden',!isAdmin);
     if(!isAdmin&&!document.querySelector('#adminPage').classList.contains('hidden'))showPage('quests');
-    drawList();drawShop();drawProfile();
+    drawList();drawShop();drawProfile();renderHome();
   }
   async function loadShopCatalog(){
     const {data,error}=await supabase.rpc('get_shop_items');
@@ -1317,16 +1345,17 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     }));
   }
   function showPage(page){
-    if(!currentUser&&page!=='quests')page='quests';
+    if(!currentUser&&page!=='home')page='home';
     if(page==='admin'&&!isAdmin)return;
     const changed=activePage!==page;activePage=page;
     if(page!=='raid')window.CheonhoRaid?.suspend();else window.CheonhoRaid?.resume();
-    const pages={quests:document.querySelector('#board'),shop:document.querySelector('#shopPage'),profile:document.querySelector('#profilePage'),world:document.querySelector('#worldPage'),settings:document.querySelector('#settingsPage'),profileGuide:document.querySelector('#profileGuidePage'),raid:document.querySelector('#raidPage'),admin:document.querySelector('#adminPage')};
+    const pages={home:document.querySelector('#homePage'),quests:document.querySelector('#board'),shop:document.querySelector('#shopPage'),profile:document.querySelector('#profilePage'),world:document.querySelector('#worldPage'),settings:document.querySelector('#settingsPage'),profileGuide:document.querySelector('#profileGuidePage'),raid:document.querySelector('#raidPage'),admin:document.querySelector('#adminPage')};
     Object.entries(pages).forEach(([key,element])=>element.classList.toggle('hidden',key!==page));
     document.querySelectorAll('[data-page]').forEach(button=>{
       const active=button.dataset.page===page;button.classList.toggle('active',active);
       if(active)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
     });
+    renderHome();
     if(!changed)return;
     if(page==='shop')loadShopCatalog();
     if(page==='profile'){loadPurchases();loadExpansion();}
@@ -1507,7 +1536,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     const {data,error}=await supabase.rpc('get_quest_status');
     if(requestId!==refreshId)return;
     if(error){boardStatus.textContent='퀘스트 현황 오류: '+error.message;return}
-    questStatus=data||[];boardStatus.textContent='';await loadExpansion();drawList();
+    questStatus=data||[];boardStatus.textContent='';await loadExpansion();drawList();renderHome();
   }
   function statusFor(questId){return questStatus.find(row=>row.quest_id===questId)||{participant_count:0,has_joined:false,reward_amount:0,reward_mode:'per_user',awarded:false}}
   function drawList(){
@@ -1523,7 +1552,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
       const closed=Boolean(detail?.recruitment_closed),entryReady=Boolean(detail?.raid_entry_enabled)&&closed;
       const disabled=!currentUser||joined||full||awarded||blocked||closed||(q.test&&!detail);
       const label=q.test&&!detail?'테스트 DB 등록 필요':blocked?'참여 제한':awarded?'퀘스트 종료':!currentUser?'로그인 후 참여':joined?'참여 완료':closed||full?'모집 마감':'참여하기';
-      const adminAction=isAdmin&&q.test?'<span class="raid-entry-wait">테스트 · 보상 없음</span>':isAdmin?`<button class="button award" data-award="${q.id}" ${awarded||count===0?'disabled':''}>${awarded?'지급 완료':'보상 지급'}</button>`:'';
+      const adminAction=categoryFor(q)==='raid'?'<span class="raid-entry-wait">성공 시 자동 지급</span>':isAdmin&&q.test?'<span class="raid-entry-wait">테스트 · 보상 없음</span>':isAdmin?`<button class="button award" data-award="${q.id}" ${awarded||count===0?'disabled':''}>${awarded?'지급 완료':'보상 지급'}</button>`:'';
       const gateControls=isAdmin&&(!awarded||detail?.battle_state==='active')?`<div class="quest-admin-gates"><span>관리자 모집 관리</span><div><button type="button" class="button" data-gate="${closed?'reopen':'close'}" data-gate-quest="${q.id}" ${questGateBusy.has(q.id)||closed&&detail?.battle_started?'disabled':''}>${closed?'모집 다시 열기':'모집 마감'}</button>${categoryFor(q)==='raid'?`<button type="button" class="button" data-gate="${entryReady?'disable':'enable'}" data-gate-quest="${q.id}" ${!closed||questGateBusy.has(q.id)?'disabled':''}>${entryReady?'토벌 입장 비활성화':'토벌 참여 활성화'}</button>`:''}</div></div>`:'';
       return `<article class="quest-card${awarded?' quest-paid':''}">${awarded?'<div class="quest-paid-seal"><img src="./assets/quest-paid-seal-v1.png" alt="" width="76" height="76"><span>보상 지급 완료</span></div>':''}<div class="quest-gate" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 40V23a16 16 0 0 1 32 0v17M4 40h40M13 40V24a11 11 0 0 1 22 0v16M17 40v-9m14 9v-9M20 12l4-5 4 5"/></svg></div><div class="quest-body"><div class="card-top"><div><span class="tag">${q.type}</span><h3>${q.title}</h3></div><span class="count">${count}/${q.max}명${awarded?' · 지급 완료':''}</span></div><p>${q.description}</p><div class="meta">의뢰인 ${q.client} · 보상 ${q.reward} · ${q.duration} · ${q.difficulty}</div><div class="card-bottom"><span class="members">참여자: ${!currentUser?'로그인 후 확인':!detail?'불러오는 중':detail.participants.length?detail.participants.map(escapeHtml).join(', '):'아직 없습니다'}</span><div class="card-actions">${categoryFor(q)==='raid'&&currentUser&&joined&&!blocked&&entryReady?`<a class="button" href="./raid.html?raid=${encodeURIComponent(q.id)}">공략 페이지</a>`:categoryFor(q)==='raid'&&currentUser&&joined&&!blocked?'<span class="raid-entry-wait">관리자 입장 활성화 대기</span>':''}${adminAction}<button class="button join" data-quest="${q.id}" ${disabled?'disabled':''}>${label}</button></div></div>${gateControls}</div></article>`;
     }).join('');
@@ -1753,7 +1782,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')verifySessionUser()});
   window.setInterval(verifySessionUser,60000);
   window.setInterval(refreshHeaderVitals,15000);
-  window.setInterval(()=>{if(currentUser&&activePage==='quests'&&document.visibilityState==='visible')loadBoard()},15000);
+  window.setInterval(()=>{if(currentUser&&['quests','home'].includes(activePage)&&document.visibilityState==='visible')loadBoard()},15000);
 })();
 </script>
 
@@ -1792,4 +1821,5 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 
 </body>
 </html>
+
 

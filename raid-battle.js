@@ -18,7 +18,7 @@
     if(/PGRST202|42883|42P01/.test(error?.code||''))return '전투 DB 설정이 필요합니다. raid-battle-controls-items.sql을 먼저 실행해 주세요.';
     return error?.message||String(error||'알 수 없는 오류');
   }
-  function valid(r){return room===r&&!r.closed}
+  function valid(r){return room===r&&!r.closed&&!r.finished}
   function shell(r){
     r.container.classList.add('shared-raid');
     r.container.innerHTML=`<div class="raid-topline"><span class="raid-sync" role="status">연결 확인 중…</span><button type="button" class="filter-button raid-refresh">새로고침</button></div><p class="raid-error" role="alert"></p><div class="raid-view"><div class="raid-combat-layout"><div class="raid-main-content"><div class="raid-placeholder">전투 상태를 불러오는 중…</div></div>${inventoryPanel(r,true)}</div></div>`;
@@ -86,6 +86,7 @@
         const {data,error}=await r.client.rpc('raid_get_state_v1',{p_quest_id:r.questId});
         if(!valid(r))return;
         if(error)throw error;
+        if(data?.quest_id===r.questId&&['victory','defeat'].includes(data.state)){r.finished=true;clearInterval(r.timer);stopChannel(r);r.container.replaceChildren();if(r.onFinished)r.onFinished(data);else window.location.replace('./index.html');return;}
         if(!data||data.quest_id!==r.questId||!Array.isArray(data.members))throw Error('전투 상태를 확인하지 못했습니다.');
         if(r.state&&Number(data.revision)<Number(r.state.revision))return;
         r.inventoryReady=Array.isArray(data.inventory);
@@ -170,10 +171,10 @@
   }
   async function open(config){
     if(room&&room.questId===config.questId&&room.userId===config.userId&&room.container===config.container){
-      room.onVitalsChanged=config.onVitalsChanged;room.visible=true;return refresh(room);
+      room.onVitalsChanged=config.onVitalsChanged;room.onFinished=config.onFinished;room.visible=true;return refresh(room);
     }
     destroy();
-    const r={client:config.client,questId:config.questId,userId:config.userId,container:config.container,onVitalsChanged:config.onVitalsChanged,closed:false,visible:true,state:null,busy:false,fetching:null,refreshAgain:false,channel:null,logs:new Map(),hasOlder:null,loadingOlder:false,renderKey:'',firstLogs:true,inventoryReady:false,inventoryProblem:'',selectedTargets:new Map()};
+    const r={client:config.client,questId:config.questId,userId:config.userId,container:config.container,onVitalsChanged:config.onVitalsChanged,onFinished:config.onFinished,closed:false,visible:true,state:null,busy:false,fetching:null,refreshAgain:false,channel:null,logs:new Map(),hasOlder:null,loadingOlder:false,renderKey:'',firstLogs:true,inventoryReady:false,inventoryProblem:'',selectedTargets:new Map()};
     room=r;shell(r);
     r.timer=setInterval(()=>refresh(r),5000);
     return refresh(r);
@@ -184,3 +185,4 @@
   window.addEventListener('pagehide',destroy);
   window.CheonhoRaid={open,destroy,suspend(){if(room){room.visible=false;stopChannel(room)}},resume(){if(room){room.visible=true;refresh(room)}}};
 })();
+
