@@ -487,7 +487,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 #raidPage[data-layout="1"] .raid-game{min-height:380px;border-radius:0;border-left:4px solid #ff627b;background:linear-gradient(110deg,#301923,#171b23)}
 #raidPage[data-layout="2"] .raid-game{min-height:280px;border:2px double #a7adb9;border-radius:30px;background:radial-gradient(ellipse,#312532,#141820)}
 
-.item-use-panel{display:grid;gap:10px;margin-top:5px;padding-top:11px;border-top:1px solid #67616b}
+.item-use-title{font-size:12px;color:#fff}.inventory-slot:has(.item-use-panel){justify-content:flex-start}.item-use-panel{display:grid;gap:10px;margin-top:5px;padding-top:11px;border-top:1px solid #67616b}
 .item-use-panel label{display:grid;gap:7px;color:#edeef2;font-size:11px}
 .item-use-panel select{width:100%;min-width:0;padding:8px 5px;border:1px solid #72747c;border-radius:5px;background:#191a1f;color:#fff;font:inherit}
 .item-use-actions{display:flex;flex-wrap:wrap;gap:7px}
@@ -1154,17 +1154,13 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     if(!history||!inventory||!used)return;
     if(!currentUser){history.innerHTML='<div class="profile-empty">로그인하면 구매 기록을 볼 수 있어요.</div>';inventory.innerHTML='<div class="profile-empty">로그인하면 보유 아이템을 볼 수 있어요.</div>';used.innerHTML='<div class="profile-empty">로그인하면 사용 기록을 볼 수 있어요.</div>';return}
     history.innerHTML=purchaseRows.length?purchaseRows.map(row=>`<div class="list-row inventory-row"><strong>${escapeHtml(row.item_name)} <small>× ${Number(row.quantity)||1}</small></strong><span>총 ${Number(row.total_paid??row.price_paid).toLocaleString('ko-KR')}G · 최근 구매 ${new Date(row.purchased_at).toLocaleDateString('ko-KR')}</span></div>`).join(''):'<div class="profile-empty">구매한 상품이 없습니다.</div>';
-    inventory.innerHTML=inventoryRows.length?inventoryRows.map(row=>`<article class="inventory-slot"><div class="inventory-slot-top"><span class="inventory-slot-icon" aria-hidden="true">✦</span><span class="inventory-quantity">× ${Number(row.quantity)||1}</span></div><strong class="inventory-slot-name">${escapeHtml(row.item_name)}</strong><span class="inventory-slot-source">${escapeHtml(row.acquisition_type||'구매')}</span><button class="button item-use" type="button" data-use-item="${escapeHtml(row.item_id)}" aria-expanded="${selectedUseItem===row.item_id}" ${itemUseBusy?'disabled':''}>사용</button>${selectedUseItem===row.item_id?`<div class="item-use-panel"><label>사용 대상<select data-item-target="${escapeHtml(row.item_id)}"><option value="">대상 선택</option>${itemTargets.map(target=>`<option value="${escapeHtml(target.user_id)}" ${selectedUseTarget===target.user_id?'selected':''}>${escapeHtml(target.username)}</option>`).join('')}</select></label><div class="item-use-actions"><button class="button" type="button" data-confirm-use="${escapeHtml(row.item_id)}" ${itemUseBusy||!selectedUseTarget?'disabled':''}>1개 사용 확정</button><button class="logout" type="button" data-cancel-use ${itemUseBusy?'disabled':''}>취소</button></div></div>`:''}</article>`).join(''):'<div class="profile-empty">보유 아이템이 없습니다.</div>';
+    inventory.innerHTML=inventoryRows.length?inventoryRows.map(row=>`<article class="inventory-slot"><div class="inventory-slot-top"><span class="inventory-slot-icon" aria-hidden="true">✦</span><span class="inventory-quantity">× ${Number(row.quantity)||1}</span></div><strong class="inventory-slot-name">${escapeHtml(row.item_name)}</strong><span class="inventory-slot-source">${escapeHtml(row.acquisition_type||'구매')}</span>${`<div class="item-use-panel"><strong class="item-use-title">아이템 사용</strong><label>사용 대상<select data-item-target="${escapeHtml(row.item_id)}"><option value="">대상 선택</option>${itemTargets.map(target=>`<option value="${escapeHtml(target.user_id)}" ${selectedUseItem===row.item_id&&selectedUseTarget===target.user_id?'selected':''}>${escapeHtml(target.username)}</option>`).join('')}</select></label><div class="item-use-actions"><button class="button" type="button" data-confirm-use="${escapeHtml(row.item_id)}" ${itemUseBusy||selectedUseItem!==row.item_id||!selectedUseTarget?'disabled':''}>1개 사용 확정</button><button class="logout" type="button" data-cancel-use ${itemUseBusy?'disabled':''}>취소</button></div></div>`}</article>`).join(''):'<div class="profile-empty">보유 아이템이 없습니다.</div>';
     used.innerHTML=usedRows.length?usedRows.map(row=>`<div class="list-row"><strong>${escapeHtml(row.item_name)}</strong><span>${new Date(row.used_at).toLocaleString('ko-KR')} · ${row.restored_at?'관리자 복구 완료':'사용 완료'} · 대상 ${escapeHtml(row.target_name||'기존 기록')}</span></div>`).join(''):'<div class="profile-empty">아직 사용한 아이템이 없습니다.</div>';
-    inventory.querySelectorAll('[data-use-item]').forEach(button=>button.addEventListener('click',()=>{
-      if(itemUseBusy)return;
-      selectedUseItem=selectedUseItem===button.dataset.useItem?null:button.dataset.useItem;selectedUseTarget='';drawProfile();
-      inventory.querySelector('[data-item-target]')?.focus();
-    }));
     inventory.querySelectorAll('[data-item-target]').forEach(select=>select.addEventListener('change',()=>{
+      if(itemUseBusy)return;
+      selectedUseItem=select.dataset.itemTarget;
       selectedUseTarget=select.value;
-      const confirm=inventory.querySelector('[data-confirm-use]');
-      if(confirm)confirm.disabled=itemUseBusy||!selectedUseTarget;
+      drawProfile();
     }));
     inventory.querySelectorAll('[data-confirm-use]').forEach(button=>button.addEventListener('click',()=>useItem(button.dataset.confirmUse,selectedUseTarget)));
     inventory.querySelectorAll('[data-cancel-use]').forEach(button=>button.addEventListener('click',()=>{
