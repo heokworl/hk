@@ -297,9 +297,25 @@ notify pgrst,'reload schema';
 -- Recruitment control and turn items
 
 -- 01-schema-and-gates.sql
-alter table public.quest_limits
- add column if not exists recruitment_closed boolean not null default false,
- add column if not exists raid_entry_enabled boolean not null default false;
+-- Grandfather existing active raids only on the first installation of entry gates.
+do $
+declare first_install boolean;
+begin
+ select not exists(
+  select 1 from information_schema.columns
+  where table_schema='public' and table_name='quest_limits' and column_name='recruitment_closed'
+ ) into first_install;
+ alter table public.quest_limits
+  add column if not exists recruitment_closed boolean not null default false,
+  add column if not exists raid_entry_enabled boolean not null default false;
+ if first_install then
+  update public.quest_limits q
+  set recruitment_closed=true,raid_entry_enabled=true
+  from public.raid_battles b
+  where b.quest_id=q.quest_id and b.state='active' and q.active and q.category='raid';
+ end if;
+end;
+$;
 alter table public.shop_items
  add column if not exists hp_restore integer not null default 0 check(hp_restore between 0 and 200),
  add column if not exists mp_restore integer not null default 0 check(mp_restore between 0 and 200);
