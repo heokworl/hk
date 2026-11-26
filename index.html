@@ -477,6 +477,15 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 
 
 .guild-lore-image{display:block;width:100%;max-width:100%;height:auto;margin:16px auto;border-radius:7px;object-fit:contain}
+
+.quest-category-tabs{display:flex;gap:10px;margin:0 0 22px}.quest-category-tabs .active{border-color:#ff627b;background:#3a2028;color:#fff}
+#itemTargetSelect{width:100%;padding:11px;margin:8px 0 12px;border:1px solid #72747c;border-radius:6px;background:#222329;color:#fff;font:inherit}
+.member-vitals{color:#f1dce2;padding:12px 0}.item-target-label{font-size:13px;color:#eee}
+.raid-game{display:grid;place-items:center;min-height:320px;margin-top:24px;border:1px solid #78404d;border-radius:10px;background:#1b1820;color:#fff;font-size:28px}
+#raidTitle{margin-top:30px}#questBlockList{display:grid;gap:8px;margin-top:16px}.card-actions{flex-wrap:wrap}
+
+#raidPage[data-layout="1"] .raid-game{min-height:380px;border-radius:0;border-left:4px solid #ff627b;background:linear-gradient(110deg,#301923,#171b23)}
+#raidPage[data-layout="2"] .raid-game{min-height:280px;border:2px double #a7adb9;border-radius:30px;background:radial-gradient(ellipse,#312532,#141820)}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -505,7 +514,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
         <p class="note">이 사이트에서 계정을 만들어요. 비밀번호 분실 시 이메일 재설정은 지원되지 않습니다.</p>
         <p class="error" id="authMessage" aria-live="polite"></p>
       </div>
-      <div class="user-panel hidden" id="userPanel"><div class="welcome"><span class="sigil">✦</span> 로그인: <strong id="loggedName"></strong><span class="admin-badge hidden" id="adminBadge">관리자</span><span class="wallet" id="walletBalance">소지금 0G</span></div><button class="logout header-logout" id="headerLogoutButton" type="button">로그아웃</button></div>
+      <div class="user-panel hidden" id="userPanel"><div class="welcome"><span class="sigil">✦</span> 로그인: <strong id="loggedName"></strong><span class="admin-badge hidden" id="adminBadge">관리자</span><span class="wallet" id="memberVitals">HP·MP 확인 중</span><span class="wallet" id="walletBalance">소지금 0G</span></div><button class="logout header-logout" id="headerLogoutButton" type="button">로그아웃</button></div>
     </header>
     <nav class="bookmark-nav" aria-label="페이지 이동">
       <button class="bookmark active" type="button" data-page="quests" aria-current="page"><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M6 27V16a10 10 0 0 1 20 0v11M3 27h26M10 27v-8m12 8v-8M11 10l5-5 5 5"/></svg></span><b>퀘스트</b></button>
@@ -518,7 +527,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     </nav>
     <section class="content" id="board" aria-live="polite">
       <div class="section-head"><h2 class="section-title">오늘의 퀘스트</h2><button class="filter-button" id="toggleJoined" type="button" disabled>참여한 퀘스트</button></div>
-      <div class="cards" id="questList"></div>
+      <div class="quest-category-tabs" id="questCategories"><button type="button" data-category="daily" class="filter-button active">일상</button><button type="button" data-category="raid" class="filter-button">토벌</button><button type="button" data-category="event" class="filter-button">이벤트</button></div><p class="status" id="expansionStatus"></p><div class="cards" id="questList"></div>
       <p class="status" id="boardStatus"></p>
       <p class="note">로그인한 계정은 각 퀘스트에 한 번씩 참여할 수 있고, 다른 퀘스트에도 참여할 수 있습니다.</p>
     </section>
@@ -531,7 +540,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     <section class="content hidden" id="profilePage" aria-live="polite">
       <div class="section-head"><h2 class="section-title">모험가 프로필</h2><span class="tag">GUILD MEMBER</span></div>
       <div class="profile-summary"><div><span class="profile-label">이름</span><strong id="profileName">로그인 필요</strong></div><div><span class="profile-label">소지금화</span><strong class="gold-amount" id="profileBalance">0G</strong></div><button class="logout" id="profileLogoutButton" type="button" disabled>로그아웃</button></div>
-      <div class="profile-columns">
+      <p id="profileVitals" class="member-vitals">HP·MP 확인 중</p><label class="item-target-label" for="itemTargetSelect">아이템 사용 대상</label><select id="itemTargetSelect"><option value="">사용 대상 선택</option></select><div class="profile-columns">
         <section><h3 class="section-title">보유 아이템</h3><div class="profile-list" id="inventoryList"></div></section>
         <section><h3 class="section-title">구매 내역</h3><div class="profile-list" id="purchaseHistory"></div></section>
         <section><h3 class="section-title">사용 내역</h3><div class="profile-list" id="usedHistory"></div></section>
@@ -922,10 +931,11 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
           </form>
           <p class="status" id="adminProductStatus" aria-live="polite"></p>
         </section>
-        <section class="admin-card admin-used-card"><h3 class="admin-list-title">사용 아이템 복구</h3><p class="admin-hint">사용자가 프로필에서 사용한 아이템이에요. 복구하면 해당 사용자의 보유 목록에 다시 나타납니다.</p><div id="adminUsedItems" class="admin-used-list"><div class="profile-empty">사용된 아이템을 불러오는 중…</div></div></section>
+        <section class="admin-card"><h3 class="admin-list-title">퀘스트 참여 제한</h3><label class="admin-label" for="adminBlockUser">대상 이용자</label><select id="adminBlockUser"></select><label class="admin-label" for="adminBlockQuest">제한 범위</label><select id="adminBlockQuest"></select><div class="admin-inline"><button class="button" type="button" id="blockQuestUser">참여 제한</button><button class="button" type="button" id="unblockQuestUser">제한 해제</button></div><p class="status" id="questBlockStatus"></p><div id="questBlockList"></div></section><section class="admin-card admin-used-card"><h3 class="admin-list-title">사용 아이템 복구</h3><p class="admin-hint">사용자가 프로필에서 사용한 아이템이에요. 복구하면 해당 사용자의 보유 목록에 다시 나타납니다.</p><div id="adminUsedItems" class="admin-used-list"><div class="profile-empty">사용된 아이템을 불러오는 중…</div></div></section>
       </div>
     </section>
 
+<section class="content hidden" id="raidPage"><a class="filter-button" href="./index.html">퀘스트로 돌아가기</a><h2 id="raidTitle" class="section-title"></h2><p id="raidVersion" class="note"></p><div id="raidGame" class="raid-game">게임1</div></section>
     <div class="footer"><span>GUILD NOTICE</span><b>모집 마감 전까지 참여 가능</b></div>
   </section>
   </div>
@@ -943,6 +953,50 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     {id:'night_patrol',type:'정기 임무 · 본부 방호',title:'천호 본부 외곽 야간 순찰',client:'본부 경비대',reward:'1인당 100G',difficulty:'★☆☆☆☆ 쉬움',duration:'약 1시간',max:5,description:'최근 본부 외곽 담장 주변에서 정체불명의 흔적이 발견됐습니다. 지정된 순찰 경로를 돌며 방호 장치와 출입 기록을 확인하고, 이상 징후를 경비대에 보고해 주세요.'}
   ];
   let currentUser=null,questStatus=[],shopCatalog=[],purchaseRows=[],inventoryRows=[],usedRows=[],adminUsers=[],refreshId=0,authMode='login',showJoinedOnly=false,currentBalance=0,isAdmin=false,currentName='모험가',sessionCheckBusy=false,activePage='quests';
+
+  let questDetails=[],itemTargets=[],questCategory='daily',expansionBusy=false;
+  const raidId=new URLSearchParams(location.search).get('raid');
+  function categoryFor(q){return questDetails.find(x=>x.quest_id===q.id)?.category||(q.type.includes('토벌')?'raid':'daily')}
+  async function loadExpansion(){
+    if(!currentUser)return;
+    const uid=currentUser.id;
+    const [details,stats,targets]=await Promise.all([
+      supabase.rpc('get_quest_details_v3'),supabase.rpc('get_member_stats_v3'),supabase.rpc('get_item_targets_v3')
+    ]);
+    if(currentUser?.id!==uid)return;
+    const errors=[details.error,stats.error,targets.error].filter(Boolean);
+    document.querySelector('#expansionStatus').textContent=errors.length?'추가 기능 DB 오류: '+errors.map(e=>e.message).join(' / '):'';
+    if(!details.error)questDetails=details.data||[];
+    if(!targets.error)itemTargets=targets.data||[];
+    if(!stats.error&&stats.data){
+      document.querySelector('#memberVitals').textContent='HP '+stats.data.hp+'/200 · MP '+stats.data.mp+'/200';
+      document.querySelector('#profileVitals').textContent='HP '+stats.data.hp+'/200 · MP '+stats.data.mp+'/200';
+    }
+    const select=document.querySelector('#itemTargetSelect'),selected=select.value;
+    select.innerHTML='<option value="">사용 대상 선택</option>'+itemTargets.map(x=>'<option value="'+escapeHtml(x.user_id)+'">'+escapeHtml(x.username)+'</option>').join('');
+    if(itemTargets.some(x=>x.user_id===selected))select.value=selected;
+    drawList();
+    if(raidId){
+      const detail=questDetails.find(x=>x.quest_id===raidId),quest=quests.find(x=>x.id===raidId);
+      document.querySelector('#raidTitle').textContent=quest?.title||'토벌 의뢰';
+      document.querySelector('#raidGame').textContent=detail?.blocked?'참여가 제한된 토벌입니다.':detail?.category==='raid'?'게임1':'해당 토벌 의뢰를 찾을 수 없습니다.';
+      document.querySelector('#raidVersion').textContent=detail?'공략 페이지 · 버전 '+detail.game_version:'';
+      if(detail)document.querySelector('#raidPage').dataset.layout=String((Number(detail.game_version)-1)%3);
+      if(activePage==='quests')showPage('raid');
+    }
+  }
+  async function loadQuestBlocks(){
+    if(!isAdmin)return;
+    const select=document.querySelector('#adminBlockUser'),selected=select.value;
+    select.innerHTML='<option value="">이용자 선택</option>'+adminUsers.map(x=>'<option value="'+escapeHtml(x.user_id)+'">'+escapeHtml(x.username)+'</option>').join('');
+    if(adminUsers.some(x=>x.user_id===selected))select.value=selected;
+    document.querySelector('#adminBlockQuest').innerHTML='<option value="*">모든 퀘스트</option>'+quests.map(q=>'<option value="'+escapeHtml(q.id)+'">'+escapeHtml(q.title)+'</option>').join('');
+    const {data,error}=await supabase.rpc('admin_get_quest_blocks_v3');
+    const box=document.querySelector('#questBlockList');
+    if(error){box.textContent='제한 목록 오류: '+error.message;return}
+    box.innerHTML=(data||[]).length?data.map(x=>'<div class="list-row">'+escapeHtml(x.username)+' · '+escapeHtml(x.quest_key==='*'?'모든 퀘스트':quests.find(q=>q.id===x.quest_key)?.title||x.quest_key)+'</div>').join(''):'참여 제한된 이용자가 없습니다.';
+  }
+
   const loginCard=document.querySelector('#loginCard');
   const userPanel=document.querySelector('#userPanel');
   const authMessage=document.querySelector('#authMessage');
@@ -991,7 +1045,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     });
   }
   function showSignedOut(message=''){
-    currentUser=null;currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];usedRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned_quantity:0}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');setPageAccess(false);showPage('quests');
+    currentUser=null;questDetails=[];itemTargets=[];document.querySelector('#itemTargetSelect').innerHTML='<option value="">사용 대상 선택</option>';currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];usedRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned_quantity:0}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');setPageAccess(false);showPage('quests');
     document.querySelector('#toggleJoined').disabled=true;
     document.querySelector('#profileLogoutButton').disabled=true;
     document.querySelector('#shopWallet').textContent='로그인 후 소지금 표시';
@@ -1008,7 +1062,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     document.querySelector('#toggleJoined').disabled=false;
     document.querySelector('#profileLogoutButton').disabled=false;
     await Promise.all([loadBoard(),loadWallet(),loadShopCatalog(),loadPurchases()]);
-    drawProfile();drawShop();
+    drawProfile();drawShop();await loadExpansion();
   }
   async function loadWallet(){
     const {data,error}=await supabase.rpc('get_my_wallet');
@@ -1034,7 +1088,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     const profileStatus=document.querySelector('#profileStatus');
     if(profileStatus)profileStatus.textContent='';
     if(!currentUser){purchaseRows=[];inventoryRows=[];usedRows=[];drawProfile();return}
-    const [purchases,inventory,used]=await Promise.all([supabase.rpc('get_my_purchases'),supabase.rpc('get_my_inventory'),supabase.rpc('get_my_used_items')]);
+    const [purchases,inventory,used]=await Promise.all([supabase.rpc('get_my_purchases'),supabase.rpc('get_my_inventory'),supabase.rpc('get_my_used_items_v3')]);
     if(purchases.error){purchaseRows=[];inventoryRows=[];usedRows=[];drawProfile();profileStatus.textContent='구매 목록 오류: '+purchases.error.message;return}
     if(inventory.error){purchaseRows=[];inventoryRows=[];usedRows=[];drawProfile();profileStatus.textContent='보유 아이템 오류: '+inventory.error.message;return}
     if(used.error){purchaseRows=[];inventoryRows=[];usedRows=[];drawProfile();profileStatus.textContent='사용 내역 오류: '+used.error.message;return}
@@ -1071,14 +1125,14 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     if(!currentUser){history.innerHTML='<div class="profile-empty">로그인하면 구매 기록을 볼 수 있어요.</div>';inventory.innerHTML='<div class="profile-empty">로그인하면 보유 아이템을 볼 수 있어요.</div>';used.innerHTML='<div class="profile-empty">로그인하면 사용 기록을 볼 수 있어요.</div>';return}
     history.innerHTML=purchaseRows.length?purchaseRows.map(row=>`<div class="list-row inventory-row"><strong>${escapeHtml(row.item_name)} <small>× ${Number(row.quantity)||1}</small></strong><span>총 ${Number(row.total_paid??row.price_paid).toLocaleString('ko-KR')}G · 최근 구매 ${new Date(row.purchased_at).toLocaleDateString('ko-KR')}</span></div>`).join(''):'<div class="profile-empty">구매한 상품이 없습니다.</div>';
     inventory.innerHTML=inventoryRows.length?inventoryRows.map(row=>`<article class="inventory-slot"><div class="inventory-slot-top"><span class="inventory-slot-icon" aria-hidden="true">✦</span><span class="inventory-quantity">× ${Number(row.quantity)||1}</span></div><strong class="inventory-slot-name">${escapeHtml(row.item_name)}</strong><span class="inventory-slot-source">${escapeHtml(row.acquisition_type||'구매')}</span><button class="button item-use" type="button" data-use-item="${escapeHtml(row.item_id)}">1개 사용</button></article>`).join(''):'<div class="profile-empty">보유 아이템이 없습니다.</div>';
-    used.innerHTML=usedRows.length?usedRows.map(row=>`<div class="list-row"><strong>${escapeHtml(row.item_name)}</strong><span>${new Date(row.used_at).toLocaleString('ko-KR')} · ${row.restored_at?'관리자 복구 완료':'사용 완료'}</span></div>`).join(''):'<div class="profile-empty">아직 사용한 아이템이 없습니다.</div>';
+    used.innerHTML=usedRows.length?usedRows.map(row=>`<div class="list-row"><strong>${escapeHtml(row.item_name)}</strong><span>${new Date(row.used_at).toLocaleString('ko-KR')} · ${row.restored_at?'관리자 복구 완료':'사용 완료'} · 대상 ${escapeHtml(row.target_name||'기존 기록')}</span></div>`).join(''):'<div class="profile-empty">아직 사용한 아이템이 없습니다.</div>';
     inventory.querySelectorAll('[data-use-item]').forEach(button=>button.addEventListener('click',()=>useItem(button.dataset.useItem)));
   }
   function showPage(page){
     if(!currentUser&&page!=='quests')page='quests';
     if(page==='admin'&&!isAdmin)return;
     const changed=activePage!==page;activePage=page;
-    const pages={quests:document.querySelector('#board'),shop:document.querySelector('#shopPage'),profile:document.querySelector('#profilePage'),world:document.querySelector('#worldPage'),settings:document.querySelector('#settingsPage'),profileGuide:document.querySelector('#profileGuidePage'),admin:document.querySelector('#adminPage')};
+    const pages={quests:document.querySelector('#board'),shop:document.querySelector('#shopPage'),profile:document.querySelector('#profilePage'),world:document.querySelector('#worldPage'),settings:document.querySelector('#settingsPage'),profileGuide:document.querySelector('#profileGuidePage'),raid:document.querySelector('#raidPage'),admin:document.querySelector('#adminPage')};
     Object.entries(pages).forEach(([key,element])=>element.classList.toggle('hidden',key!==page));
     document.querySelectorAll('[data-page]').forEach(button=>{
       const active=button.dataset.page===page;button.classList.toggle('active',active);
@@ -1086,7 +1140,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     });
     if(!changed)return;
     if(page==='shop')loadShopCatalog();
-    if(page==='profile')loadPurchases();
+    if(page==='profile'){loadPurchases();loadExpansion();}
     if(page==='admin'){loadAdminUsers();loadShopCatalog();}
   }
   function updateAdminTargetInfo(){
@@ -1114,7 +1168,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     const status=document.querySelector('#adminStatus');status.textContent='길드원 목록을 불러오는 중…';
     const {data,error}=await supabase.rpc('admin_get_users');
     if(error){status.textContent='관리자 목록 오류: '+error.message;return}
-    adminUsers=data||[];drawAdminUsers();status.textContent='';await loadAdminUsedItems();
+    adminUsers=data||[];drawAdminUsers();status.textContent='';await Promise.all([loadAdminUsedItems(),loadQuestBlocks()]);
   }
   async function loadAdminUsedItems(){
     const box=document.querySelector('#adminUsedItems');
@@ -1139,12 +1193,14 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   let itemUseBusy=false;
   async function useItem(itemId){
     if(!currentUser||itemUseBusy)return;
+    const targetId=document.querySelector('#itemTargetSelect').value;
+    if(!targetId){document.querySelector('#profileStatus').textContent='아이템을 사용할 대상을 선택해 주세요.';return}
     itemUseBusy=true;
     const status=document.querySelector('#profileStatus');
     document.querySelectorAll('[data-use-item]').forEach(button=>button.disabled=true);
     status.textContent='아이템을 사용하는 중…';
     try{
-      const {data,error}=await supabase.rpc('use_shop_item',{p_item_id:itemId});
+      const {data,error}=await supabase.rpc('use_shop_item_target_v3',{p_item_id:itemId,p_target_user_id:targetId});
       if(error){status.textContent='아이템 사용 오류: '+error.message;return}
       if(data!=='used'){
         await loadPurchases();
@@ -1197,19 +1253,21 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     const {data,error}=await supabase.rpc('get_quest_status');
     if(requestId!==refreshId)return;
     if(error){boardStatus.textContent='퀘스트 현황 오류: '+error.message;return}
-    questStatus=data||[];boardStatus.textContent='';drawList();
+    questStatus=data||[];boardStatus.textContent='';await loadExpansion();drawList();
   }
   function statusFor(questId){return questStatus.find(row=>row.quest_id===questId)||{participant_count:0,has_joined:false,reward_amount:0,reward_mode:'per_user',awarded:false}}
   function drawList(){
-    const visibleQuests=showJoinedOnly&&currentUser?quests.filter(q=>Boolean(statusFor(q.id).has_joined)):quests;
+    const inCategory=quests.filter(q=>categoryFor(q)===questCategory);
+    const visibleQuests=showJoinedOnly&&currentUser?inCategory.filter(q=>Boolean(statusFor(q.id).has_joined)):inCategory;
     const list=document.querySelector('#questList');
     if(!visibleQuests.length){list.innerHTML='<div class="empty-state">현재 모집 중인 의뢰가 없습니다. 새 공고를 기다려 주세요.</div>';return}
     list.innerHTML=visibleQuests.map(q=>{
       const status=statusFor(q.id),count=Number(status.participant_count)||0,joined=Boolean(status.has_joined),full=count>=q.max,awarded=Boolean(status.awarded);
-      const disabled=!currentUser||joined||full||awarded;
-      const label=awarded?'퀘스트 종료':!currentUser?'로그인 후 참여':joined?'참여 완료':full?'모집 마감':'참여하기';
+      const detail=questDetails.find(x=>x.quest_id===q.id),blocked=Boolean(detail?.blocked);
+      const disabled=!currentUser||joined||full||awarded||blocked;
+      const label=blocked?'참여 제한':awarded?'퀘스트 종료':!currentUser?'로그인 후 참여':joined?'참여 완료':full?'모집 마감':'참여하기';
       const adminAction=isAdmin?`<button class="button award" data-award="${q.id}" ${awarded||count===0?'disabled':''}>${awarded?'지급 완료':'보상 지급'}</button>`:'';
-      return `<article class="quest-card${awarded?' quest-paid':''}">${awarded?'<div class="quest-paid-seal"><img src="./assets/quest-paid-seal-v1.png" alt="" width="76" height="76"><span>보상 지급 완료</span></div>':''}<div class="quest-gate" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 40V23a16 16 0 0 1 32 0v17M4 40h40M13 40V24a11 11 0 0 1 22 0v16M17 40v-9m14 9v-9M20 12l4-5 4 5"/></svg></div><div class="quest-body"><div class="card-top"><div><span class="tag">${q.type}</span><h3>${q.title}</h3></div><span class="count">${count}/${q.max}명${awarded?' · 지급 완료':''}</span></div><p>${q.description}</p><div class="meta">의뢰인 ${q.client} · 보상 ${q.reward} · ${q.duration} · ${q.difficulty}</div><div class="card-bottom"><span class="members">${joined?'내 참여 기록 있음':currentUser?'참여 가능':'참여하려면 로그인하세요'}</span><div class="card-actions">${adminAction}<button class="button join" data-quest="${q.id}" ${disabled?'disabled':''}>${label}</button></div></div></div></article>`;
+      return `<article class="quest-card${awarded?' quest-paid':''}">${awarded?'<div class="quest-paid-seal"><img src="./assets/quest-paid-seal-v1.png" alt="" width="76" height="76"><span>보상 지급 완료</span></div>':''}<div class="quest-gate" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 40V23a16 16 0 0 1 32 0v17M4 40h40M13 40V24a11 11 0 0 1 22 0v16M17 40v-9m14 9v-9M20 12l4-5 4 5"/></svg></div><div class="quest-body"><div class="card-top"><div><span class="tag">${q.type}</span><h3>${q.title}</h3></div><span class="count">${count}/${q.max}명${awarded?' · 지급 완료':''}</span></div><p>${q.description}</p><div class="meta">의뢰인 ${q.client} · 보상 ${q.reward} · ${q.duration} · ${q.difficulty}</div><div class="card-bottom"><span class="members">참여자: ${!currentUser?'로그인 후 확인':!detail?'불러오는 중':detail.participants.length?detail.participants.map(escapeHtml).join(', '):'아직 없습니다'}</span><div class="card-actions">${categoryFor(q)==='raid'&&currentUser?`<a class="button" href="./raid.html?raid=${encodeURIComponent(q.id)}">공략 페이지</a>`:''}${adminAction}<button class="button join" data-quest="${q.id}" ${disabled?'disabled':''}>${label}</button></div></div></div></article>`;
     }).join('');
     document.querySelectorAll('[data-quest]').forEach(button=>button.addEventListener('click',()=>joinQuest(button.dataset.quest)));
     document.querySelectorAll('[data-award]').forEach(button=>button.addEventListener('click',()=>awardQuest(button.dataset.award)));
@@ -1220,7 +1278,8 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     boardStatus.textContent='참여를 등록하는 중…';
     const {data,error}=await supabase.rpc('join_quest',{p_quest_id:questId});
     if(error){boardStatus.textContent='참여 등록에 실패했습니다. 잠시 후 다시 시도해 주세요.';if(button)button.disabled=false;return}
-    if(data==='full')boardStatus.textContent='모집 인원이 모두 찼습니다.';
+    if(data==='blocked')boardStatus.textContent='관리자에 의해 퀘스트 참여가 제한되었습니다.';
+    else if(data==='full')boardStatus.textContent='모집 인원이 모두 찼습니다.';
     else if(data==='already_joined')boardStatus.textContent='이미 참여한 퀘스트입니다.';
     else if(data==='closed')boardStatus.textContent='이미 보상이 지급되어 퀘스트 참여가 마감됐습니다.';
     else boardStatus.textContent='퀘스트 참여가 등록됐습니다.';
@@ -1323,6 +1382,27 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
       status.textContent='통신 오류: '+String(error?.message||error)+'. 재시도 전에 상점 목록을 확인해 주세요.';
     }finally{productAddBusy=false;button.disabled=false}
   });
+
+  document.querySelectorAll('[data-category]').forEach(button=>button.addEventListener('click',()=>{
+    questCategory=button.dataset.category;
+    document.querySelectorAll('[data-category]').forEach(b=>b.classList.toggle('active',b===button));drawList();
+  }));
+  async function saveQuestBlock(block){
+    if(!isAdmin||expansionBusy)return;
+    const status=document.querySelector('#questBlockStatus');
+    const uid=document.querySelector('#adminBlockUser').value,key=document.querySelector('#adminBlockQuest').value;
+    if(!uid){status.textContent='대상 이용자를 선택해 주세요.';return}
+    expansionBusy=true;
+    try{
+      const {data,error}=await supabase.rpc('admin_quest_block_v3',{p_user_id:uid,p_quest_key:key,p_block:block});
+      if(error){status.textContent='저장 오류: '+error.message;return}
+      if(data!=='saved'){status.textContent='저장 확인 실패';return}
+      await Promise.all([loadQuestBlocks(),loadBoard()]);status.textContent=block?'참여를 제한했습니다.':'선택한 범위의 제한을 해제했습니다.';
+    }finally{expansionBusy=false}
+  }
+  document.querySelector('#blockQuestUser').addEventListener('click',()=>saveQuestBlock(true));
+  document.querySelector('#unblockQuestUser').addEventListener('click',()=>saveQuestBlock(false));
+
   document.querySelector('#adminGoldButton').addEventListener('click',grantGold);
   document.querySelector('#adminItemButton').addEventListener('click',grantShopItem);
   supabase.auth.onAuthStateChange((_event,session)=>{
@@ -1335,7 +1415,8 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   });
   async function refreshCurrentAccountViews(){
     if(!currentUser||document.visibilityState!=='visible')return;
-    await Promise.all([loadWallet(),loadShopCatalog()]);
+    await Promise.all([loadWallet(),loadShopCatalog(),loadExpansion(),loadBoard()]);
+    if(isAdmin&&activePage==='admin')await loadAdminUsers();
     if(activePage==='profile')await loadPurchases();
   }
   async function verifySessionUser(){
