@@ -2,6 +2,11 @@
   "name": "cheonho-raid-tests",
   "private": true,
   "type": "module",
-  "scripts": {"test": "node battle-db.mjs && node battle-ui.mjs && node battle-v2-db.mjs && node battle-v2-ui.mjs && node quest-gates-ui.mjs && node admin-workspace-ui.mjs && node test-raids-db.mjs && node profile-bulk-db.mjs && node profile-bulk-ui.mjs"},
-  "devDependencies": {"@electric-sql/pglite": "0.6.0", "jsdom": "31.0.1"}
+  "scripts": {
+    "test": "node battle-db.mjs && node battle-ui.mjs && node battle-v2-db.mjs && node battle-v2-ui.mjs && node quest-gates-ui.mjs && node admin-workspace-ui.mjs && node test-raids-db.mjs && node profile-bulk-db.mjs && node profile-bulk-ui.mjs && node admin-grant-quantity-db.mjs && node admin-grant-quantity-ui.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.6.0",
+    "jsdom": "31.0.1"
+  }
 }

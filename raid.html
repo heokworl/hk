@@ -608,6 +608,11 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 
 .item-quantity-label input{width:100%;box-sizing:border-box;min-width:0;padding:8px 9px;border:1px solid #74717f;border-radius:5px;background:#191a20;color:#fff;font:inherit;font-size:12px}
 .item-quantity-label small{color:#c5c7d2;font-size:10px;line-height:1.6}
+#adminPage .admin-item-grant-line{align-items:flex-end}
+#adminPage .admin-item-quantity{display:grid;gap:5px;flex:0 0 78px;margin:0;color:#d8dce6;font-size:10px}
+#adminPage .admin-inline .admin-item-quantity input{width:100%!important;flex:none}
+@media(max-width:390px){#adminPage .admin-item-grant-line{flex-wrap:wrap}#adminPage .admin-item-grant-line>select{flex:1 1 100%;width:100%}#adminPage .admin-item-quantity{flex:1}#adminPage .admin-item-grant-line>.button{flex:1}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="./raid-battle.css?v=4">
@@ -1044,7 +1049,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
           <h3 class="admin-list-title">선택한 이용자에게 지급</h3><label class="admin-label" for="adminUserSelect">대상</label><select id="adminUserSelect"><option value="">계정 목록 불러오는 중…</option></select>
           <div class="admin-target" id="adminTargetInfo">계정을 선택해 주세요.</div>
           <div class="admin-form-row"><label class="admin-label" for="adminGoldAmount">지급 골드</label><div class="admin-inline"><input id="adminGoldAmount" type="number" min="1" max="1000000" step="1" placeholder="액수 입력"><button class="button" id="adminGoldButton" type="button">골드 지급</button></div></div>
-          <div class="admin-form-row"><label class="admin-label" for="adminItemSelect">지급 상점 아이템</label><div class="admin-inline"><select id="adminItemSelect"><option value="">상품 선택</option></select><button class="button" id="adminItemButton" type="button">아이템 지급</button></div></div>
+          <div class="admin-form-row"><label class="admin-label" for="adminItemSelect">지급 상점 아이템</label><div class="admin-inline admin-item-grant-line"><select id="adminItemSelect"><option value="">상품 선택</option></select><label class="admin-item-quantity" for="adminItemQuantity"><span>지급 수량</span><input id="adminItemQuantity" type="number" min="1" max="1000" step="1" value="1" inputmode="numeric"></label><button class="button" id="adminItemButton" type="button">추가 지급</button></div></div>
           <p class="status" id="adminStatus" aria-live="polite"></p>
         </section></section>
  <section id="adminPane-quests" class="admin-pane hidden" role="tabpanel" aria-labelledby="adminTab-quests"><section class="admin-card admin-quest-gates">
@@ -1483,21 +1488,27 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     document.querySelector('#adminGoldAmount').value='';status.textContent=`${target.username}에게 ${amount.toLocaleString('ko-KR')}G를 지급했습니다.`;
     await loadAdminUsers();if(userId===currentUser?.id)await loadWallet();
   }
+  let adminItemGrantBusy=false;
   async function grantShopItem(){
-    if(!isAdmin)return;
+    if(!isAdmin||adminItemGrantBusy)return;
     const userId=document.querySelector('#adminUserSelect').value,itemId=document.querySelector('#adminItemSelect').value;
+    const quantityInput=document.querySelector('#adminItemQuantity'),quantity=Number(quantityInput.value);
     const target=adminUsers.find(user=>user.user_id===userId),item=shopCatalog.find(row=>row.item_id===itemId);
     const status=document.querySelector('#adminStatus');
     if(!target||!item){status.textContent='지급 대상과 아이템을 모두 선택해 주세요.';return}
-    if(!window.confirm(`${target.username}에게 ${item.item_name}을(를) 지급할까요?`))return;
-    const button=document.querySelector('#adminItemButton');button.disabled=true;status.textContent='아이템을 지급하는 중…';
-    const {data,error}=await supabase.rpc('admin_grant_shop_item',{p_user_id:userId,p_item_id:itemId});
-    button.disabled=false;
-    if(error){status.textContent='아이템 지급 오류: '+error.message;return}
-    if(data==='already_owned'){status.textContent=`${target.username}은(는) 이미 이 아이템을 보유하고 있습니다.`;return}
-    if(data!=='granted'){status.textContent=`아이템 지급 확인 실패: 서버 응답 ${String(data)}`;return}
-    status.textContent=`${target.username}에게 ${item.item_name}을(를) 지급했습니다.`;
-    await Promise.all([loadAdminUsers(),loadShopCatalog()]);if(userId===currentUser?.id)await loadPurchases();
+    if(!Number.isInteger(quantity)||quantity<1||quantity>1000){status.textContent='지급 수량은 1~1,000 사이의 정수로 입력해 주세요.';return}
+    if(!window.confirm(target.username+'에게 '+item.item_name+' '+quantity.toLocaleString('ko-KR')+'개를 추가 지급할까요?'))return;
+    const button=document.querySelector('#adminItemButton');
+    adminItemGrantBusy=true;button.disabled=true;quantityInput.disabled=true;status.textContent='아이템 '+quantity+'개를 지급하는 중…';
+    try{
+      const {data,error}=await supabase.rpc('admin_grant_shop_items_v2',{p_user_id:userId,p_item_id:itemId,p_quantity:quantity});
+      if(error){status.textContent=error.code==='PGRST202'?'수량 지급 DB 설정이 필요합니다. admin-grant-item-quantity.sql을 실행해 주세요.':'아이템 지급 오류: '+error.message;return}
+      if(data?.status!=='granted'||data.quantity!==quantity||data.user_id!==userId||data.item_id!==itemId){status.textContent='지급 결과를 확인하지 못했습니다. 재시도 전에 대상의 보유 수량을 확인해 주세요.';return}
+      status.textContent=target.username+'에게 '+item.item_name+' '+quantity.toLocaleString('ko-KR')+'개를 추가 지급했습니다. · 지급 직후 보유 '+Number(data.owned_quantity).toLocaleString('ko-KR')+'개';
+      await Promise.all([loadAdminUsers(),loadShopCatalog()]);
+      if(userId===currentUser?.id)await loadPurchases();
+    }catch(error){status.textContent='지급 통신 오류: '+String(error?.message||error)+'. 재시도 전에 대상의 보유 수량을 확인해 주세요.'}
+    finally{adminItemGrantBusy=false;button.disabled=false;quantityInput.disabled=false}
   }
   async function loadBoard(){
     const requestId=++refreshId;boardStatus.textContent='퀘스트 정보를 불러오는 중…';
