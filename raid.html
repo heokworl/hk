@@ -537,10 +537,78 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 .quest-admin-gates{display:grid;gap:9px;margin-top:17px;padding-top:13px;border-top:1px solid #60515c}.quest-admin-gates>span{font-size:10px;color:#e6b3c1}.quest-admin-gates>div{display:flex;flex-wrap:wrap;gap:8px}.quest-admin-gates .button{font-size:11px;padding:8px 10px}.raid-entry-wait{font-size:10px;color:#e6b3c1}
 
 .admin-quest-gates{grid-column:1/-1}#adminQuestGateList{display:grid;gap:13px;margin-top:16px}.admin-quest-gate-row{padding:15px;border:1px solid #69616d;border-radius:7px;background:#222329}.admin-quest-gate-row>strong{color:#fff;font-size:13px}.admin-quest-gate-row>p{color:#dec9d2;font-size:11px;line-height:1.7;margin:9px 0 12px}.admin-quest-gate-row>div{display:flex;flex-wrap:wrap;gap:9px}.admin-quest-gate-row .button{padding:8px 10px;font-size:11px}
+
+/* Compact administrator workspace */
+#adminPage{font-size:12px}
+#adminPage .admin-workspace-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+#adminPage .admin-workspace-heading h2{margin:0;color:#f5f6fa;font-size:18px;font-weight:650;letter-spacing:-.03em}
+#adminPage .admin-workspace-heading p{margin:7px 0 0;color:#b9bcc7;font-size:11px;line-height:1.6}
+#adminPage .admin-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 20px}
+#adminPage .admin-summary>span{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 12px;border:1px solid #4b4e59;border-radius:7px;background:#1b1d24;color:#bec2cf;font-size:11px}
+#adminPage .admin-summary strong{color:#fff;font-size:15px;font-weight:600}
+#adminPage .admin-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:5px;border:1px solid #4e4e59;border-radius:8px;background:#17191f;margin-bottom:9px}
+#adminPage .admin-tabs button{padding:10px 5px;border:1px solid transparent;border-radius:5px;background:transparent;color:#bcc1ce;font:inherit;font-size:11px;white-space:nowrap}
+#adminPage .admin-tabs button[aria-selected="true"]{background:#3d222c;border-color:#ad465b;color:#fff}
+#adminPage .admin-tabs button:focus-visible{outline:2px solid #ff94a7;outline-offset:2px}
+#adminPage .admin-sync-note{margin:0 0 18px;color:#afb5c3;font-size:10px;min-height:14px}
+#adminPage .admin-pane{display:grid;gap:20px;min-width:0}
+#adminPage .admin-card{grid-column:auto!important;padding:17px!important;border:1px solid #53545f!important;border-radius:8px!important;background:#202229!important;margin:0!important;min-width:0}
+#adminPage .admin-list-title{font:600 13px/1.5 Inter,Pretendard,'Noto Sans KR',sans-serif!important;letter-spacing:0;margin:0 0 13px;color:#f3f4f7!important}
+#adminPage .admin-card-heading,#adminPage .member-status-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}
+#adminPage .admin-card-heading .admin-list-title,#adminPage .member-status-heading .admin-list-title{margin:0}
+#adminPage .admin-label,#adminPage .auth-form label{display:block;color:#d5d8e2!important;font-size:11px!important;margin-bottom:7px}
+#adminPage input,#adminPage select,#adminPage textarea{box-sizing:border-box;min-width:0;max-width:100%;border:1px solid #666876!important;border-radius:5px!important;background:#17191f!important;color:#f5f6fa!important;padding:9px 10px!important;font:400 12px/1.5 Inter,Pretendard,'Noto Sans KR',sans-serif!important}
+#adminPage select{width:100%}#adminPage textarea{min-height:90px}
+#adminPage .button,#adminPage .filter-button,#adminPage .logout{padding:8px 11px!important;min-height:34px;font-size:11px!important;font-weight:550!important;line-height:1.4;white-space:nowrap}
+#adminPage .admin-form-row{margin-top:15px}#adminPage .admin-inline{display:flex;gap:9px;align-items:center;margin-top:7px}#adminPage .admin-inline input,#adminPage .admin-inline select{flex:1;width:0}#adminPage .admin-inline .button{flex:none}
+#adminPage .admin-target{padding:10px 12px;margin:12px 0 18px;border-left:2px solid #ef7189!important;background:#2c2028!important;font-size:11px!important;line-height:1.6}
+#adminPage .admin-hint,#adminPage .admin-table-note{font-size:10px!important;line-height:1.75;color:#bdc2cf!important;margin:8px 0 14px}
+#adminPage .status{font-size:11px!important;line-height:1.7;text-align:left;margin:10px 0 0;min-height:0}
+#adminPage .status:empty{display:none}
+#adminPage .admin-search-label{display:grid;gap:7px;color:#d7dbe6;font-size:11px;margin-bottom:12px}
+#adminPage .admin-search-label input{width:100%}
+#adminPage .admin-roster-scroll{max-height:310px;overflow:auto;display:block;scrollbar-width:thin;border:1px solid #494d59;border-radius:6px}
+#adminPage .admin-roster-table{border-collapse:separate;border-spacing:0;width:100%;min-width:360px;table-layout:fixed;font-size:11px}
+#adminPage .admin-roster-table th,#adminPage .admin-roster-table td{padding:11px 8px;text-align:left;border-bottom:1px solid #3b3f4a;vertical-align:middle}
+#adminPage .admin-roster-table thead th{position:sticky;top:0;background:#292b34;color:#bfc5d2;font-size:10px;font-weight:500;z-index:1}
+#adminPage .admin-roster-table th:first-child{width:26%;color:#f5f6fa;overflow-wrap:anywhere}
+#adminPage .admin-roster-table th:nth-child(2){width:20%}
+#adminPage .admin-roster-table th:nth-child(3),#adminPage .admin-roster-table th:nth-child(4){width:19%}
+#adminPage .admin-roster-table th:last-child{width:16%}
+#adminPage .admin-roster-table tr.is-selected{background:#3a242e}#adminPage .admin-roster-table tbody tr:hover{background:#2b2832}
+#adminPage .admin-gold-cell{color:#e4e7ee;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+#adminPage .admin-mini-value{display:block;font-size:10px;margin-bottom:5px;color:#e7eaf2;font-variant-numeric:tabular-nums}
+#adminPage .admin-roster-table progress{display:block;appearance:none;width:100%;height:5px;border:0;border-radius:4px;overflow:hidden;background:#11131a}
+#adminPage .admin-roster-table progress::-webkit-progress-bar{background:#11131a}
+#adminPage .admin-select-member{border:1px solid #727180;border-radius:4px;padding:5px 7px;background:#25232c;color:#e5e7ee;font:inherit;font-size:10px;white-space:nowrap}
+#adminPage .admin-select-member[aria-pressed="true"]{border-color:#cf6a80;background:#4b2834;color:#fff}
+#adminPage .admin-unknown{color:#a9afbd}#adminPage .admin-empty-cell{padding:25px 12px;text-align:center;color:#b5bbc9}
+#adminPage .admin-inline-filter{display:flex;align-items:center;gap:12px;margin:14px 0;color:#c4c9d5;font-size:11px}
+#adminPage .admin-inline-filter select{width:auto;min-width:160px}
+#adminPage #adminQuestGateList{display:grid;gap:0;max-height:530px;overflow-y:auto;scrollbar-width:thin}
+#adminPage .admin-quest-gate-row{padding:15px 0;border:0;border-bottom:1px solid #444754;border-radius:0;background:transparent}
+#adminPage .admin-quest-gate-row:last-child{border-bottom:0}
+#adminPage .admin-quest-row-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px}
+#adminPage .admin-quest-row-head strong{font-size:12px;line-height:1.7;color:#f2f4f9;flex:1}
+#adminPage .admin-state-chip{font-size:10px;line-height:1.6;color:#f1b8c6;text-align:right;max-width:135px}
+#adminPage .admin-quest-row-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:12px}
+#adminPage .admin-row-note{color:#b5bdce;font-size:10px}
+#adminPage .admin-fold{border:1px solid #525361;border-radius:8px;background:#1c1e25;overflow:hidden}
+#adminPage .admin-fold>summary{padding:14px 17px;color:#dbe0ec;font-size:12px;cursor:pointer}
+#adminPage .admin-fold>.admin-card{border:0!important;border-top:1px solid #4a4d59!important;border-radius:0!important}
+#adminPage #adminUsedItems{max-height:450px;overflow-y:auto;display:grid;gap:0;scrollbar-width:thin}
+#adminPage .admin-used-row{display:grid;grid-template-columns:85px minmax(0,1fr) auto;gap:12px;align-items:center;padding:13px 0;border:0!important;border-bottom:1px solid #464953!important;border-radius:0!important;background:transparent!important;margin:0}
+#adminPage .admin-used-user{grid-column:auto!important;font-size:11px!important;overflow-wrap:anywhere}
+#adminPage .admin-used-item strong{font-size:12px!important;font-weight:550}
+#adminPage .admin-used-item small{font-size:10px!important;line-height:1.6;margin-top:5px;display:block;color:#bac1d0!important}
+#adminPage .profile-empty{font-size:11px!important;padding:18px 10px}
+#adminPage .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:500px){#adminPage .admin-workspace-heading h2{font-size:16px}#adminPage .admin-summary{gap:7px}#adminPage .admin-summary>span{padding:9px 8px;font-size:10px}#adminPage .admin-summary strong{font-size:13px}#adminPage .admin-card{padding:14px!important}#adminPage .admin-tabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}#adminPage .admin-tabs button{padding:10px 5px}#adminPage .admin-quest-row-head{display:grid;gap:6px}#adminPage .admin-state-chip{text-align:left;max-width:none}#adminPage .admin-used-row{grid-template-columns:64px minmax(0,1fr) auto;gap:8px}#adminPage .member-status-heading{align-items:flex-start}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="./raid-battle.css?v=2">
-<script src="./raid-battle.js?v=2"></script>
+<link rel="stylesheet" href="./raid-battle.css?v=3">
+<script src="./raid-battle.js?v=3"></script>
 </head>
 <body>
 <main class="shell">
@@ -962,23 +1030,26 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     </section>
 
 
-    <section class="content hidden" id="adminPage" aria-live="polite">
-      <div class="section-head"><h2 class="section-title">길드 관리자 페이지</h2><span class="tag">AUTHORIZED</span></div>
-      <p class="note page-note">대상 계정에 골드·아이템을 지급하거나, 사용한 아이템을 복구할 수 있습니다.</p>
-      <div class="admin-layout"><section class="admin-card admin-quest-gates">
- <div class="member-status-heading"><h3 class="admin-list-title">퀘스트 모집 · 토벌 입장 관리</h3><button class="filter-button" type="button" id="refreshQuestGates">새로고침</button></div>
- <p class="admin-hint">모집 마감 후 토벌 참여를 활성화하세요. 진행 중인 토벌이 막혔다면 접근 복구를 누르세요.</p>
- <p class="status" id="adminGateStatus" role="status"></p><div id="adminQuestGateList"></div>
-</section>
-        <section class="admin-card">
-          <label class="admin-label" for="adminUserSelect">지급 대상</label><select id="adminUserSelect"><option value="">계정 목록 불러오는 중…</option></select>
+    <section class="content hidden admin-workspace" id="adminPage">
+ <header class="admin-workspace-heading"><div><h2>길드 관리</h2><p>이용자 지급, 퀘스트 운영과 아이템 관리</p></div><button class="filter-button" id="refreshAdminWorkspace" type="button">전체 갱신</button></header>
+ <div class="admin-summary"><span>이용자 <strong id="adminSummaryUsers">—</strong></span><span>퀘스트 <strong id="adminSummaryQuests">—</strong></span><span>복구 대기 <strong id="adminSummaryRestore">—</strong></span></div>
+ <div class="admin-tabs" role="tablist" aria-label="관리 기능">
+ <button type="button" role="tab" id="adminTab-members" aria-controls="adminPane-members" aria-selected="true" tabindex="0" data-admin-tab="members">이용자 · 지급</button><button type="button" role="tab" id="adminTab-quests" aria-controls="adminPane-quests" aria-selected="false" tabindex="-1" data-admin-tab="quests">퀘스트 관리</button><button type="button" role="tab" id="adminTab-shop" aria-controls="adminPane-shop" aria-selected="false" tabindex="-1" data-admin-tab="shop">상품 추가</button><button type="button" role="tab" id="adminTab-restore" aria-controls="adminPane-restore" aria-selected="false" tabindex="-1" data-admin-tab="restore">아이템 복구</button>
+ </div>
+ <p class="admin-sync-note" id="adminWorkspaceSync" role="status"></p>
+ <section id="adminPane-members" class="admin-pane" role="tabpanel" aria-labelledby="adminTab-members"><section class="admin-card admin-roster-card"><div class="admin-card-heading"><h3 class="admin-list-title">이용자 현황</h3><button type="button" class="filter-button" id="refreshMemberStatus">HP·MP 갱신</button></div><label class="admin-search-label" for="adminMemberSearch">이름 검색<input type="search" id="adminMemberSearch" placeholder="이름으로 빠르게 찾기" autocomplete="off"></label><p class="admin-table-note"><span id="adminMemberCount"></span> · 이용자를 선택하면 아래 지급 대상으로 지정됩니다.</p><p class="status" id="memberStatusMessage" role="status"></p><div class="admin-user-list admin-roster-scroll" id="adminUserList"><table class="admin-roster-table"><thead><tr><th>이름</th><th>골드</th><th>HP</th><th>MP</th><th><span class="sr-only">대상 선택</span></th></tr></thead><tbody id="memberStatusRows"></tbody></table></div></section><section class="admin-card" id="adminGrantCard">
+          <h3 class="admin-list-title">선택한 이용자에게 지급</h3><label class="admin-label" for="adminUserSelect">대상</label><select id="adminUserSelect"><option value="">계정 목록 불러오는 중…</option></select>
           <div class="admin-target" id="adminTargetInfo">계정을 선택해 주세요.</div>
           <div class="admin-form-row"><label class="admin-label" for="adminGoldAmount">지급 골드</label><div class="admin-inline"><input id="adminGoldAmount" type="number" min="1" max="1000000" step="1" placeholder="액수 입력"><button class="button" id="adminGoldButton" type="button">골드 지급</button></div></div>
           <div class="admin-form-row"><label class="admin-label" for="adminItemSelect">지급 상점 아이템</label><div class="admin-inline"><select id="adminItemSelect"><option value="">상품 선택</option></select><button class="button" id="adminItemButton" type="button">아이템 지급</button></div></div>
           <p class="status" id="adminStatus" aria-live="polite"></p>
-        </section>
-        <section class="admin-card"><h3 class="admin-list-title">길드원 및 보유 골드</h3><div id="adminUserList" class="admin-user-list"><div class="profile-empty">계정 목록을 불러오는 중…</div></div></section>
-        <section class="admin-card admin-add-product">
+        </section></section>
+ <section id="adminPane-quests" class="admin-pane hidden" role="tabpanel" aria-labelledby="adminTab-quests"><section class="admin-card admin-quest-gates">
+ <div class="member-status-heading"><h3 class="admin-list-title">퀘스트 모집 · 토벌 입장 관리</h3><button class="filter-button" type="button" id="refreshQuestGates">새로고침</button></div>
+ <p class="admin-hint">모집 마감 → 토벌 참여 활성화 순서로 진행합니다.</p><label class="admin-inline-filter">표시<select id="adminQuestFilter"><option value="all">전체 퀘스트</option><option value="open">모집 중</option><option value="closed">마감</option><option value="raid">토벌</option><option value="paid">보상 지급 완료</option></select></label>
+ <p class="status" id="adminGateStatus" role="status"></p><div id="adminQuestGateList"></div>
+</section><details class="admin-fold"><summary>이용자 참여 제한 관리</summary><section class="admin-card"><h3 class="admin-list-title">퀘스트 참여 제한</h3><label class="admin-label" for="adminBlockUser">대상 이용자</label><select id="adminBlockUser"></select><label class="admin-label" for="adminBlockQuest">제한 범위</label><select id="adminBlockQuest"></select><div class="admin-inline"><button class="button" type="button" id="blockQuestUser">참여 제한</button><button class="button" type="button" id="unblockQuestUser">제한 해제</button></div><p class="status" id="questBlockStatus"></p><div id="questBlockList"></div></section></details></section>
+ <section id="adminPane-shop" class="admin-pane hidden" role="tabpanel" aria-labelledby="adminTab-shop"><section class="admin-card admin-add-product">
           <h3 class="admin-list-title">상점 상품 추가</h3>
           <form id="adminProductForm" class="auth-form">
             <label for="adminProductName">상품명<input id="adminProductName" required maxlength="80" placeholder="상품명 (최대 80자)"></label>
@@ -987,16 +1058,9 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
             <button class="button" id="adminProductButton" type="submit">상품 추가</button>
           </form>
           <p class="status" id="adminProductStatus" aria-live="polite"></p>
-        </section>
-        <section class="admin-card"><h3 class="admin-list-title">퀘스트 참여 제한</h3><label class="admin-label" for="adminBlockUser">대상 이용자</label><select id="adminBlockUser"></select><label class="admin-label" for="adminBlockQuest">제한 범위</label><select id="adminBlockQuest"></select><div class="admin-inline"><button class="button" type="button" id="blockQuestUser">참여 제한</button><button class="button" type="button" id="unblockQuestUser">제한 해제</button></div><p class="status" id="questBlockStatus"></p><div id="questBlockList"></div></section><section class="admin-card admin-member-status">
- <div class="member-status-heading"><h3 class="admin-list-title">전체 이용자 HP · MP</h3><button class="filter-button" type="button" id="refreshMemberStatus">새로고침</button></div>
- <p class="admin-hint">DB에 저장된 현재 수치입니다. 최대 HP 200 · MP 200</p>
- <p class="status" id="memberStatusMessage" role="status"></p>
- <div class="member-status-table-wrap"><table class="member-status-table"><thead><tr><th scope="col">이름</th><th scope="col">HP</th><th scope="col">MP</th></tr></thead><tbody id="memberStatusRows"></tbody></table></div>
+        </section></section>
+ <section id="adminPane-restore" class="admin-pane hidden" role="tabpanel" aria-labelledby="adminTab-restore"><section class="admin-card admin-used-card"><h3 class="admin-list-title">사용 아이템 복구</h3><p class="admin-hint">사용자가 프로필에서 사용한 아이템이에요. 복구하면 해당 사용자의 보유 목록에 다시 나타납니다.</p><label class="admin-search-label" for="adminRestoreSearch">이름 · 아이템 검색<input type="search" id="adminRestoreSearch" placeholder="사용자 또는 아이템 이름" autocomplete="off"></label><p class="status" id="adminRestoreStatus"></p><div id="adminUsedItems" class="admin-used-list"><div class="profile-empty">사용된 아이템을 불러오는 중…</div></div></section></section>
 </section>
-<section class="admin-card admin-used-card"><h3 class="admin-list-title">사용 아이템 복구</h3><p class="admin-hint">사용자가 프로필에서 사용한 아이템이에요. 복구하면 해당 사용자의 보유 목록에 다시 나타납니다.</p><div id="adminUsedItems" class="admin-used-list"><div class="profile-empty">사용된 아이템을 불러오는 중…</div></div></section>
-      </div>
-    </section>
 
 <section class="content hidden" id="raidPage"><a class="filter-button" href="./index.html">퀘스트로 돌아가기</a><h2 id="raidTitle" class="section-title"></h2><p id="raidVersion" class="note"></p><div id="raidGame" class="raid-game">참여 권한 확인 중…</div></section>
     <div class="footer"><span>GUILD NOTICE</span><b>모집 마감 전까지 참여 가능</b></div>
@@ -1142,6 +1206,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     for(const id of ['headerHpBar','headerMpBar']){document.getElementById(id).value=0;document.getElementById(id).setAttribute('aria-label','로그인 후 확인');}
     window.CheonhoRaid?.destroy();raidRouteOpened=false;
     ++raidAccessRequest;document.querySelector('#raidGame').textContent='로그인 후 이용해 주세요.';document.querySelector('#raidVersion').textContent='';
+    adminMemberStatus=[];adminUsedRows=[];document.querySelector('#adminSummaryUsers').textContent='—';document.querySelector('#adminSummaryQuests').textContent='—';document.querySelector('#adminSummaryRestore').textContent='—';setAdminTab('members');
     currentUser=null;questDetails=[];itemTargets=[];selectedUseItem=null;selectedUseTarget='';currentBalance=0;isAdmin=false;currentName='모험가';purchaseRows=[];inventoryRows=[];usedRows=[];adminUsers=[];shopCatalog=shopCatalog.map(item=>({...item,owned_quantity:0}));loginCard.classList.remove('hidden');userPanel.classList.add('hidden');setPageAccess(false);showPage('quests');
     document.querySelector('#toggleJoined').disabled=true;
     document.querySelector('#profileLogoutButton').disabled=true;
@@ -1260,66 +1325,93 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     select.innerHTML='<option value="">상품 선택</option>'+shopCatalog.map(item=>`<option value="${escapeHtml(item.item_id)}">${escapeHtml(item.item_name)} · ${Number(item.price_g).toLocaleString('ko-KR')}G</option>`).join('');
     if(shopCatalog.some(item=>item.item_id===current))select.value=current;
   }
+
+  let adminMemberStatus=[],adminUsedRows=[];
+  function setAdminTab(tab,focus=false){
+    document.querySelectorAll('[data-admin-tab]').forEach(button=>{
+      const selected=button.dataset.adminTab===tab;
+      button.setAttribute('aria-selected',String(selected));button.tabIndex=selected?0:-1;
+      document.getElementById('adminPane-'+button.dataset.adminTab).classList.toggle('hidden',!selected);
+      if(selected&&focus)button.focus();
+    });
+  }
+  function drawAdminRoster(){
+    const body=document.querySelector('#memberStatusRows');if(!body)return;
+    if(!isAdmin){body.replaceChildren();return}
+    const query=normalize(document.querySelector('#adminMemberSearch').value);
+    const all=new Map(adminUsers.map(x=>[x.user_id,{...x}]));
+    for(const row of adminMemberStatus)all.set(row.user_id,{...all.get(row.user_id),...row});
+    const rows=[...all.values()].filter(row=>normalize(row.username).includes(query));
+    const selected=document.querySelector('#adminUserSelect').value;
+    document.querySelector('#adminSummaryUsers').textContent=all.size;
+    document.querySelector('#adminMemberCount').textContent=rows.length+' / '+all.size+'명';
+    const vital=(label,value)=>Number.isFinite(Number(value))&&value!=null?'<span class="admin-mini-value">'+Number(value)+'/200</span><progress class="'+(label==='HP'?'vital-hp':'vital-mp')+'" max="200" value="'+Math.max(0,Math.min(200,Number(value)))+'" aria-label="'+label+'"></progress>':'<span class="admin-unknown">—</span>';
+    body.innerHTML=rows.length?rows.map(row=>'<tr class="'+(selected===row.user_id?'is-selected':'')+'"><th scope="row">'+escapeHtml(row.username)+'</th><td class="admin-gold-cell">'+(row.balance==null?'—':Number(row.balance).toLocaleString('ko-KR')+'G')+'</td><td>'+vital('HP',row.hp)+'</td><td>'+vital('MP',row.mp)+'</td><td><button class="admin-select-member" type="button" data-admin-select="'+escapeHtml(row.user_id)+'" aria-pressed="'+(selected===row.user_id)+'" aria-label="'+escapeHtml(row.username)+' 지급 대상 선택">'+(selected===row.user_id?'선택됨':'선택')+'</button></td></tr>').join(''):'<tr><td colspan="5" class="admin-empty-cell">'+(query?'검색 결과가 없습니다.':'등록된 이용자가 없습니다.')+'</td></tr>';
+    body.querySelectorAll('[data-admin-select]').forEach(button=>button.addEventListener('click',()=>{
+      document.querySelector('#adminUserSelect').value=button.dataset.adminSelect;updateAdminTargetInfo();drawAdminRoster();
+      document.querySelector('#adminGrantCard').scrollIntoView({behavior:'smooth',block:'nearest'});
+    }));
+  }
+  function drawAdminUsedItems(){
+    const box=document.querySelector('#adminUsedItems');if(!isAdmin){box.replaceChildren();return}
+    const query=normalize(document.querySelector('#adminRestoreSearch').value);
+    const rows=adminUsedRows.filter(row=>normalize(row.username+' '+row.item_name).includes(query));
+    document.querySelector('#adminSummaryRestore').textContent=adminUsedRows.length;
+    box.innerHTML=rows.length?rows.map(row=>'<div class="admin-used-row"><span class="admin-used-user">'+escapeHtml(row.username)+'</span><span class="admin-used-item"><strong>'+escapeHtml(row.item_name)+'</strong><small>'+new Date(row.used_at).toLocaleString('ko-KR')+'</small></span><button class="button restore-item" type="button" data-restore-use="'+row.use_id+'" data-user-id="'+escapeHtml(row.user_id)+'" data-user-name="'+escapeHtml(row.username)+'" data-item-name="'+escapeHtml(row.item_name)+'">복구</button></div>').join(''):'<div class="profile-empty">'+(query?'검색 결과가 없습니다.':'복구할 사용 아이템이 없습니다.')+'</div>';
+    box.querySelectorAll('[data-restore-use]').forEach(button=>button.addEventListener('click',()=>restoreUsedItem(button.dataset.restoreUse,button.dataset.userId,button.dataset.userName,button.dataset.itemName)));
+  }
   function drawAdminUsers(){
-    const select=document.querySelector('#adminUserSelect'),list=document.querySelector('#adminUserList');
-    if(!select||!list)return;
+    const select=document.querySelector('#adminUserSelect');if(!select)return;
     const current=select.value;
-    select.innerHTML='<option value="">지급할 길드원을 선택하세요</option>'+adminUsers.map(user=>`<option value="${escapeHtml(user.user_id)}">${escapeHtml(user.username)} · ${Number(user.balance).toLocaleString('ko-KR')}G</option>`).join('');
+    select.innerHTML='<option value="">이용자를 선택하세요</option>'+adminUsers.map(user=>'<option value="'+escapeHtml(user.user_id)+'">'+escapeHtml(user.username)+' · '+Number(user.balance).toLocaleString('ko-KR')+'G</option>').join('');
     if(adminUsers.some(user=>user.user_id===current))select.value=current;
-    updateAdminTargetInfo();
-    list.innerHTML=adminUsers.length?adminUsers.map(user=>`<button class="admin-user-row" type="button" data-admin-select="${escapeHtml(user.user_id)}"><strong>${escapeHtml(user.username)}</strong><span>${Number(user.balance).toLocaleString('ko-KR')}G</span></button>`).join(''):'<div class="profile-empty">등록된 길드원이 없습니다.</div>';
-    list.querySelectorAll('[data-admin-select]').forEach(button=>button.addEventListener('click',()=>{select.value=button.dataset.adminSelect;updateAdminTargetInfo();loadAdminUsedItems();select.scrollIntoView({behavior:'smooth',block:'nearest'});}));
+    updateAdminTargetInfo();drawAdminRoster();
   }
   async function loadAdminUsers(){
     if(!isAdmin)return;
-    const status=document.querySelector('#adminStatus');status.textContent='길드원 목록을 불러오는 중…';
+    const status=document.querySelector('#adminStatus');
     const {data,error}=await supabase.rpc('admin_get_users');
     if(error){status.textContent='관리자 목록 오류: '+error.message;return}
-    adminUsers=data||[];drawAdminUsers();status.textContent='';await Promise.all([loadAdminUsedItems(),loadQuestBlocks(),loadAdminMemberStatus()]);
+    adminUsers=data||[];drawAdminUsers();await Promise.all([loadAdminUsedItems(),loadQuestBlocks(),loadAdminMemberStatus()]);
   }
 
   let memberStatusRequest=0;
   async function loadAdminMemberStatus(){
-    const request=++memberStatusRequest;
-    const body=document.querySelector('#memberStatusRows'),message=document.querySelector('#memberStatusMessage'),button=document.querySelector('#refreshMemberStatus');
-    if(!currentUser||!isAdmin){body.replaceChildren();message.textContent='';return}
-    const uid=currentUser.id;
-    button.disabled=true;message.textContent='현재 HP·MP를 불러오는 중…';
+    const request=++memberStatusRequest,message=document.querySelector('#memberStatusMessage'),button=document.querySelector('#refreshMemberStatus');
+    if(!currentUser||!isAdmin){adminMemberStatus=[];drawAdminRoster();message.textContent='';return}
+    const uid=currentUser.id;button.disabled=true;message.textContent=adminMemberStatus.length?'':'HP·MP를 확인하는 중…';
     try{
       const {data,error}=await supabase.rpc('admin_get_member_status_v1');
       if(request!==memberStatusRequest||currentUser?.id!==uid||!isAdmin)return;
-      if(error){body.replaceChildren();message.textContent='상태 조회 오류: '+error.message;return}
-      const rows=data||[];
-      body.innerHTML=rows.map(row=>{
-        const hp=Number(row.hp),mp=Number(row.mp);
-        if(!Number.isFinite(hp)||!Number.isFinite(mp))return '<tr><td>'+escapeHtml(row.username)+'</td><td colspan="2">수치 확인 실패</td></tr>';
-        return '<tr><th scope="row">'+escapeHtml(row.username)+'</th><td><span class="vital-number">'+hp+' / 200</span><progress class="vital-hp" max="200" value="'+Math.max(0,Math.min(200,hp))+'" aria-label="'+escapeHtml(row.username)+' HP"></progress></td><td><span class="vital-number">'+mp+' / 200</span><progress class="vital-mp" max="200" value="'+Math.max(0,Math.min(200,mp))+'" aria-label="'+escapeHtml(row.username)+' MP"></progress></td></tr>';
-      }).join('');
-      message.textContent=rows.length?rows.length+'명 · 갱신 '+new Date().toLocaleTimeString('ko-KR'):'등록된 이용자가 없습니다.';
-    }catch(error){
-      if(request===memberStatusRequest){body.replaceChildren();message.textContent='상태 조회 오류: '+String(error?.message||error)}
-    }finally{if(request===memberStatusRequest)button.disabled=false}
+      if(error){adminMemberStatus=[];drawAdminRoster();message.textContent='상태 조회 오류: '+error.message;return}
+      adminMemberStatus=data||[];drawAdminRoster();
+      message.textContent='상태 갱신 '+new Date().toLocaleTimeString('ko-KR');
+    }catch(error){if(request===memberStatusRequest){adminMemberStatus=[];drawAdminRoster();message.textContent='상태 조회 오류: '+String(error?.message||error)}}
+    finally{if(request===memberStatusRequest)button.disabled=false}
   }
-
   async function loadAdminUsedItems(){
-    const box=document.querySelector('#adminUsedItems');
-    if(!isAdmin){box.innerHTML='<div class="profile-empty">관리자만 볼 수 있습니다.</div>';return}
-    box.innerHTML='<div class="profile-empty">사용 기록을 불러오는 중…</div>';
+    const message=document.querySelector('#adminRestoreStatus');if(!isAdmin){adminUsedRows=[];drawAdminUsedItems();return}
+    const uid=currentUser?.id;message.textContent=adminUsedRows.length?'':'사용 기록을 확인하는 중…';
     const {data,error}=await supabase.rpc('admin_get_used_items');
-    if(error){box.innerHTML=`<div class="profile-empty">복구 목록 오류: ${escapeHtml(error.message)}</div>`;return}
-    const rows=data||[];
-    box.innerHTML=rows.length?rows.map(row=>`<div class="admin-used-row"><span class="admin-used-user">${escapeHtml(row.username)}</span><span class="admin-used-item"><strong>${escapeHtml(row.item_name)}</strong><small>${new Date(row.used_at).toLocaleString('ko-KR')}</small></span><button class="button restore-item" type="button" data-restore-use="${row.use_id}" data-user-id="${escapeHtml(row.user_id)}" data-user-name="${escapeHtml(row.username)}" data-item-name="${escapeHtml(row.item_name)}">복구</button></div>`).join(''):'<div class="profile-empty">복구할 사용 아이템이 없습니다.</div>';
-    box.querySelectorAll('[data-restore-use]').forEach(button=>button.addEventListener('click',()=>restoreUsedItem(button.dataset.restoreUse,button.dataset.userId,button.dataset.userName,button.dataset.itemName)));
+    if(!isAdmin||currentUser?.id!==uid)return;
+    if(error){message.textContent='복구 목록 오류: '+error.message;return}
+    adminUsedRows=data||[];message.textContent='';drawAdminUsedItems();
   }
   async function restoreUsedItem(useId,userId,userName,itemName){
     if(!isAdmin)return;
-    if(!window.confirm(`${userName} · ${itemName} 아이템을 복구할까요?`))return;
-    const {data,error}=await supabase.rpc('admin_restore_used_item',{p_use_id:Number(useId)});
-    const status=document.querySelector('#adminStatus');
-    if(error){status.textContent='아이템 복구 오류: '+error.message;return}
-    status.textContent=data==='restored'?`${userName}의 ${itemName}을 보유 목록으로 복구했습니다.`:'이미 복구된 사용 기록입니다.';
-    await loadAdminUsedItems();
-    if(userId===currentUser?.id)await loadPurchases();
+    const button=document.querySelector('[data-restore-use="'+useId+'"]');
+    if(button?.disabled)return;
+    if(!window.confirm(userName+' · '+itemName+' 아이템을 복구할까요?'))return;
+    const status=document.querySelector('#adminRestoreStatus');
+    if(button)button.disabled=true;
+    status.textContent='아이템을 복구하는 중…';
+    try{
+      const {data,error}=await supabase.rpc('admin_restore_used_item',{p_use_id:Number(useId)});
+      if(error){status.textContent='아이템 복구 오류: '+error.message;return}
+      await loadAdminUsedItems();
+      if(userId===currentUser?.id)await loadPurchases();
+      status.textContent=data==='restored'?userName+'의 '+itemName+'을 보유 목록으로 복구했습니다.':'이미 복구된 사용 기록입니다.';
+    }finally{if(button?.isConnected)button.disabled=false}
   }
   let itemUseBusy=false;
   async function useItem(itemId,targetId){
@@ -1428,20 +1520,24 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     }finally{questGateBusy.delete(questId);drawList();drawAdminQuestGates()}
   }
 
+
   function drawAdminQuestGates(){
     const box=document.querySelector('#adminQuestGateList');if(!box)return;
     if(!isAdmin){box.replaceChildren();return}
-    box.innerHTML=quests.map(q=>{
+    document.querySelector('#adminSummaryQuests').textContent=quests.length;
+    const filter=document.querySelector('#adminQuestFilter').value;
+    const visible=quests.filter(q=>{
       const d=questDetails.find(x=>x.quest_id===q.id),paid=Boolean(statusFor(q.id).awarded);
-      const closed=Boolean(d?.recruitment_closed),enabled=Boolean(d?.raid_entry_enabled),raid=categoryFor(q)==='raid',running=d?.battle_state==='active',busy=questGateBusy.has(q.id);
+      return filter==='all'||filter==='paid'&&paid||filter==='raid'&&categoryFor(q)==='raid'||filter==='open'&&!d?.recruitment_closed&&!paid||filter==='closed'&&d?.recruitment_closed;
+    });
+    box.innerHTML=visible.length?visible.map(q=>{
+      const d=questDetails.find(x=>x.quest_id===q.id),paid=Boolean(statusFor(q.id).awarded),closed=Boolean(d?.recruitment_closed),enabled=Boolean(d?.raid_entry_enabled),raid=categoryFor(q)==='raid',running=d?.battle_state==='active',busy=questGateBusy.has(q.id);
       const button=(command,label,disabled=false)=>'<button type="button" class="button" data-admin-gate="'+command+'" data-admin-gate-quest="'+escapeHtml(q.id)+'" '+(busy||disabled?'disabled':'')+'>'+label+'</button>';
-      const status=!d?'상태 확인 중':(closed?'모집 마감':'모집 중')+(raid?' · '+(enabled?'입장 활성':'입장 대기'):'')+(paid?' · 보상 지급 완료':'');
-      return '<article class="admin-quest-gate-row"><strong>'+escapeHtml(q.title)+'</strong><p>'+status+'</p><div>'+
-        button('close','모집 마감',closed||paid&&!running)+
-        button('reopen','모집 다시 열기',!closed||Boolean(d?.battle_started)||paid)+
-        (raid?button('enable','토벌 참여 활성화',!closed||enabled||paid&&!running)+button('disable','입장 비활성화',!enabled||paid&&!running)+
-        button('resume','진행 중 토벌 접근 복구',Boolean(d?.battle_state)&&!running):'')+'</div></article>';
-    }).join('');
+      const status=!d?'확인 중':(closed?'마감':'모집 중')+(raid?' · '+(enabled?'입장 활성':'입장 대기'):'')+(paid?' · 지급 완료':'');
+      const actionable=!paid||running;
+      const controls=actionable?(closed?(d?.battle_started?'<span class="admin-row-note">참여 명단 확정</span>':button('reopen','모집 재개')):button('close','모집 마감')):'';
+      return '<article class="admin-quest-gate-row"><div class="admin-quest-row-head"><strong>'+escapeHtml(q.title)+'</strong><span class="admin-state-chip">'+status+'</span></div><div class="admin-quest-row-actions">'+controls+(raid&&actionable?button(enabled?'disable':'enable',enabled?'입장 비활성화':'토벌 참여 활성화',!closed):'')+(raid&&(running||!d?.battle_state&&d?.battle_started)?button('resume','접근 복구'):'')+'</div></article>';
+    }).join(''):'<div class="profile-empty">해당 조건의 퀘스트가 없습니다.</div>';
     box.querySelectorAll('[data-admin-gate]').forEach(button=>button.addEventListener('click',()=>setQuestGate(button.dataset.adminGateQuest,button.dataset.adminGate)));
   }
   async function joinQuest(questId){
@@ -1577,6 +1673,28 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 
   document.querySelector('#refreshMemberStatus').addEventListener('click',loadAdminMemberStatus);
   document.querySelector('#refreshQuestGates').addEventListener('click',()=>loadBoard());
+
+  document.querySelectorAll('[data-admin-tab]').forEach(button=>{
+    button.addEventListener('click',()=>setAdminTab(button.dataset.adminTab));
+    button.addEventListener('keydown',event=>{
+      if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+      event.preventDefault();const buttons=[...document.querySelectorAll('[data-admin-tab]')],i=buttons.indexOf(button);
+      const next=event.key==='Home'?0:event.key==='End'?buttons.length-1:(i+(event.key==='ArrowRight'?1:-1)+buttons.length)%buttons.length;
+      setAdminTab(buttons[next].dataset.adminTab,true);
+    });
+  });
+  document.querySelector('#adminMemberSearch').addEventListener('input',drawAdminRoster);
+  document.querySelector('#adminRestoreSearch').addEventListener('input',drawAdminUsedItems);
+  document.querySelector('#adminQuestFilter').addEventListener('change',drawAdminQuestGates);
+  document.querySelector('#adminUserSelect').addEventListener('change',drawAdminRoster);
+  document.querySelector('#refreshAdminWorkspace').addEventListener('click',async event=>{
+    if(!isAdmin)return;
+    const button=event.currentTarget;button.disabled=true;
+    document.querySelector('#adminWorkspaceSync').textContent='최신 정보를 확인하는 중…';
+    try{await Promise.all([loadAdminUsers(),loadBoard(),loadShopCatalog()]);document.querySelector('#adminWorkspaceSync').textContent='갱신 '+new Date().toLocaleTimeString('ko-KR')}
+    finally{button.disabled=false}
+  });
+
   document.querySelector('#adminGoldButton').addEventListener('click',grantGold);
   document.querySelector('#adminItemButton').addEventListener('click',grantShopItem);
   supabase.auth.onAuthStateChange((_event,session)=>{

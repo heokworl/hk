@@ -13,7 +13,7 @@
   function valid(r){return room===r&&!r.closed}
   function shell(r){
     r.container.classList.add('shared-raid');
-    r.container.innerHTML=`<div class="raid-topline"><span class="raid-sync" role="status">연결 확인 중…</span><button type="button" class="filter-button raid-refresh">새로고침</button></div><p class="raid-error" role="alert"></p><div class="raid-view"></div>`;
+    r.container.innerHTML=`<div class="raid-topline"><span class="raid-sync" role="status">연결 확인 중…</span><button type="button" class="filter-button raid-refresh">새로고침</button></div><p class="raid-error" role="alert"></p><div class="raid-view"><div class="raid-combat-layout"><div class="raid-main-content"><div class="raid-placeholder">전투 상태를 불러오는 중…</div></div>${inventoryPanel(r,true)}</div></div>`;
     r.container.querySelector('.raid-refresh').addEventListener('click',()=>refresh(r,true));
   }
   function say(r,message){if(valid(r))r.container.querySelector('.raid-error').textContent=message}
@@ -23,11 +23,15 @@
     return `<li class="raid-member${m.hp<=0?' is-down':''}"><div class="raid-member-name"><strong>${escape(m.username)}</strong><span>${text}</span></div><label>HP <span>${m.hp} / 200</span><progress class="raid-hp" value="${clamp(m.hp,200)}" max="200"></progress></label><label>MP <span>${m.mp} / 200</span><progress class="raid-mp" value="${clamp(m.mp,200)}" max="200"></progress></label></li>`;
   }
   function inventoryPanel(r,disabled){
-    const items=r.state.inventory||[],targets=r.state.members.filter(m=>!m.blocked&&m.can_target!==false);
-    return `<aside class="raid-inventory"><div class="raid-section-heading"><h3>아이템 인벤토리</h3></div><p class="raid-inventory-note">공격 또는 아이템 중 턴당 하나만 선택할 수 있습니다. 아이템 효과는 전원 행동 완료 후 적용됩니다.</p><div class="raid-inventory-list">${items.length?items.map(item=>{
-      const selected=r.selectedTargets.get(item.item_id)||'';
+    const items=r.state?.inventory||[],targets=r.inventoryReady?(r.state?.members||[]).filter(m=>!m.blocked&&m.can_target!==false):[];
+    disabled=disabled||!r.inventoryReady;
+    const problem=r.inventoryProblem||(!r.state?'전투 접근 권한 확인 후 사용할 수 있습니다.':'');
+    return `<aside class="raid-inventory"><div class="raid-section-heading"><h3>아이템 인벤토리</h3></div><p class="raid-inventory-note">공격 또는 아이템 중 턴당 하나만 선택할 수 있습니다. 아이템 효과는 전원 행동 완료 후 적용됩니다.</p><p class="raid-inventory-status" role="status">${escape(problem)}</p><div class="raid-inventory-list">${items.length?items.map(item=>{
+      const previous=r.selectedTargets.get(item.item_id)||'';
+      const selected=targets.some(target=>target.user_id===previous)?previous:'';
+      if(!selected)r.selectedTargets.delete(item.item_id);
       return `<article class="raid-inventory-item"><div class="raid-inventory-title"><strong>${escape(item.item_name)}</strong><span>× ${item.quantity}</span></div><p>${escape(item.description)}</p><small>사용 가능 ${item.quantity}개${item.reserved?' · 예약 '+item.reserved+'개':''}</small><label>사용 대상<select data-raid-target="${escape(item.item_id)}" ${disabled||item.quantity<1?'disabled':''}><option value="">대상 선택</option>${targets.map(target=>`<option value="${escape(target.user_id)}" ${selected===target.user_id?'selected':''}>${escape(target.username)} · HP ${target.hp}/200 · MP ${target.mp}/200</option>`).join('')}</select></label><button type="button" class="button" data-raid-use="${escape(item.item_id)}" ${disabled||item.quantity<1||!selected?'disabled':''}>아이템 사용 예약</button></article>`;
-    }).join(''):'<p class="raid-inventory-empty">보유 아이템이 없습니다.</p>'}</div></aside>`;
+    }).join(''):'<p class="raid-inventory-empty">'+(problem?'인벤토리 연결 확인 중입니다.':'보유 아이템이 없습니다.')+'</p>'}</div></aside>`;
   }
   function renderLogs(r){
     const list=r.container.querySelector('.raid-log-list');if(!list)return;
@@ -48,7 +52,7 @@
     const me=s.members.find(m=>m.user_id===r.userId);
     const attackDisabled=r.busy||s.state!=='active'||!me||me.blocked||me.hp<=0||me.acted;
     let actionText=s.state==='waiting'?'시작하면 현재 참여 명단이 확정됩니다.':s.state==='victory'?'보스를 처치했습니다. 관리자 보상 지급을 기다려 주세요.':s.state==='defeat'?'공략이 종료되었습니다.':me?.hp<=0?'HP가 0이어서 이번 턴 행동 대상에서 제외됩니다.':me?.acted?'이번 턴 행동을 예약했습니다. 나머지 참여자의 행동을 기다리는 중입니다.':'공격 또는 오른쪽 인벤토리의 아이템 사용 중 하나를 예약하세요.';
-    const key=JSON.stringify([s.state,s.turn_no,s.boss_hp,s.boss_max_hp,s.members,s.inventory,r.busy,s.can_start]);
+    const key=JSON.stringify([s.state,s.turn_no,s.boss_hp,s.boss_max_hp,s.members,s.inventory,r.inventoryReady,r.inventoryProblem,r.busy,s.can_start]);
     if(key!==r.renderKey){
       r.renderKey=key;
       r.container.querySelector('.raid-view').innerHTML=`<div class="raid-combat-layout"><div class="raid-main-content"><section class="raid-boss raid-state-${escape(s.state)}"><div class="raid-boss-heading"><span class="raid-state-label">${statusNames[s.state]||'확인 중'}</span><span class="raid-turn">TURN ${s.turn_no}</span></div><div class="raid-boss-art">${bossShape}</div><h3>${escape(s.boss_name)}</h3><div class="raid-boss-health"><span>보스 HP</span><strong>${s.boss_hp.toLocaleString('ko-KR')} / ${s.boss_max_hp.toLocaleString('ko-KR')}</strong><progress class="raid-hp" max="${s.boss_max_hp}" value="${s.boss_hp}" aria-label="보스 HP"></progress></div></section><section class="raid-turn-panel"><div class="raid-section-heading"><h3>턴 행동</h3><span>${s.state==='active'?ready+' / '+eligible.length+'명 행동 완료':s.members.length+'명 참여'}</span></div><p class="raid-action-note">${actionText}</p><div class="raid-action-buttons">${s.state==='waiting'?`<button type="button" class="button raid-start" ${r.busy||!s.can_start||eligible.length===0?'disabled':''}>현재 명단으로 공략 시작</button>`:`<button type="button" class="button raid-attack" ${attackDisabled?'disabled':''}>${r.busy?'처리 중…':me?.acted?'이번 턴 행동 완료':'공격 예약 · 피해 '+s.player_damage}</button>`}</div><p class="raid-rules">턴당 공격 / 아이템 중 1회 · 전원 행동 후 효과 적용 · 보스 생존 시 각 참여자에게 ${s.boss_damage} 피해 · HP 0은 행동 제외</p><ul class="raid-members">${s.members.map(m=>memberCard(m,s.turn_no,s.state)).join('')}</ul></section><section class="raid-log-panel"><div class="raid-section-heading"><h3>전투 기록</h3><span>참여자 공통 로그</span></div><button class="filter-button raid-older" type="button">이전 전투 기록</button><ol class="raid-log-list" aria-label="전투 기록"></ol></section></div>${inventoryPanel(r,attackDisabled)}</div>`;
@@ -76,6 +80,14 @@
         if(error)throw error;
         if(!data||data.quest_id!==r.questId||!Array.isArray(data.members))throw Error('전투 상태를 확인하지 못했습니다.');
         if(r.state&&Number(data.revision)<Number(r.state.revision))return;
+        r.inventoryReady=Array.isArray(data.inventory);
+        r.inventoryProblem='';
+        if(!r.inventoryReady){
+          const inventory=await r.client.rpc('get_my_inventory');
+          if(!valid(r))return;
+          data.inventory=inventory.error?[]:(inventory.data||[]);
+          r.inventoryProblem=inventory.error?'인벤토리 조회 오류: '+inventory.error.message:'아이템이 보이지만 턴 사용 DB 연결이 완료되지 않았습니다. raid-battle-controls-items.sql 전체를 실행해 주세요.';
+        }
         const hpChanged=r.state&&JSON.stringify(r.state.members.map(m=>[m.user_id,m.hp,m.mp]))!==JSON.stringify(data.members.map(m=>[m.user_id,m.hp,m.mp]));
         const incoming=data.logs||[];
         if(r.logs.size&&incoming.length&&!incoming.some(l=>r.logs.has(String(l.id)))&&Number(incoming[0].id)>Math.max(...[...r.logs.keys()].map(Number))){
@@ -93,7 +105,8 @@
         if(!valid(r))return;
         say(r,labelError(error));
         if(error.code==='42501'||error.code==='28000'){
-          r.state=null;r.logs.clear();r.renderKey='';r.container.querySelector('.raid-view').replaceChildren();
+          r.state=null;r.logs.clear();r.renderKey='';r.inventoryReady=false;r.inventoryProblem='전투 참여 권한이 없어 아이템을 사용할 수 없습니다.';
+          r.container.querySelector('.raid-view').innerHTML='<div class="raid-combat-layout"><div class="raid-main-content"><div class="raid-placeholder">전투에 접근할 수 없습니다.</div></div>'+inventoryPanel(r,true)+'</div>';
           syncLabel(r,'접근 권한 없음');stopChannel(r);
         }
       }
@@ -152,7 +165,7 @@
       room.onVitalsChanged=config.onVitalsChanged;room.visible=true;return refresh(room);
     }
     destroy();
-    const r={client:config.client,questId:config.questId,userId:config.userId,container:config.container,onVitalsChanged:config.onVitalsChanged,closed:false,visible:true,state:null,busy:false,fetching:null,refreshAgain:false,channel:null,logs:new Map(),hasOlder:null,loadingOlder:false,renderKey:'',firstLogs:true,selectedTargets:new Map()};
+    const r={client:config.client,questId:config.questId,userId:config.userId,container:config.container,onVitalsChanged:config.onVitalsChanged,closed:false,visible:true,state:null,busy:false,fetching:null,refreshAgain:false,channel:null,logs:new Map(),hasOlder:null,loadingOlder:false,renderKey:'',firstLogs:true,inventoryReady:false,inventoryProblem:'',selectedTargets:new Map()};
     room=r;shell(r);
     r.timer=setInterval(()=>refresh(r),5000);
     return refresh(r);

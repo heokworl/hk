@@ -30,5 +30,19 @@ assert(container.querySelector('.raid-attack').disabled);assert(container.queryS
 state.turn_no=2;state.revision++;state.members[0].acted=false;state.members[1].hp=110;state.inventory[0].reserved=0;state.boss_hp=960;
 state.logs=[{id:1,turn_no:1,kind:'item',message:'ABLE → 대상 · 회복약 HP +20'},{id:2,turn_no:1,kind:'counter',message:'대상 HP -10'}];
 notification();await settle();assert(!container.querySelector('.raid-attack').disabled);assert(container.textContent.includes('HP +20'));assert(container.textContent.includes('110 / 200'));
+w.CheonhoRaid.destroy();
+// Old DB responses must not silently look like an empty inventory.
+const legacy={...client,async rpc(name){
+ if(name==='get_my_inventory')return {data:[{item_id:'potion',item_name:'회복약',description:'HP 20',quantity:2}],error:null};
+ const old=structuredClone(state);delete old.inventory;return {data:old,error:null};
+}};
+await w.CheonhoRaid.open({client:legacy,questId:'raid-a',userId:'a',container});
+assert(container.querySelector('.raid-inventory'));
+assert(container.textContent.includes('회복약'));assert(container.textContent.includes('DB 연결이 완료되지 않았습니다'));
+assert(container.querySelector('[data-raid-use]').disabled);
+w.CheonhoRaid.destroy();
+// A failed initial read must still leave an explicit inventory area on screen.
+const broken={...client,async rpc(){return {data:null,error:{code:'PGRST202',message:'missing function'}}}};
+await w.CheonhoRaid.open({client:broken,questId:'raid-a',userId:'a',container});assert(container.querySelector('.raid-inventory'));assert(container.textContent.includes('전투 DB 설정이 필요합니다'));
 w.CheonhoRaid.destroy();dom.window.close();
 console.log('PASS: right inventory, target filtering, item-only action slot, delayed effects and next-turn refresh');

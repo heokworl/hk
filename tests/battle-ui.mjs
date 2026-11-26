@@ -5,7 +5,7 @@ const dom=new JSDOM('<div id="game"></div>',{runScripts:'outside-only',url:'http
 const w=dom.window;
 const timers=[];w.setInterval=fn=>{timers.push(fn);return timers.length};w.clearInterval=()=>{};w.confirm=()=>true;
 w.eval(readFileSync(new URL('../raid-battle.js',import.meta.url),'utf8'));
-let state={quest_id:'raid-a',state:'waiting',turn_no:1,boss_hp:1000,boss_max_hp:1000,boss_name:'균열체',player_damage:20,boss_damage:10,revision:0,can_start:true,logs:[],has_older_logs:false,members:[{user_id:'a',username:'<ABLE>',hp:200,mp:200,acted:false,blocked:false},{user_id:'b',username:'B',hp:200,mp:200,acted:false,blocked:false}]};
+let state={quest_id:'raid-a',state:'waiting',turn_no:1,boss_hp:1000,boss_max_hp:1000,boss_name:'균열체',player_damage:20,boss_damage:10,revision:0,can_start:true,inventory:[],logs:[],has_older_logs:false,members:[{user_id:'a',username:'<ABLE>',hp:200,mp:200,acted:false,blocked:false},{user_id:'b',username:'B',hp:200,mp:200,acted:false,blocked:false}]};
 let notification,channels=0,removed=0,vitals=0,permission=true,actionCalls=0;
 const client={
  async rpc(name,args){
