@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node battle-db.mjs && node battle-ui.mjs && node battle-v2-db.mjs && node battle-v2-ui.mjs && node quest-gates-ui.mjs && node admin-workspace-ui.mjs && node test-raids-db.mjs && node profile-bulk-db.mjs && node profile-bulk-ui.mjs && node admin-grant-quantity-db.mjs && node admin-grant-quantity-ui.mjs && node completion-db.mjs && node home-ui.mjs && node quest-visibility-ui.mjs && node solo-two-db.mjs && node character-events-db.mjs && node character-events-ui.mjs"
+    "test": "node battle-db.mjs && node battle-ui.mjs && node battle-v2-db.mjs && node battle-v2-ui.mjs && node quest-gates-ui.mjs && node admin-workspace-ui.mjs && node test-raids-db.mjs && node profile-bulk-db.mjs && node profile-bulk-ui.mjs && node admin-grant-quantity-db.mjs && node admin-grant-quantity-ui.mjs && node completion-db.mjs && node home-ui.mjs && node quest-visibility-ui.mjs && node solo-two-db.mjs && node character-events-db.mjs && node character-events-ui.mjs && node character-name-db.mjs && node character-crop-ui.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.6.0",
