@@ -59,7 +59,7 @@
     const eligible=s.members.filter(m=>m.turn_required==null?!m.blocked&&m.hp>0:m.turn_required),ready=eligible.filter(m=>m.acted).length;
     const me=s.members.find(m=>m.user_id===r.userId);
     const attackDisabled=r.busy||s.state!=='active'||!me||me.blocked||me.hp<=0||me.acted;
-    let actionText=s.state==='waiting'?'시작하면 현재 참여 명단이 확정됩니다.':s.state==='victory'?'보스를 처치했습니다. 관리자 보상 지급을 기다려 주세요.':s.state==='defeat'?'공략이 종료되었습니다.':me?.hp<=0?'HP가 0이어서 이번 턴 행동 대상에서 제외됩니다.':me?.acted?'이번 턴 행동을 예약했습니다. 나머지 참여자의 행동을 기다리는 중입니다.':'공격 또는 오른쪽 인벤토리의 아이템 사용 중 하나를 예약하세요.';
+    let actionText=s.spectator?'관리자 관전 중 · 참여 인원에 포함되지 않으며 공격·아이템 사용은 할 수 없습니다.':s.state==='waiting'?'시작하면 현재 참여 명단이 확정됩니다.':s.state==='victory'?'보스를 처치했습니다. 관리자 보상 지급을 기다려 주세요.':s.state==='defeat'?'공략이 종료되었습니다.':me?.hp<=0?'HP가 0이어서 이번 턴 행동 대상에서 제외됩니다.':me?.acted?'이번 턴 행동을 예약했습니다. 나머지 참여자의 행동을 기다리는 중입니다.':'공격 또는 오른쪽 인벤토리의 아이템 사용 중 하나를 예약하세요.';
     const key=JSON.stringify([s.state,s.turn_no,s.boss_hp,s.boss_max_hp,s.boss_kind,s.members,s.inventory,r.inventoryReady,r.inventoryProblem,r.busy,s.can_start]);
     if(key!==r.renderKey){
       r.renderKey=key;
