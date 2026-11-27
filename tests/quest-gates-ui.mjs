@@ -1,3 +1,4 @@
+import {installGuildFixture} from './guild-ui-fixture.mjs';
 import {JSDOM} from 'jsdom';
 import {readFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
@@ -23,13 +24,13 @@ const client={auth:{onAuthStateChange(cb){authCallback=cb},async getSession(){re
  }
  return {data,error:null};
 }};
-w.supabase={createClient(){return client}};
+installGuildFixture(w,client,html);w.supabase={createClient(){return client}};
 const scripts=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).filter(x=>x.trim());
 for(const script of scripts)w.eval(script);
 const settle=()=>new Promise(resolve=>setTimeout(resolve,50));
 await settle();authCallback('SIGNED_IN',{user:{id:uid,user_metadata:{display_name:'ABLE'}}});await settle();
 w.document.querySelector('[data-category="raid"]').click();
-const card=()=>w.document.querySelector('#questList .quest-card');
+const card=()=>w.document.querySelector('[data-quest="quarantine_clear"]').closest('.quest-card');
 assert(card().querySelector('[data-gate="close"]'));assert(!card().querySelector('a[href*="raid.html"]'));assert(card().querySelector('[data-gate="enable"]').disabled);
 card().querySelector('[data-gate="close"]').click();await settle();assert(closed);assert(!card().querySelector('a[href*="raid.html"]'));assert(!card().querySelector('[data-gate="enable"]').disabled);
 card().querySelector('[data-gate="enable"]').click();await settle();assert(enabled);assert(card().querySelector('a[href*="raid.html"]'));

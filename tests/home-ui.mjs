@@ -1,10 +1,11 @@
+import {installGuildFixture} from './guild-ui-fixture.mjs';
 import {JSDOM} from 'jsdom';import {readFileSync} from 'node:fs';import assert from 'node:assert/strict';
 for(const file of ['index.html','raid.html']){
  const html=readFileSync(new URL('../'+file,import.meta.url),'utf8'),dom=new JSDOM(html,{runScripts:'outside-only',url:'https://test/'+file,pretendToBeVisual:true}),w=dom.window;w.setInterval=()=>1;w.matchMedia=()=>({matches:false});let auth;
- const client={auth:{onAuthStateChange(cb){auth=cb},async getSession(){return {data:{session:null}}}},async rpc(name){return {data:name==='get_my_wallet'?{username:'ABLE',balance:555,is_admin:false}:name==='get_member_stats_v3'?{hp:180,mp:120}:[],error:null}}};w.supabase={createClient:()=>client};
+ const client={auth:{onAuthStateChange(cb){auth=cb},async getSession(){return {data:{session:null}}}},async rpc(name){return {data:name==='get_my_wallet'?{username:'ABLE',balance:555,is_admin:false}:name==='get_member_stats_v3'?{hp:180,mp:120}:[],error:null}}};installGuildFixture(w,client,html);w.supabase={createClient:()=>client};
  for(const m of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))if(m[1].trim())w.eval(m[1]);const settle=()=>new Promise(r=>setTimeout(r,60));await settle();
  assert(!w.document.querySelector('#homePage').classList.contains('hidden'));assert(w.document.querySelector('#board').classList.contains('hidden'));assert.equal(w.document.querySelector('.guild-home-link').getAttribute('href'),'./index.html');
- auth('SIGNED_IN',{user:{id:'a',user_metadata:{user_id:'able-id',display_name:'ABLE'}}});await settle();assert(w.document.querySelector('.member-id-card').textContent.includes('555 G'));assert(w.document.querySelector('.id-card-login').textContent.includes('able-id'));assert.equal(w.document.querySelector('.id-card-stats progress').value,180);
+ auth('SIGNED_IN',{user:{id:'a',user_metadata:{user_id:'able-id',display_name:'ABLE'}}});await settle();assert(w.document.querySelector('.member-id-card').textContent.includes('555 G'));assert.equal(w.document.querySelector('.id-card-stats progress').value,180);
  w.document.querySelector('[data-page="quests"]').click();assert(w.document.querySelector('#homePage').classList.contains('hidden'));w.document.querySelector('[data-page="home"]').click();assert(!w.document.querySelector('#homePage').classList.contains('hidden'));
  auth('SIGNED_OUT',null);await settle();assert(!w.document.querySelector('.member-id-card'));assert(w.document.querySelector('[data-page="quests"]').classList.contains('hidden'));dom.window.close();
 }

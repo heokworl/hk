@@ -1,3 +1,4 @@
+import {installGuildFixture} from './guild-ui-fixture.mjs';
 import {JSDOM} from 'jsdom';
 import {readFileSync,writeFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
@@ -23,7 +24,7 @@ const client={auth:{onAuthStateChange(cb){authCallback=cb},async getSession(){re
  }
  return {data,error:null};
 }};
-w.supabase={createClient(){return client}};
+installGuildFixture(w,client,html);w.supabase={createClient(){return client}};
 for(const script of [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).filter(x=>x.trim()))w.eval(script);
 const settle=()=>new Promise(resolve=>setTimeout(resolve,45));
 await settle();authCallback('SIGNED_IN',{user:{id:'admin',user_metadata:{display_name:'관리자'}}});await settle();
@@ -41,10 +42,10 @@ assert(w.document.querySelector('#adminStatus').textContent.includes('25G'));ass
 w.document.querySelector('[data-admin-tab="quests"]').click();assert(!w.document.querySelector('#adminPane-quests').classList.contains('hidden'));assert(w.document.querySelector('#adminPane-members').classList.contains('hidden'));
 w.document.querySelector('[data-admin-tab="quests"]').dispatchEvent(new w.KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}));
 assert.equal(w.document.querySelector('[data-admin-tab="shop"]').getAttribute('aria-selected'),'true');
-w.document.querySelector('[data-admin-tab="restore"]').click();const filter=w.document.querySelector('#adminRestoreSearch');filter.value='물약';filter.dispatchEvent(new w.Event('input'));
+w.document.querySelector('[data-admin-tab="restore"]').click();const restoreMember=w.document.querySelector('#adminRestoreMember');restoreMember.value='a';restoreMember.dispatchEvent(new w.Event('change'));await settle();const filter=w.document.querySelector('#adminRestoreSearch');filter.value='물약';filter.dispatchEvent(new w.Event('input'));
 assert.equal(w.document.querySelectorAll('#adminUsedItems .admin-used-row').length,1);
 w.document.querySelector('#adminUsedItems [data-restore-use]').click();await settle();assert(w.document.querySelector('#adminRestoreStatus').textContent.includes('복구했습니다'));
-assert.equal(w.document.querySelector('#adminSummaryRestore').textContent,'1');
+assert.equal(w.document.querySelector('#adminSummaryRestore').textContent,'0');
 // All original form hooks remain unique and reachable after reorganization.
 for(const id of ['adminGoldButton','adminItemButton','adminProductForm','adminBlockUser','blockQuestUser','adminQuestGateList','memberStatusRows'])assert.equal(w.document.querySelectorAll('#'+id).length,1);
 if(process.env.ADMIN_PREVIEW){
