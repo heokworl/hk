@@ -663,7 +663,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     <section class="content" id="homePage"><p class="home-kicker">CHEONHO · MEMBER TERMINAL</p><h2 class="home-heading">천호 길드 본부</h2><div id="homeResult" class="home-result hidden" role="status"></div><div id="homeContent"><p class="home-empty">상단에서 로그인하면 회원증과 진행 중인 의뢰를 확인할 수 있습니다.</p></div></section>
     <section class="content hidden" id="board" aria-live="polite">
       <div class="section-head"><h2 class="section-title">오늘의 퀘스트</h2><button class="filter-button" id="toggleJoined" type="button" disabled>참여한 퀘스트</button></div>
-      <div class="quest-category-tabs" id="questCategories"><button type="button" data-category="daily" class="filter-button active">일상</button><button type="button" data-category="raid" class="filter-button">토벌</button><button type="button" data-category="event" class="filter-button">이벤트</button></div><p class="status" id="expansionStatus"></p><div class="cards" id="questList"></div>
+      <div class="quest-category-tabs" id="questCategories"><button type="button" data-category="all" class="filter-button active">전체</button><button type="button" data-category="daily" class="filter-button">일상</button><button type="button" data-category="raid" class="filter-button">토벌</button><button type="button" data-category="event" class="filter-button">이벤트</button></div><p class="status" id="expansionStatus"></p><div class="cards" id="questList"></div>
       <p class="status" id="boardStatus"></p>
       <p class="note">로그인한 계정은 각 퀘스트에 한 번씩 참여할 수 있고, 다른 퀘스트에도 참여할 수 있습니다.</p>
     </section>
@@ -1094,7 +1094,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
 
   let selectedUseItem=null,selectedUseTarget='';
   const profileUseQuantities=new Map();
-  let questDetails=[],itemTargets=[],questCategory='daily',expansionBusy=false;
+  let questDetails=[],itemTargets=[],questCategory='all',expansionBusy=false;
   const raidId=new URLSearchParams(location.search).get('raid');
   function categoryFor(q){return questDetails.find(x=>x.quest_id===q.id)?.category||(q.type.includes('토벌')?'raid':'daily')}
 
@@ -1109,7 +1109,7 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
     const row=q=>{const s=statusFor(q.id),d=questDetails.find(d=>d.quest_id===q.id);return '<article class="home-row"><strong>'+e(q.title)+'</strong><small>'+Number(s.participant_count||0)+' / '+q.max+'명 · '+(d?.recruitment_closed?'모집 마감':'모집 중')+' · '+e(q.reward)+'</small>'+(s.has_joined&&d?.raid_entry_enabled&&d?.recruitment_closed&&!d?.blocked?'<a href="./raid.html?raid='+encodeURIComponent(q.id)+'">공략 입장 →</a>':'<button type="button" data-home-quests="'+categoryFor(q)+'">의뢰 확인 →</button>')+'</article>'};
     const bars=['hp','mp'].map(k=>'<label>'+k.toUpperCase()+' '+(homeStats?Number(homeStats[k])+' / 200':'—')+'<progress class="'+k+'" max="200" value="'+(homeStats?Math.max(0,Math.min(200,Number(homeStats[k]))):0)+'"></progress></label>').join('');
     const loginId=currentUser.user_metadata?.login_id||currentUser.user_metadata?.user_id||currentUser.user_metadata?.username||currentUser.email?.split('@')[0]||'—';
-    host.innerHTML='<div class="home-grid"><article class="member-id-card"><div class="id-card-top"><span>天護 / HUNTER ID CARD</span><span>'+(isAdmin?'ADMINISTRATOR':'GUILD MEMBER')+'</span></div><h3 class="id-card-name">'+e(currentName)+'</h3><div class="id-card-stats">'+bars+'</div><p class="id-card-gold">소지금화　<strong>'+(homeWalletReady?currentBalance.toLocaleString('ko-KR')+' G':'조회 중…')+'</strong></p></article><section class="home-block"><h3>◇ 진행 중인 의뢰 <small>'+ongoing.length+'</small></h3>'+(ongoing.length?ongoing.slice(0,3).map(row).join(''):'<p class="home-empty">참여 중인 의뢰가 없습니다.</p>')+'<button class="home-more" data-home-quests="daily">전체 의뢰 보기 →</button></section><section class="home-block"><h3>✦ 오늘의 토벌전!</h3>'+(raids.length?raids.slice(0,3).map(row).join(''):'<p class="home-empty">현재 열려 있는 토벌 의뢰가 없습니다.</p>')+'</section></div>';
+    host.innerHTML='<div class="home-grid"><article class="member-id-card"><div class="id-card-top"><span>天護 / HUNTER ID CARD</span><span>'+(isAdmin?'ADMINISTRATOR':'GUILD MEMBER')+'</span></div><h3 class="id-card-name">'+e(currentName)+'</h3><div class="id-card-stats">'+bars+'</div><p class="id-card-gold">소지금화　<strong>'+(homeWalletReady?currentBalance.toLocaleString('ko-KR')+' G':'조회 중…')+'</strong></p></article><section class="home-block"><h3>◇ 진행 중인 의뢰 <small>'+ongoing.length+'</small></h3>'+(ongoing.length?ongoing.slice(0,3).map(row).join(''):'<p class="home-empty">참여 중인 의뢰가 없습니다.</p>')+'<button class="home-more" data-home-quests="all">전체 의뢰 보기 →</button></section><section class="home-block"><h3>✦ 오늘의 토벌전!</h3>'+(raids.length?raids.map(row).join(''):'<p class="home-empty">현재 열려 있는 토벌 의뢰가 없습니다.</p>')+'</section></div>';
     host.querySelectorAll('[data-home-quests]').forEach(b=>b.addEventListener('click',()=>{questCategory=b.dataset.homeQuests;showJoinedOnly=false;showPage('quests');drawList()}));
     try{const key='cheonho-raid-result:'+currentUser.id,raw=sessionStorage.getItem(key);if(raw){const result=JSON.parse(raw);sessionStorage.removeItem(key);const box=document.getElementById('homeResult');box.textContent=result.state==='victory'?'토벌 성공 · 보상 '+Number(result.user_reward||0).toLocaleString('ko-KR')+'G 지급 완료':'공략이 종료되었습니다. 길드 본부로 복귀했습니다.';box.classList.remove('hidden')}}catch{}
   }
@@ -1541,7 +1541,8 @@ body{padding:20px 14px;color:var(--ink);background:radial-gradient(ellipse at 50
   }
   function statusFor(questId){return questStatus.find(row=>row.quest_id===questId)||{participant_count:0,has_joined:false,reward_amount:0,reward_mode:'per_user',awarded:false}}
   function drawList(){
-    const inCategory=quests.filter(q=>categoryFor(q)===questCategory);
+    const inCategory=quests.filter(q=>questCategory==='all'||categoryFor(q)===questCategory);
+    document.querySelectorAll('[data-category]').forEach(b=>b.classList.toggle('active',b.dataset.category===questCategory));
     const visibleQuests=showJoinedOnly&&currentUser
       ?inCategory.filter(q=>Boolean(statusFor(q.id).has_joined)&&!Boolean(statusFor(q.id).awarded))
       :[...inCategory].sort((a,b)=>Number(Boolean(statusFor(a.id).awarded))-Number(Boolean(statusFor(b.id).awarded)));
